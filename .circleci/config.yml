@@ -1,0 +1,58 @@
+version: 2
+
+aliases:
+  - &restore_yarn_cache
+    name: Restore yarn cache
+    keys:
+      - yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - yarn-packages-{{ .Branch }}
+      - yarn-packages-
+  - &save_yarn_cache
+    name: Save yarn cache
+    paths:
+      - ~/.cache/yarn
+    key: yarn-packages-{{ .Branch }}-{{ checksum "yarn.lock" }}
+  - &filter_master
+    branches:
+      only: master
+  - &attach
+    at: ~/project
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.13.0
+      - image: browserless/chrome:1.9-puppeteer-1.13.0
+
+    working_directory: ~/project
+
+    steps:
+      - checkout
+
+      - restore_cache: *restore_yarn_cache
+
+      - run:
+          name: Install dependencies
+          command: yarn install --frozen-lockfile
+
+      - run:
+          name: Build
+          command: yarn run build
+
+      - run:
+          name: Lint
+          command: yarn run lint
+
+      - run:
+          name: Unit tests
+          command: |
+            npx aw -c aw.config.js --mocha.bail false --mocha.reporter mocha-junit-reporter --mocha.reporterOptions.mochaFile ./coverage/junit/junit.xml
+            if [ ! -z "$COVERALLS_REPO_TOKEN" ]; then
+              echo "Uploading coverage results to coveralls.io..."
+              cat ./coverage/unit/lcov.info | npx coveralls
+            fi
+
+      - store_test_results:
+          path: coverage/junit
+
+      - save_cache: *save_yarn_cache
