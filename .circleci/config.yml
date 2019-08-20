@@ -22,7 +22,6 @@ jobs:
   build:
     docker:
       - image: circleci/node:10.13.0
-      - image: browserless/chrome:1.9-puppeteer-1.13.0
 
     working_directory: ~/project
 
@@ -37,11 +36,11 @@ jobs:
 
       - run:
           name: Build
-          command: yarn run build
+          command: yarn build
 
       - run:
           name: Lint
-          command: yarn run lint
+          command: yarn lint
 
       - run:
           name: Unit tests
