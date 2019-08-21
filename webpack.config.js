@@ -1,6 +1,4 @@
 const path = require('path');
-// const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const srcDir = path.resolve(__dirname, './src');
 const nodeDir = path.resolve(__dirname, './node_modules');
@@ -35,11 +33,6 @@ const createConfig = function createConfig(isDebug) {
 
   if (isDebug) {
     config.devtool = 'source-map';
-  } else {
-    config.output.filename = '[name].min.js';
-    config.optimization = {
-      minimizer: [new UglifyJsPlugin()],
-    };
   }
 
   return config;
