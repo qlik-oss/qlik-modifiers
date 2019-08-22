@@ -1,4 +1,4 @@
-import util from './util';
+import util from './utils/util';
 import accumulation from './expression-modifiers/accumulation';
 import measureBase from './base';
 import accumulationProperties from './expression-modifiers/accumulation-properties';

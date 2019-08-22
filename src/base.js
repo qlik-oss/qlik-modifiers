@@ -1,4 +1,4 @@
-import util from './util';
+import util from './utils/util';
 
 const EXPRESSION_REF = 'qDef.qDef';
 const EXPRESSION_BASE_REF = 'qDef.base.qDef';

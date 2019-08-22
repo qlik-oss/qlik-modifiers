@@ -1,5 +1,5 @@
 import Modifiers from '..';
-import SoftPropertyHandler from '../soft-property-handler';
+import softPropertyHandler from '../soft-property-handler';
 import accumulation from '../expression-modifiers/accumulation';
 import * as MasterItemSubscriber from '../master-item-subscriber';
 
@@ -71,8 +71,9 @@ describe('measure modifiers', () => {
 
     modifiers = new Modifiers(model);
     modifiers.masterItemSubscriber.subscribe = sinon.stub().callsFake(() => Promise.resolve());
-    sandbox.stub(SoftPropertyHandler.prototype, 'saveSoftProperties').callsFake((prevProperties, properties) => {
-      model.properties = properties;
+    sandbox.stub(softPropertyHandler, 'saveSoftProperties').callsFake((enigmaModel, prevProperties, properties) => {
+      // eslint-disable-next-line no-param-reassign
+      enigmaModel.properties = properties;
       return Promise.resolve();
     });
     sandbox.stub(accumulation, 'generateExpression').callsFake(expression => `accumulation(${expression})`);
@@ -179,7 +180,7 @@ describe('measure modifiers', () => {
 
       await modifiers.apply();
 
-      expect(SoftPropertyHandler.prototype.saveSoftProperties).to.have.been.calledOnce;
+      expect(softPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
     });
 
     it.skip('should throw exception if modifier type is not available', async () => {
@@ -250,7 +251,7 @@ describe('measure modifiers', () => {
 
         await modifiers.apply(false);
 
-        expect(SoftPropertyHandler.prototype.saveSoftProperties).to.not.been.called;
+        expect(softPropertyHandler.saveSoftProperties).to.not.been.called;
       });
 
       it('should throw exception if more than 1 active modifier on a measure (not supported yet!)', async () => {
@@ -330,7 +331,7 @@ describe('measure modifiers', () => {
     it('should call softPropertyHandler.saveSoftProperties when there are no update privileges', async () => {
       await modifiers.apply();
 
-      expect(SoftPropertyHandler.prototype.saveSoftProperties).to.have.been.calledOnce;
+      expect(softPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
     });
 
     it('should call model.setProperties when there are update privileges', async () => {
