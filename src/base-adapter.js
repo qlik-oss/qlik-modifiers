@@ -1,7 +1,7 @@
 /**
  * A tool for handling the base/input of a measure. To be used when generating new expression (expression modifiers etc).
  */
-import util from './util';
+import util from './utils/util';
 
 const EXPRESSION_REF = 'qDef.qDef';
 const EXPRESSION_BASE_REF = 'qDef.base.qDef';

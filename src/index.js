@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import extend from 'extend';
-import util from './util';
-import SoftPropertyHandler from './soft-property-handler';
+import util from './utils/util';
+import softPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
@@ -40,8 +40,7 @@ function updateProps(model, prevProperties, properties) {
     return model.setProperties(properties);
   }
 
-  const softPropertyHandler = new SoftPropertyHandler(model);
-  return softPropertyHandler.saveSoftProperties(prevProperties, properties);
+  return softPropertyHandler.saveSoftProperties(model, prevProperties, properties);
 }
 
 function getLibraryItemsProperties(model, measureLibraryIds = [], dimensionLibraryIds = []) {
