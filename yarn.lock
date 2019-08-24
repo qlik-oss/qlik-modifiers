@@ -2,26 +2,26 @@
 # yarn lockfile v1
 
 
-"@after-work.js/aw@^6.0.6":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/aw/-/aw-6.0.7.tgz#ba4268bcd65c8d106074ed62debfae097ac55f8c"
+"@after-work.js/aw@^6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/aw/-/aw-6.0.8.tgz#dacfb1efa65bc2c4857027cc119954e3d7bb6b70"
   dependencies:
-    "@after-work.js/cdp" "6.0.7"
-    "@after-work.js/cli" "6.0.7"
-    "@after-work.js/node" "6.0.7"
-    "@after-work.js/protractor" "6.0.7"
-    "@after-work.js/puppeteer" "6.0.7"
-    "@after-work.js/serve" "6.0.7"
+    "@after-work.js/cdp" "6.0.8"
+    "@after-work.js/cli" "6.0.8"
+    "@after-work.js/node" "6.0.8"
+    "@after-work.js/protractor" "6.0.8"
+    "@after-work.js/puppeteer" "6.0.8"
+    "@after-work.js/serve" "6.0.8"
 
-"@after-work.js/cdp@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/cdp/-/cdp-6.0.7.tgz#85c1747c6e07d2ee6b46a41ba34a323887fce3c9"
+"@after-work.js/cdp@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/cdp/-/cdp-6.0.8.tgz#9536551e39065396b5a5b2f6d5d8dc09c94125f7"
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.7"
-    "@after-work.js/server" "6.0.7"
-    "@after-work.js/transform" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
-    "@after-work.js/watch-plugin" "6.0.7"
+    "@after-work.js/interactive-plugin" "6.0.8"
+    "@after-work.js/server" "6.0.8"
+    "@after-work.js/transform" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
+    "@after-work.js/watch-plugin" "6.0.8"
     chokidar "3.0.2"
     chrome-launcher "0.11.2"
     chrome-remote-interface "0.27.2"
@@ -33,30 +33,30 @@
     source-map-support "0.5.13"
     test-exclude "5.2.3"
 
-"@after-work.js/chai-plugin-screenshot@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-screenshot/-/chai-plugin-screenshot-6.0.7.tgz#aa899ca6c5187f36a2049e8e14b30d40403856d0"
+"@after-work.js/chai-plugin-screenshot@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-screenshot/-/chai-plugin-screenshot-6.0.8.tgz#8c6a8fdeb9a124898b048d6465c4856640582648"
   dependencies:
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/utils" "6.0.8"
     jimp "0.6.4"
     mkdirp "0.5.1"
 
-"@after-work.js/chai-plugin-snapshot@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-snapshot/-/chai-plugin-snapshot-6.0.7.tgz#54e96cde51235bfc1d3dd447ea49f507f672d53d"
+"@after-work.js/chai-plugin-snapshot@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-snapshot/-/chai-plugin-snapshot-6.0.8.tgz#3221c4593cce2afaa62785d52c9682eccf74654f"
   dependencies:
-    "@after-work.js/transform" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/transform" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     jest-snapshot "24.8.0"
 
-"@after-work.js/cli@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/cli/-/cli-6.0.7.tgz#e565cec4bcdbdf26ac20a67c7bbafffefaa5e1c5"
+"@after-work.js/cli@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/cli/-/cli-6.0.8.tgz#27d65e2da8e11ce30d81b8e302d12334b14d734a"
   dependencies:
-    "@after-work.js/chai-plugin-screenshot" "6.0.7"
-    "@after-work.js/chai-plugin-snapshot" "6.0.7"
-    "@after-work.js/interactive-plugin" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/chai-plugin-screenshot" "6.0.8"
+    "@after-work.js/chai-plugin-snapshot" "6.0.8"
+    "@after-work.js/interactive-plugin" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     chai "4.2.0"
     chai-as-promised "7.1.1"
     chai-subset "1.6.0"
@@ -66,41 +66,41 @@
     source-map-support "0.5.13"
     yargs "13.3.0"
 
-"@after-work.js/interactive-plugin@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/interactive-plugin/-/interactive-plugin-6.0.7.tgz#c8fd0f8d9061a1dca790bd9f91a87834ac6129c5"
+"@after-work.js/interactive-plugin@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/interactive-plugin/-/interactive-plugin-6.0.8.tgz#2a7041a2d1bc82f98b28c981fb046f06e2f24eb4"
   dependencies:
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/utils" "6.0.8"
     fuzzy "0.1.3"
     globby "10.0.1"
     import-cwd "3.0.0"
     inquirer "6.5.1"
     inquirer-checkbox-plus-prompt "1.0.1"
 
-"@after-work.js/node@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/node/-/node-6.0.7.tgz#95cda6699da70c53ee09b4fa96478c4b9254273e"
+"@after-work.js/node@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/node/-/node-6.0.8.tgz#0bbbb346d3fb15b5815f59f2dab472122d304254"
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.7"
-    "@after-work.js/preset-plugin" "6.0.7"
-    "@after-work.js/register" "6.0.7"
-    "@after-work.js/transform" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
-    "@after-work.js/watch-plugin" "6.0.7"
+    "@after-work.js/interactive-plugin" "6.0.8"
+    "@after-work.js/preset-plugin" "6.0.8"
+    "@after-work.js/register" "6.0.8"
+    "@after-work.js/transform" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
+    "@after-work.js/watch-plugin" "6.0.8"
     chokidar "3.0.2"
     globby "10.0.1"
     import-cwd "3.0.0"
     mocha "6.2.0"
     nyc "14.1.1"
 
-"@after-work.js/preset-plugin@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/preset-plugin/-/preset-plugin-6.0.7.tgz#962235e75ed0b9763485684bd1042d165c1c9ca3"
+"@after-work.js/preset-plugin@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/preset-plugin/-/preset-plugin-6.0.8.tgz#7111d415fbf1b487660a1808904e5da1e52d3ab3"
   dependencies:
-    "@after-work.js/chai-plugin-screenshot" "6.0.7"
-    "@after-work.js/chai-plugin-snapshot" "6.0.7"
-    "@after-work.js/interactive-plugin" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/chai-plugin-screenshot" "6.0.8"
+    "@after-work.js/chai-plugin-snapshot" "6.0.8"
+    "@after-work.js/interactive-plugin" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     chai "4.2.0"
     chai-as-promised "7.1.1"
     chai-subset "1.6.0"
@@ -108,14 +108,14 @@
     sinon "6.3.5"
     sinon-chai "3.3.0"
 
-"@after-work.js/protractor@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/protractor/-/protractor-6.0.7.tgz#4632d3a1d3f6840ede07b490a433cca06691b791"
+"@after-work.js/protractor@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/protractor/-/protractor-6.0.8.tgz#aac94df0f81ba7271838b80d477f86cf2325d604"
   dependencies:
-    "@after-work.js/preset-plugin" "6.0.7"
-    "@after-work.js/register" "6.0.7"
-    "@after-work.js/server" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/preset-plugin" "6.0.8"
+    "@after-work.js/register" "6.0.8"
+    "@after-work.js/server" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     extend "3.0.2"
     globby "10.0.1"
     handlebars "4.1.2"
@@ -127,27 +127,27 @@
     moment "2.24.0"
     yargs "13.3.0"
 
-"@after-work.js/puppeteer@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/puppeteer/-/puppeteer-6.0.7.tgz#e1f55acbc0d9a1cd5725d5bfa1504eb588d24520"
+"@after-work.js/puppeteer@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/puppeteer/-/puppeteer-6.0.8.tgz#c2414ef45905c82895554f76037c67759d52670f"
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.7"
-    "@after-work.js/node" "6.0.7"
-    "@after-work.js/preset-plugin" "6.0.7"
-    "@after-work.js/register" "6.0.7"
-    "@after-work.js/server" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
-    "@after-work.js/watch-plugin" "6.0.7"
+    "@after-work.js/interactive-plugin" "6.0.8"
+    "@after-work.js/node" "6.0.8"
+    "@after-work.js/preset-plugin" "6.0.8"
+    "@after-work.js/register" "6.0.8"
+    "@after-work.js/server" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
+    "@after-work.js/watch-plugin" "6.0.8"
     chrome-launcher "0.11.2"
     import-cwd "3.0.0"
     puppeteer-core "1.19.0"
 
-"@after-work.js/register@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/register/-/register-6.0.7.tgz#675db7d2285fbd22e430a65ccfe4ba1df44ae407"
+"@after-work.js/register@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/register/-/register-6.0.8.tgz#ba929178fb9c5159eedc44088602a0a989cb7d77"
   dependencies:
-    "@after-work.js/transform" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/transform" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     find-cache-dir "3.0.0"
     import-cwd "3.0.0"
     minimatch "3.0.4"
@@ -155,46 +155,46 @@
     require-from-string "2.0.2"
     source-map-support "0.5.13"
 
-"@after-work.js/serve@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/serve/-/serve-6.0.7.tgz#8a02008e44264979da44e0842503059200952601"
+"@after-work.js/serve@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/serve/-/serve-6.0.8.tgz#0f2b6d479b0d32ea14e3ef0d57adaecdeee09676"
   dependencies:
-    "@after-work.js/server" "6.0.7"
+    "@after-work.js/server" "6.0.8"
 
-"@after-work.js/server@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/server/-/server-6.0.7.tgz#e4df5a1e7c002e512c4f96f42eeba1281e385086"
+"@after-work.js/server@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/server/-/server-6.0.8.tgz#feecde7be22f62c96cd6c21895e06fb27565bc79"
   dependencies:
-    "@after-work.js/transform-middleware" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/transform-middleware" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     express "4.17.1"
     http-proxy-middleware "0.19.1"
     import-cwd "3.0.0"
     serve-favicon "2.5.0"
     test-exclude "5.2.3"
 
-"@after-work.js/transform-middleware@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/transform-middleware/-/transform-middleware-6.0.7.tgz#fa3dc69f638171e84cdaf30f0ba35a57739530be"
+"@after-work.js/transform-middleware@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/transform-middleware/-/transform-middleware-6.0.8.tgz#9f718fc708da6fd85dfa8851bd5fc9f5e98643c0"
   dependencies:
-    "@after-work.js/transform" "6.0.7"
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/transform" "6.0.8"
+    "@after-work.js/utils" "6.0.8"
     import-cwd "3.0.0"
     nyc "14.1.1"
     test-exclude "5.2.3"
     yargs "13.3.0"
 
-"@after-work.js/transform@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/transform/-/transform-6.0.7.tgz#511c6dd2aa78781d57446edecc7170c385701f6b"
+"@after-work.js/transform@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/transform/-/transform-6.0.8.tgz#555f6edb60e4fe66dfd437b0f1be6a9647764e54"
   dependencies:
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/utils" "6.0.8"
     find-cache-dir "3.0.0"
     import-cwd "3.0.0"
 
-"@after-work.js/utils@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/utils/-/utils-6.0.7.tgz#121d8472786128166013fa4cdb9c75ec573941e5"
+"@after-work.js/utils@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/utils/-/utils-6.0.8.tgz#a8dc24f4a5fd04bdee92eff537c5146cd21f4e1b"
   dependencies:
     debug "4.1.1"
     globby "10.0.1"
@@ -202,11 +202,11 @@
     minimatch "3.0.4"
     npmlog "4.1.2"
 
-"@after-work.js/watch-plugin@6.0.7":
-  version "6.0.7"
-  resolved "https://registry.yarnpkg.com/@after-work.js/watch-plugin/-/watch-plugin-6.0.7.tgz#4adffe8e18bd34a81f01d669a4d66896ef8d3cdb"
+"@after-work.js/watch-plugin@6.0.8":
+  version "6.0.8"
+  resolved "https://registry.yarnpkg.com/@after-work.js/watch-plugin/-/watch-plugin-6.0.8.tgz#39ddff4e75c99bcf9a261a8923318860284bfca6"
   dependencies:
-    "@after-work.js/utils" "6.0.7"
+    "@after-work.js/utils" "6.0.8"
     chokidar "3.0.2"
     globby "10.0.1"
 
@@ -798,7 +798,7 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@commitlint/cli@^7.5.2":
+"@commitlint/cli@^7.6.1":
   version "7.6.1"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-7.6.1.tgz#a93cf995082831999937f6d5ec1a582c8fc0393a"
   dependencies:
@@ -814,7 +814,7 @@
     resolve-from "5.0.0"
     resolve-global "1.0.0"
 
-"@commitlint/config-conventional@^7.5.0":
+"@commitlint/config-conventional@^7.6.0":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-7.6.0.tgz#f3dc66bf39e3b627fdd6f5ac3d0510dd0dd38f94"
 
@@ -1431,15 +1431,11 @@ accepts@~1.3.7:
     mime-types "~2.1.24"
     negotiator "0.6.2"
 
-acorn-dynamic-import@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-4.0.0.tgz#482210140582a36b83c3e342e1cfebcaa9240948"
-
 acorn-jsx@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.0.1.tgz#32a064fd925429216a09b141102bfdd185fae40e"
 
-acorn@^6.0.5, acorn@^6.0.7:
+acorn@^6.0.7, acorn@^6.2.1:
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.3.0.tgz#0087509119ffa4fc0a0041d1e93a417e68cb856e"
 
@@ -1453,7 +1449,7 @@ ajv-errors@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
 
-ajv-keywords@^3.1.0:
+ajv-keywords@^3.1.0, ajv-keywords@^3.4.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.4.1.tgz#ef916e271c64ac12171fd8384eaae6b2345854da"
 
@@ -1633,14 +1629,14 @@ atob@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
 
-babel-loader@8.0.5:
-  version "8.0.5"
-  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.5.tgz#225322d7509c2157655840bba52e46b6c2f2fe33"
+babel-loader@8.0.6:
+  version "8.0.6"
+  resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.6.tgz#e33bdb6f362b03f4bb141a0c21ab87c501b70dfb"
   dependencies:
     find-cache-dir "^2.0.0"
     loader-utils "^1.0.2"
     mkdirp "^0.5.1"
-    util.promisify "^1.0.0"
+    pify "^4.0.1"
 
 babel-plugin-dynamic-import-node@^2.3.0:
   version "2.3.0"
@@ -1869,25 +1865,6 @@ bytes@3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
 
-cacache@^11.2.0:
-  version "11.3.3"
-  resolved "https://registry.yarnpkg.com/cacache/-/cacache-11.3.3.tgz#8bd29df8c6a718a6ebd2d010da4d7972ae3bbadc"
-  dependencies:
-    bluebird "^3.5.5"
-    chownr "^1.1.1"
-    figgy-pudding "^3.5.1"
-    glob "^7.1.4"
-    graceful-fs "^4.1.15"
-    lru-cache "^5.1.1"
-    mississippi "^3.0.0"
-    mkdirp "^0.5.1"
-    move-concurrently "^1.0.1"
-    promise-inflight "^1.0.1"
-    rimraf "^2.6.3"
-    ssri "^6.0.1"
-    unique-filename "^1.1.1"
-    y18n "^4.0.0"
-
 cacache@^12.0.2:
   version "12.0.3"
   resolved "https://registry.yarnpkg.com/cacache/-/cacache-12.0.3.tgz#be99abba4e1bf5df461cd5a2c1071fc432573390"
@@ -2000,7 +1977,7 @@ chalk@2.3.1:
     escape-string-regexp "^1.0.5"
     supports-color "^5.2.0"
 
-chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.1, chalk@^2.4.2:
+chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
   dependencies:
@@ -2077,7 +2054,7 @@ chrome-remote-interface@0.27.2:
     commander "2.11.x"
     ws "^6.1.0"
 
-chrome-trace-event@^1.0.0:
+chrome-trace-event@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.2.tgz#234090ee97c7d4ad1a2c4beae27505deffc608a4"
   dependencies:
@@ -2334,14 +2311,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-cross-spawn@^4:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-4.0.2.tgz#7b9247621c23adfdd3856004a823cbe397424d41"
-  dependencies:
-    lru-cache "^4.0.1"
-    which "^1.2.9"
-
-cross-spawn@^6.0.0, cross-spawn@^6.0.5:
+cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
   dependencies:
@@ -2349,6 +2319,13 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     path-key "^2.0.1"
     semver "^5.5.0"
     shebang-command "^1.2.0"
+    which "^1.2.9"
+
+cross-spawn@^4:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-4.0.2.tgz#7b9247621c23adfdd3856004a823cbe397424d41"
+  dependencies:
+    lru-cache "^4.0.1"
     which "^1.2.9"
 
 crypt@~0.0.1:
@@ -2663,7 +2640,7 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-enhanced-resolve@^4.1.0:
+enhanced-resolve@4.1.0, enhanced-resolve@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.1.0.tgz#41c7e0bfdfe74ac1ffe1e57ad6a5c6c9f3742a7f"
   dependencies:
@@ -2773,13 +2750,13 @@ eslint-plugin-import@^2.18.2:
     read-pkg-up "^2.0.0"
     resolve "^1.11.0"
 
-eslint-plugin-mocha@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-mocha/-/eslint-plugin-mocha-6.0.0.tgz#0a2af057280962e9deab929361141865b2b8a761"
+eslint-plugin-mocha@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-mocha/-/eslint-plugin-mocha-6.1.0.tgz#4950ceea8e51b1f4265116c0d03d0cbae86d0a6f"
   dependencies:
     ramda "^0.26.1"
 
-eslint-scope@^4.0.0, eslint-scope@^4.0.3:
+eslint-scope@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-4.0.3.tgz#ca03833310f6889a3264781aa82e63eb9cfe7848"
   dependencies:
@@ -3150,12 +3127,12 @@ find-up@^4.0.0:
     locate-path "^5.0.0"
     path-exists "^4.0.0"
 
-findup-sync@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/findup-sync/-/findup-sync-2.0.0.tgz#9326b1488c22d1a6088650a86901b2d9a90a2cbc"
+findup-sync@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/findup-sync/-/findup-sync-3.0.0.tgz#17b108f9ee512dfb7a5c7f3c8b27ea9e1a9c08d1"
   dependencies:
     detect-file "^1.0.0"
-    is-glob "^3.1.0"
+    is-glob "^4.0.0"
     micromatch "^3.0.4"
     resolve-dir "^1.0.1"
 
@@ -3375,6 +3352,12 @@ global-dirs@^0.1.1:
   dependencies:
     ini "^1.3.4"
 
+global-modules@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/global-modules/-/global-modules-2.0.0.tgz#997605ad2345f27f51539bea26574421215c7780"
+  dependencies:
+    global-prefix "^3.0.0"
+
 global-modules@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/global-modules/-/global-modules-1.0.0.tgz#6d770f0eb523ac78164d72b5e71a8877265cc3ea"
@@ -3392,6 +3375,14 @@ global-prefix@^1.0.1:
     ini "^1.3.4"
     is-windows "^1.0.1"
     which "^1.2.14"
+
+global-prefix@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/global-prefix/-/global-prefix-3.0.0.tgz#fc85f73064df69f50421f47f883fe5b913ba9b97"
+  dependencies:
+    ini "^1.3.5"
+    kind-of "^6.0.2"
+    which "^1.3.1"
 
 global@~4.3.0:
   version "4.3.2"
@@ -3634,7 +3625,7 @@ import-from@^3.0.0:
   dependencies:
     resolve-from "^5.0.0"
 
-import-local@^2.0.0:
+import-local@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-local/-/import-local-2.0.0.tgz#55070be38a5993cf18ef6db7e961f5bee5c5a09d"
   dependencies:
@@ -3676,7 +3667,7 @@ inherits@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
 
-ini@^1.3.4, ini@~1.3.0:
+ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
 
@@ -3725,7 +3716,7 @@ inquirer@^5.1.0:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-interpret@^1.1.0:
+interpret@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.2.0.tgz#d5061a6224be58e8083985f5014d844359576296"
 
@@ -4207,11 +4198,11 @@ load-json-file@^4.0.0:
     pify "^3.0.0"
     strip-bom "^3.0.0"
 
-loader-runner@^2.3.0:
+loader-runner@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
 
-loader-utils@^1.0.2, loader-utils@^1.1.0:
+loader-utils@1.2.3, loader-utils@^1.0.2, loader-utils@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.2.3.tgz#1ff5dc6911c9f0a062531a4c04b609406108c2c7"
   dependencies:
@@ -4389,7 +4380,7 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
-memory-fs@^0.4.0, memory-fs@~0.4.1:
+memory-fs@^0.4.0, memory-fs@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/memory-fs/-/memory-fs-0.4.1.tgz#3a9a20b8462523e447cfbc7e8bb80ed667bfc552"
   dependencies:
@@ -4442,7 +4433,7 @@ methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
 
-micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4, micromatch@^3.1.8:
+micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"
   resolved "https://registry.yarnpkg.com/micromatch/-/micromatch-3.1.10.tgz#70859bc95c9840952f359a068a3fc49f9ecfac23"
   dependencies:
@@ -4578,7 +4569,7 @@ mixin-deep@^1.2.0:
     for-in "^1.0.2"
     is-extendable "^1.0.1"
 
-mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdirp@~0.5.1:
+mkdirp@0.5.1, mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
@@ -4700,7 +4691,7 @@ negotiator@0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
 
-neo-async@^2.5.0, neo-async@^2.6.0:
+neo-async@^2.5.0, neo-async@^2.6.0, neo-async@^2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/neo-async/-/neo-async-2.6.1.tgz#ac27ada66167fa8849a6addd837f6b189ad2081c"
 
@@ -4729,7 +4720,7 @@ node-environment-flags@1.0.5:
     object.getownpropertydescriptors "^2.0.3"
     semver "^5.7.0"
 
-node-libs-browser@^2.0.0:
+node-libs-browser@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/node-libs-browser/-/node-libs-browser-2.2.1.tgz#b64f513d18338625f90346d27b0d235e631f6425"
   dependencies:
@@ -5857,7 +5848,7 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
-serialize-javascript@^1.4.0, serialize-javascript@^1.7.0:
+serialize-javascript@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.7.0.tgz#d6e0dfb2a3832a8c94468e6eb1db97e55a192a65"
 
@@ -6217,15 +6208,15 @@ supports-color@6.0.0:
   dependencies:
     has-flag "^3.0.0"
 
-supports-color@^5.2.0, supports-color@^5.3.0, supports-color@^5.5.0:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
+supports-color@6.1.0, supports-color@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-6.1.0.tgz#0764abc69c63d5ac842dd4867e8d025e880df8f3"
   dependencies:
     has-flag "^3.0.0"
 
-supports-color@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-6.1.0.tgz#0764abc69c63d5ac842dd4867e8d025e880df8f3"
+supports-color@^5.2.0, supports-color@^5.3.0, supports-color@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
   dependencies:
     has-flag "^3.0.0"
 
@@ -6242,7 +6233,7 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-tapable@^1.0.0, tapable@^1.1.0:
+tapable@^1.0.0, tapable@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/tapable/-/tapable-1.1.3.tgz#a1fccc06b58db61fd7a45da2da44f5f3a3e67ba2"
 
@@ -6258,7 +6249,7 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-terser-webpack-plugin@^1.1.0:
+terser-webpack-plugin@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.1.tgz#61b18e40eaee5be97e771cdbb10ed1280888c2b4"
   dependencies:
@@ -6424,25 +6415,26 @@ typescript@^3.0.3:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.5.3.tgz#c830f657f93f1ea846819e929092f5fe5983e977"
 
-uglify-js@^3.0.0, uglify-js@^3.1.4:
+uglify-js@^3.1.4, uglify-js@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.6.0.tgz#704681345c53a8b2079fb6cec294b05ead242ff5"
   dependencies:
     commander "~2.20.0"
     source-map "~0.6.1"
 
-uglifyjs-webpack-plugin@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-2.1.2.tgz#70e5c38fb2d35ee887949c2a0adb2656c23296d5"
+uglifyjs-webpack-plugin@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/uglifyjs-webpack-plugin/-/uglifyjs-webpack-plugin-2.2.0.tgz#e75bc80e7f1937f725954c9b4c5a1e967ea9d0d7"
   dependencies:
-    cacache "^11.2.0"
-    find-cache-dir "^2.0.0"
+    cacache "^12.0.2"
+    find-cache-dir "^2.1.0"
+    is-wsl "^1.1.0"
     schema-utils "^1.0.0"
-    serialize-javascript "^1.4.0"
+    serialize-javascript "^1.7.0"
     source-map "^0.6.1"
-    uglify-js "^3.0.0"
-    webpack-sources "^1.1.0"
-    worker-farm "^1.5.2"
+    uglify-js "^3.6.0"
+    webpack-sources "^1.4.0"
+    worker-farm "^1.7.0"
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -6561,9 +6553,9 @@ uuid@^3.3.2:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
 
-v8-compile-cache@^2.0.2:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.1.0.tgz#e14de37b31a6d194f5690d67efc4e7f6fc6ab30e"
+v8-compile-cache@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.0.3.tgz#00f7494d2ae2b688cfe2899df6ed2c54bef91dbe"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
@@ -6580,7 +6572,7 @@ vm-browserify@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.0.tgz#bd76d6a23323e2ca8ffa12028dc04559c75f9019"
 
-watchpack@^1.5.0:
+watchpack@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/watchpack/-/watchpack-1.6.0.tgz#4bc12c2ebe8aa277a71f1d3f14d685c7b446cd00"
   dependencies:
@@ -6588,63 +6580,62 @@ watchpack@^1.5.0:
     graceful-fs "^4.1.2"
     neo-async "^2.5.0"
 
-webpack-cli@3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.1.tgz#98b0499c7138ba9ece8898bd99c4f007db59909d"
+webpack-cli@3.3.7:
+  version "3.3.7"
+  resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.7.tgz#77c8580dd8e92f69d635e0238eaf9d9c15759a91"
   dependencies:
-    chalk "^2.4.1"
-    cross-spawn "^6.0.5"
-    enhanced-resolve "^4.1.0"
-    findup-sync "^2.0.0"
-    global-modules "^1.0.0"
-    import-local "^2.0.0"
-    interpret "^1.1.0"
-    loader-utils "^1.1.0"
-    supports-color "^5.5.0"
-    v8-compile-cache "^2.0.2"
-    yargs "^12.0.5"
+    chalk "2.4.2"
+    cross-spawn "6.0.5"
+    enhanced-resolve "4.1.0"
+    findup-sync "3.0.0"
+    global-modules "2.0.0"
+    import-local "2.0.0"
+    interpret "1.2.0"
+    loader-utils "1.2.3"
+    supports-color "6.1.0"
+    v8-compile-cache "2.0.3"
+    yargs "13.2.4"
 
-webpack-sources@^1.1.0, webpack-sources@^1.3.0, webpack-sources@^1.4.0:
+webpack-sources@^1.4.0, webpack-sources@^1.4.1:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.4.3.tgz#eedd8ec0b928fbf1cbfe994e22d2d890f330a933"
   dependencies:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@4.30.0:
-  version "4.30.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.30.0.tgz#aca76ef75630a22c49fcc235b39b4c57591d33a9"
+webpack@4.39.2:
+  version "4.39.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.39.2.tgz#c9aa5c1776d7c309d1b3911764f0288c8c2816aa"
   dependencies:
     "@webassemblyjs/ast" "1.8.5"
     "@webassemblyjs/helper-module-context" "1.8.5"
     "@webassemblyjs/wasm-edit" "1.8.5"
     "@webassemblyjs/wasm-parser" "1.8.5"
-    acorn "^6.0.5"
-    acorn-dynamic-import "^4.0.0"
-    ajv "^6.1.0"
-    ajv-keywords "^3.1.0"
-    chrome-trace-event "^1.0.0"
+    acorn "^6.2.1"
+    ajv "^6.10.2"
+    ajv-keywords "^3.4.1"
+    chrome-trace-event "^1.0.2"
     enhanced-resolve "^4.1.0"
-    eslint-scope "^4.0.0"
+    eslint-scope "^4.0.3"
     json-parse-better-errors "^1.0.2"
-    loader-runner "^2.3.0"
-    loader-utils "^1.1.0"
-    memory-fs "~0.4.1"
-    micromatch "^3.1.8"
-    mkdirp "~0.5.0"
-    neo-async "^2.5.0"
-    node-libs-browser "^2.0.0"
+    loader-runner "^2.4.0"
+    loader-utils "^1.2.3"
+    memory-fs "^0.4.1"
+    micromatch "^3.1.10"
+    mkdirp "^0.5.1"
+    neo-async "^2.6.1"
+    node-libs-browser "^2.2.1"
     schema-utils "^1.0.0"
-    tapable "^1.1.0"
-    terser-webpack-plugin "^1.1.0"
-    watchpack "^1.5.0"
-    webpack-sources "^1.3.0"
+    tapable "^1.1.3"
+    terser-webpack-plugin "^1.4.1"
+    watchpack "^1.6.0"
+    webpack-sources "^1.4.1"
 
 which-module@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-2.0.0.tgz#d9ef07dce77b9902b8a3a8fa4b31c3e3f7e6e87a"
 
-which@1.3.1, which@^1.2.14, which@^1.2.9, which@^1.3.0:
+which@1.3.1, which@^1.2.14, which@^1.2.9, which@^1.3.0, which@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/which/-/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
   dependencies:
@@ -6664,7 +6655,7 @@ wordwrap@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/wordwrap/-/wordwrap-1.0.0.tgz#27584810891456a4171c8d0226441ade90cbcaeb"
 
-worker-farm@^1.5.2, worker-farm@^1.7.0:
+worker-farm@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/worker-farm/-/worker-farm-1.7.0.tgz#26a94c5391bbca926152002f69b84a4bf772e5a8"
   dependencies:
@@ -6773,7 +6764,7 @@ yargs-parser@^11.1.1:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-yargs-parser@^13.0.0, yargs-parser@^13.1.1:
+yargs-parser@^13.0.0, yargs-parser@^13.1.0, yargs-parser@^13.1.1:
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-13.1.1.tgz#d26058532aa06d365fe091f6a1fc06b2f7e5eca0"
   dependencies:
@@ -6803,6 +6794,22 @@ yargs@13.2.2:
     which-module "^2.0.0"
     y18n "^4.0.0"
     yargs-parser "^13.0.0"
+
+yargs@13.2.4:
+  version "13.2.4"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-13.2.4.tgz#0b562b794016eb9651b98bd37acf364aa5d6dc83"
+  dependencies:
+    cliui "^5.0.0"
+    find-up "^3.0.0"
+    get-caller-file "^2.0.1"
+    os-locale "^3.1.0"
+    require-directory "^2.1.1"
+    require-main-filename "^2.0.0"
+    set-blocking "^2.0.0"
+    string-width "^3.0.0"
+    which-module "^2.0.0"
+    y18n "^4.0.0"
+    yargs-parser "^13.1.0"
 
 yargs@13.3.0, yargs@^13.2.2:
   version "13.3.0"
