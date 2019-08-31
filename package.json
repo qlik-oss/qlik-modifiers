@@ -46,7 +46,7 @@
     "extend": "^3.0.2",
     "mocha-junit-reporter": "^1.23.1",
     "uglifyjs-webpack-plugin": "2.2.0",
-    "webpack": "4.39.2",
+    "webpack": "4.39.3",
     "webpack-cli": "3.3.7"
   }
 }
