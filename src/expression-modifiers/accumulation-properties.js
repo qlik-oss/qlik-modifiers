@@ -2,10 +2,21 @@ import util from '../utils/util';
 
 export default function (rootPath) {
   const accumulationProperties = {
+    accumulationMessage: {
+      component: 'text',
+      translation: 'properties.modifier.accumulation.disclaimer',
+      show(itemData, handler) {
+        const modifier = util.getValue(itemData, rootPath);
+        return modifier && !modifier.disabled && handler.maxDimensions() > 2;
+      },
+    },
     accumulationDimension: {
       ref: `${rootPath}.accumulationDimension`,
       type: 'integer',
-      translation: '$Accumulation on dimension',
+      translation: 'properties.modifier.accumulation.dimension',
+      title: {
+        translation: 'properties.modifier.accumulation.dimension.tooltip',
+      },
       component: 'dropdown',
       schemaIgnore: true,
       defaultValue: 1,
@@ -18,10 +29,13 @@ export default function (rootPath) {
         return modifier && !modifier.disabled && handler.layout.qHyperCube.qDimensionInfo.length > 1;
       },
     },
-    restartAfterAcumulationDimension: {
-      ref: `${rootPath}.restartAfterAcumulationDimension`,
+    crossAllDimensions: {
+      ref: `${rootPath}.crossAllDimensions`,
       type: 'boolean',
-      translation: '$Restart accumulation after dimension',
+      translation: 'properties.modifier.accumulation.crossAllDimensions',
+      title: {
+        translation: 'properties.modifier.accumulation.crossAllDimensions.tooltip',
+      },
       schemaIgnore: true,
       defaultValue: false,
       show(itemData, handler) {
@@ -29,21 +43,22 @@ export default function (rootPath) {
         return modifier && !modifier.disabled && handler.layout.qHyperCube.qDimensionInfo.length > 1;
       },
     },
+
     fullAccumulation: {
       ref: `${rootPath}.fullAccumulation`,
       type: 'boolean',
-      translation: '$Steps back',
+      translation: 'properties.modifier.accumulation.range',
       component: 'dropdown',
       schemaIgnore: true,
       defaultValue: false,
       options: [
         {
           value: true,
-          translation: '$Full',
+          translation: 'properties.modifier.accumulation.full',
         },
         {
           value: false,
-          translation: '$Custom',
+          translation: 'properties.modifier.accumulation.custom',
         },
       ],
       show(itemData) {
@@ -51,14 +66,31 @@ export default function (rootPath) {
         return modifier && !modifier.disabled;
       },
     },
-    stepsBack: {
-      ref: `${rootPath}.stepsBack`,
+    steps: {
+      ref: `${rootPath}.steps`,
       type: 'integer',
+      translation: 'properties.modifier.accumulation.steps',
       schemaIgnore: true,
-      defaultValue: 0,
+      defaultValue: 6,
+      change(itemData) {
+        const modifier = util.getValue(itemData, rootPath);
+        const { steps } = modifier;
+        modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 6;
+      },
       show(itemData) {
         const modifier = util.getValue(itemData, rootPath);
         return modifier && !modifier.disabled && !modifier.fullAccumulation;
+      },
+    },
+    showExcludedValues: {
+      ref: `${rootPath}.showExcludedValues`,
+      type: 'boolean',
+      translation: 'properties.modifier.accumulation.showExcludedValues',
+      schemaIgnore: true,
+      defaultValue: true,
+      show(itemData) {
+        const modifier = util.getValue(itemData, rootPath);
+        return modifier && !modifier.disabled;
       },
     },
   };

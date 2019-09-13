@@ -3,10 +3,15 @@
  */
 import util from './utils/util';
 
+const BASE_REF = 'qDef.base';
 const EXPRESSION_REF = 'qDef.qDef';
 const EXPRESSION_BASE_REF = 'qDef.base.qDef';
 const LIB_REF = 'qLibraryId';
 const LIB_BASE_REF = 'qDef.base.qLibraryId';
+const LABEL_REF = 'qDef.qLabel';
+const LABEL_EXPRESSION_REF = 'qDef.qLabelExpression';
+const LABEL_BASE_REF = 'qDef.base.qLabel';
+const LABEL_EXPRESSION_BASE_REF = 'qDef.base.qLabelExpression';
 
 export default {
   /**
@@ -39,5 +44,13 @@ export default {
    */
   getLibraryId(measure) {
     return util.getValue(measure, LIB_BASE_REF) || util.getValue(measure, LIB_REF);
+  },
+
+  getLabelRef(measure) {
+    return util.getValue(measure, BASE_REF) ? LABEL_BASE_REF : LABEL_REF;
+  },
+
+  getLabelExpressionRef(measure) {
+    return util.getValue(measure, BASE_REF) ? LABEL_EXPRESSION_BASE_REF : LABEL_EXPRESSION_REF;
   },
 };
