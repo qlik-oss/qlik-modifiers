@@ -1,3 +1,20 @@
+import util from '../utils/util';
+import propertyPanelDef from './accumulation-properties';
+
+const DEFAULT_OPTIONS = {
+  type: 'accumulation',
+  disabled: false,
+  auto: true,
+  accumulationDimension: 0,
+  crossAllDimensions: false,
+  showExcludedValues: true,
+  fullAccumulation: false,
+  steps: 6,
+  outputExpression: '',
+};
+
+const maxNumDimensionsSupported = 2;
+
 function getDimSortCriterias(dimensions, dimIdx = 0) {
   const dimension = dimensions[dimIdx];
   return dimension.qDef.qSortCriterias[0];
@@ -31,39 +48,60 @@ function getDimComp(dimensions, dimIdx, libraryItemsProps) {
   return `[${dimDef}]`;
 }
 
-function getNumStepComp(modifier, dimensions) {
-  const { restartAfterAcumulationDimension, fullAccumulation, stepsBack } = modifier;
+function getNumStepComp(modifier, numDimensions) {
+  const { crossAllDimensions, fullAccumulation, steps } = modifier;
   if (!fullAccumulation) {
-    return (stepsBack || 0) + 1;
+    return typeof steps === 'number' && !Number.isNaN(steps) ? steps : 6;
   }
-  return dimensions.length === 2 && !restartAfterAcumulationDimension ? 'RowNo(Total)' : 'RowNo()';
+  return numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
 }
 
-function getAboveComp(modifier, dimensions) {
-  const { restartAfterAcumulationDimension, fullAccumulation } = modifier;
-  return fullAccumulation && dimensions.length === 2 && !restartAfterAcumulationDimension ? 'Above(Total ' : 'Above(';
+function getAboveComp(modifier, numDimensions) {
+  const { crossAllDimensions } = modifier;
+  return numDimensions === 2 && crossAllDimensions ? 'Above(Total ' : 'Above(';
 }
 
-function initModifierProperty(modifier, property, value) {
-  if (typeof modifier[property] === 'undefined') {
-    // eslint-disable-next-line no-param-reassign
-    modifier[property] = value;
-  }
+function getExpressionComp(modifier, expression) {
+  const { showExcludedValues } = modifier;
+  const s = expression.trim();
+  const expComp = s.substring(0, 1) === '=' ? s.substring(1).trim() : s;
+  return showExcludedValues ? `${expComp} + Sum({1} 0)` : expComp;
+}
+
+function getNumDimensions({ properties, layout }) {
+  return util.getValue(properties, 'qHyperCubeDef.qDimensions', util.getValue(layout, 'qHyperCube.qDimensionInfo', []))
+    .length;
+}
+
+function needDimension({ modifier, properties, layout }) {
+  return getNumDimensions({ properties, layout }) === 2 && modifier.accumulationDimension === 0;
 }
 
 export default {
-  generateExpression(expression, modifier, properties, libraryItemsProps) {
+  needDimension,
+
+  isApplicable({ properties, layout }) {
+    return getNumDimensions({ properties, layout }) <= maxNumDimensionsSupported;
+  },
+
+  generateExpression({
+    expression, modifier, properties, libraryItemsProps, layout, numDimensions,
+  }) {
     if (!modifier) {
       return expression;
     }
-    const dimensions = properties.qHyperCubeDef.qDimensions;
-    const s = expression.trim();
-    const expComp = s.substring(0, 1) === '=' ? s.substring(1).trim() : s;
-    const numStepComp = getNumStepComp(modifier, dimensions);
-    const aboveComp = getAboveComp(modifier, dimensions);
+    let numberOfDims = numDimensions;
+    if (typeof numberOfDims === 'undefined') {
+      numberOfDims = getNumDimensions({ properties, layout });
+    }
+    const expComp = getExpressionComp(modifier, expression);
+    const numStepComp = getNumStepComp(modifier, numberOfDims);
+    const aboveComp = getAboveComp(modifier, numberOfDims);
     const rangeSumComp = `RangeSum(${aboveComp}${expComp}, 0, ${numStepComp}))`;
     let generatedExpression = rangeSumComp;
-    if (dimensions.length === 2 && modifier.accumulationDimension === 0) {
+
+    if (needDimension({ modifier, properties, layout })) {
+      const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
       const aggrComp = `Aggr(${rangeSumComp}, ${getDimComp(dimensions, 1, libraryItemsProps)}, ${getDimComp(
         dimensions,
         0,
@@ -75,13 +113,12 @@ export default {
   },
 
   initModifier(modifier) {
-    initModifierProperty(modifier, 'type', 'accumulation');
-    initModifierProperty(modifier, 'disabled', false);
-    initModifierProperty(modifier, 'auto', true);
-    initModifierProperty(modifier, 'accumulationDimension', 0);
-    initModifierProperty(modifier, 'restartAfterAcumulationDimension', false);
-    initModifierProperty(modifier, 'fullAccumulation', false);
-    initModifierProperty(modifier, 'stepsBack', 0);
-    initModifierProperty(modifier, 'outputExpression', { qValueExpression: { qExpr: '' } });
+    Object.keys(DEFAULT_OPTIONS).forEach((key) => {
+      if (modifier[key] === undefined) {
+        modifier[key] = DEFAULT_OPTIONS[key]; // eslint-disable-line no-param-reassign
+      }
+    });
   },
+
+  propertyPanelDef,
 };

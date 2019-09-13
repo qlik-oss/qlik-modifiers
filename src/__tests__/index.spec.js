@@ -1,12 +1,11 @@
 import Modifiers from '..';
-import softPropertyHandler from '../soft-property-handler';
-import accumulation from '../expression-modifiers/accumulation';
+import SoftPropertyHandler from '../soft-property-handler';
+// import accumulation from '../expression-modifiers/accumulation';
 import * as MasterItemSubscriber from '../master-item-subscriber';
 
 describe('measure modifiers', () => {
   let sandbox;
   let model;
-  let modifiers;
   let mockedLibItems;
 
   beforeEach(() => {
@@ -20,6 +19,8 @@ describe('measure modifiers', () => {
             coloring: {
               blabla: 'bla',
             },
+            qLabel: 'qLabel_Lib',
+            qLabelExpression: 'qLabelExpression_Lib',
           },
         },
         getProperties() {
@@ -29,6 +30,7 @@ describe('measure modifiers', () => {
     };
 
     model = {
+      id: 'dummy-id1',
       layout: {
         qHyperCube: {
           qMeasureInfo: [
@@ -69,69 +71,74 @@ describe('measure modifiers', () => {
       },
     };
 
-    modifiers = new Modifiers(model);
-    modifiers.masterItemSubscriber.subscribe = sinon.stub().callsFake(() => Promise.resolve());
-    sandbox.stub(softPropertyHandler, 'saveSoftProperties').callsFake((enigmaModel, prevProperties, properties) => {
-      // eslint-disable-next-line no-param-reassign
-      enigmaModel.properties = properties;
+    sandbox.stub(SoftPropertyHandler, 'saveSoftProperties').callsFake((modl, prevProperties, properties) => {
+      modl.properties = properties; // eslint-disable-line no-param-reassign
       return Promise.resolve();
     });
-    sandbox.stub(accumulation, 'generateExpression').callsFake(expression => `accumulation(${expression})`);
+    sandbox
+      .stub(Modifiers.modifiers.accumulation, 'generateExpression')
+      .callsFake(({ expression }) => `accumulation(${expression})`);
   });
 
   afterEach(() => {
     sandbox.restore();
   });
 
-  it('should resolve immediately if there is no qHyperCube in the root of the layout (for now...)', async () => {
-    delete model.layout.qHyperCube;
-    await modifiers.apply();
+  it('should resolve immediately if it is snapshot mode, case 1', async () => {
+    await Modifiers.apply({ model, isSnapshot: true });
 
     expect(model.getEffectiveProperties).to.not.have.been.called;
   });
 
-  it('should clear undo-stack after applying modifiers on library measure change', async () => {
-    let cb;
-    sandbox.stub(MasterItemSubscriber, 'default').callsFake(({ callback }) => {
-      cb = callback;
-      return {
-        subscribe: sinon.stub().callsFake(() => Promise.resolve()),
-      };
-    });
+  it('should resolve immediately if it is selection mode, case 1', async () => {
+    model.layout.qSelectionInfo = { qInSelections: true };
+    await Modifiers.apply({ model, isSnapshot: false });
 
-    modifiers = new Modifiers(model);
-    await cb();
-
-    expect(model.app.clearUndoBuffer).to.have.been.calledOnce;
+    expect(model.getEffectiveProperties).to.not.have.been.called;
   });
 
-  it('should unsubscribe measure subscriptions on destroy call', () => {
-    modifiers.masterItemSubscriber.unsubscribe = sinon.spy();
-    modifiers.destroy();
+  it('should resolve immediately if there is no qHyperCube in the root of the layout (for now...)', async () => {
+    delete model.layout.qHyperCube;
+    await Modifiers.apply({ model });
 
-    expect(modifiers.masterItemSubscriber.unsubscribe).to.have.been.calledOnce;
+    expect(model.getEffectiveProperties).to.not.have.been.called;
   });
 
   describe('hasActiveModifiers', () => {
     it('should resolve promise immediately if there are no modifiers', async () => {
       delete model.layout.qHyperCube.qMeasureInfo[0].modifiers;
-      await modifiers.apply();
+      await Modifiers.apply({ model });
+
+      expect(model.getEffectiveProperties).to.not.have.been.called;
+    });
+
+    it('should resolve immediately if there are no supported modifiers', async () => {
+      model.layout.qHyperCube.qMeasureInfo[0].modifiers[0].type = 'xyz';
+
+      await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.not.have.been.called;
     });
 
     it('should resolve immediately if there are no enabled modifiers', async () => {
       model.layout.qHyperCube.qMeasureInfo[0].modifiers[0].disabled = true;
-      await modifiers.apply();
+
+      await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.not.have.been.called;
     });
 
-    it('should call getEffectiveProperties and masterItemSubscriber.subscribe when there are active modifiers', async () => {
-      await modifiers.apply();
+    it('should resolve immediately if there are no applicable modifiers', async () => {
+      model.layout.qHyperCube.qDimensionInfo = [{}, {}, {}];
+      await Modifiers.apply({ model });
+
+      expect(model.getEffectiveProperties).to.not.have.been.called;
+    });
+
+    it('should call getEffectiveProperties on the first time when there are active modifiers', async () => {
+      await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.have.been.called;
-      expect(modifiers.masterItemSubscriber.subscribe).to.have.been.called;
     });
   });
 
@@ -142,9 +149,9 @@ describe('measure modifiers', () => {
         type: 'accumulation',
       });
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
-      expect(accumulation.generateExpression).to.have.been.calledOnce;
+      expect(Modifiers.modifiers.accumulation.generateExpression).to.have.been.calledOnce;
     });
 
     it('should apply modifiers on all measures', async () => {
@@ -159,11 +166,38 @@ describe('measure modifiers', () => {
         },
       });
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
-      expect(accumulation.generateExpression).to.have.been.calledTwice;
+      expect(Modifiers.modifiers.accumulation.generateExpression).to.have.been.calledTwice;
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Sum(Sales))');
       expect(model.properties.qHyperCubeDef.qMeasures[1].qDef.qDef).to.equal('accumulation(Avg(Expression1))');
+    });
+
+    it('should apply modifiers on alternative measures as well', async () => {
+      model.properties.qHyperCubeDef.qLayoutExclude = {
+        qHyperCubeDef: {
+          qMeasures: [
+            {
+              qDef: {
+                qDef: 'Avg(Expression1)',
+                modifiers: [
+                  {
+                    type: 'accumulation',
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      };
+
+      await Modifiers.apply({ model });
+
+      expect(Modifiers.modifiers.accumulation.generateExpression).to.have.been.calledTwice;
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Sum(Sales))');
+      expect(model.properties.qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal(
+        'accumulation(Avg(Expression1))',
+      );
     });
 
     it('should only save properties once, even if modifying multiple measures', async () => {
@@ -178,20 +212,9 @@ describe('measure modifiers', () => {
         },
       });
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
-      expect(softPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
-    });
-
-    it.skip('should throw exception if modifier type is not available', async () => {
-      // This test is not needed since hasActiveSupportedModifier check if modifier type is supported or not
-      model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers[0].type = 'super-modifier';
-
-      try {
-        await modifiers.apply();
-      } catch (error) {
-        expect(error.message).to.contain('super-modifier');
-      }
+      expect(SoftPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
     });
 
     it('should throw exception if more than 1 active modifier on a measure (not supported yet!)', async () => {
@@ -200,138 +223,127 @@ describe('measure modifiers', () => {
       });
 
       try {
-        await modifiers.apply();
+        await Modifiers.apply({ model });
       } catch (error) {
         expect(error.message).to.contain('More than 1 modifier on a measure');
       }
     });
 
-    describe('applyModifiers with runUpdateIfChange = false', () => {
-      it('should only apply enabled modifiers', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers[0].disabled = true;
-        model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers.push({
-          type: 'accumulation',
-        });
-
-        await modifiers.apply(false);
-
-        expect(accumulation.generateExpression).to.have.been.calledOnce;
-      });
-
-      it('should apply modifiers on all measures', async () => {
-        model.properties.qHyperCubeDef.qMeasures.push({
-          qDef: {
-            qDef: 'Avg(Expression1)',
-            modifiers: [
-              {
-                type: 'accumulation',
-              },
-            ],
-          },
-        });
-
-        await modifiers.apply(false);
-
-        expect(accumulation.generateExpression).to.have.been.calledTwice;
-        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Sum(Sales))');
-        expect(model.properties.qHyperCubeDef.qMeasures[1].qDef.qDef).to.equal('accumulation(Avg(Expression1))');
-      });
-
-      it('should only save properties once, even if modifying multiple measures', async () => {
-        model.properties.qHyperCubeDef.qMeasures.push({
-          qDef: {
-            qDef: 'Avg(Expression1)',
-            modifiers: [
-              {
-                type: 'accumulation',
-              },
-            ],
-          },
-        });
-
-        await modifiers.apply(false);
-
-        expect(softPropertyHandler.saveSoftProperties).to.not.been.called;
-      });
-
-      it('should throw exception if more than 1 active modifier on a measure (not supported yet!)', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers.push({
-          type: 'accumulation',
-        });
-
-        try {
-          await modifiers.apply(false);
-        } catch (error) {
-          expect(error.message).to.contain('More than 1 modifier on a measure');
-        }
-      });
-    });
-
     describe('expression', () => {
       it('should init a base object correctly when expression', async () => {
-        await modifiers.apply();
+        await Modifiers.apply({ model });
 
-        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.eql({
-          qDef: 'Sum(Sales)',
-        });
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base.qDef).to.eql('Sum(Sales)');
       });
 
       it('should modify qDef.qDef correctly for expression', async () => {
-        await modifiers.apply();
+        await Modifiers.apply({ model });
 
         expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Sum(Sales))');
+      });
+
+      it('should set qDef.qLabelExpression and qLabel correctly from base, case 1', async () => {
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.base = {
+          qDef: 'Sum(Sales)',
+          qLabelExpression: 'qLabelExpression',
+        };
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabelExpression).to.equal('qLabelExpression');
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabel).to.equal(undefined);
+      });
+
+      it('should set qDef.qLabelExpression and qLabel correctly from base, case 2', async () => {
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.base = {
+          qDef: 'Sum(Sales)',
+          qLabel: 'qLabel',
+        };
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabelExpression).to.equal(undefined);
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabel).to.equal('qLabel');
+      });
+
+      it('should copy qLabelExpression and qLabel correctly from base, case 3', async () => {
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.base = {
+          qDef: 'Sum(Sales)',
+        };
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabelExpression).to.equal(undefined);
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabel).to.equal('Sum(Sales)');
       });
     });
 
     describe('library item', () => {
+      let cb;
+      let subscriber;
+      beforeEach(() => {
+        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
+        sandbox.stub(MasterItemSubscriber, 'default').callsFake(({ callback }) => {
+          cb = callback;
+          subscriber = {
+            subscribe: sinon.stub().callsFake(() => Promise.resolve()),
+            unsubscribe: sinon.stub().callsFake(() => Promise.resolve()),
+          };
+          return subscriber;
+        });
+      });
+
+      it('should clear undo-stack after applying modifiers on library measure change', async () => {
+        await Modifiers.apply({ model });
+        await cb();
+
+        expect(model.app.clearUndoBuffer).to.have.been.calledOnce;
+      });
+
+      it('should unsubscribe measure subscriptions on destroy call', () => {
+        Modifiers.destroy(model);
+
+        expect(subscriber.unsubscribe).to.have.been.calledOnce;
+      });
+
       it('should init a base object correctly when library item', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-
-        await modifiers.apply();
-
-        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.eql({
-          qDef: 'Sum(Sales)',
-          qLibraryId: 'libId1',
+        await Modifiers.apply({ model }).then(() => {
+          expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base.qDef).to.eql('Sum(Sales)');
+          expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base.qLibraryId).to.eql('libId1');
         });
       });
 
       it('should remove qLibraryId', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-
-        await modifiers.apply();
-
-        expect(model.properties.qHyperCubeDef.qMeasures[0].qLibraryId).to.be.undefined;
+        await Modifiers.apply({ model }).then(() => {
+          expect(model.properties.qHyperCubeDef.qMeasures[0].qLibraryId).to.be.undefined;
+        });
       });
 
       it('should modify qDef.qDef correctly for library item', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-
-        await modifiers.apply();
+        await Modifiers.apply({ model });
 
         expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Count(Sales))');
       });
 
       it('should copy color properties correctly for library item', async () => {
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-        model.properties.qHyperCubeDef.qMeasures[0].qLibraryId = 'libId1';
-
-        await modifiers.apply();
+        await Modifiers.apply({ model });
 
         expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.coloring).to.eql({
           blabla: 'bla',
         });
+      });
+
+      it('should copy qLabelExpression and qLabel correctly for library item', async () => {
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabelExpression).to.equal('qLabelExpression_Lib');
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabel).to.equal('qLabel_Lib');
       });
     });
   });
 
   describe('updateProps (persistance)', () => {
     it('should call softPropertyHandler.saveSoftProperties when there are no update privileges', async () => {
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
-      expect(softPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
+      expect(SoftPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
     });
 
     it('should call model.setProperties when there are update privileges', async () => {
@@ -339,7 +351,7 @@ describe('measure modifiers', () => {
         privileges: ['remove', 'update'],
       };
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
       expect(model.setProperties).to.have.been.calledOnce;
     });
@@ -349,7 +361,7 @@ describe('measure modifiers', () => {
     it('should remove base if no active modifiers', async () => {
       delete model.layout.qHyperCube.qMeasureInfo[0].modifiers;
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.be.undefined;
     });
@@ -364,7 +376,7 @@ describe('measure modifiers', () => {
         qDef: 'Sum(Sales)',
       };
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.be.undefined;
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('Sum(Sales)');
@@ -380,7 +392,7 @@ describe('measure modifiers', () => {
         qLibraryId: 'libId1',
       };
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.be.undefined;
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.be.undefined;
@@ -400,9 +412,34 @@ describe('measure modifiers', () => {
         color: 'bla bla',
       };
 
-      await modifiers.apply();
+      await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.coloring).to.be.undefined;
+    });
+  });
+
+  describe('updateTotalsFunction', () => {
+    it('should update totals function when qAggrFunc === Expr', async () => {
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc = 'Expr';
+      await Modifiers.apply({ model });
+
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc).to.equal('None');
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base.qAggrFunc).to.equal('Expr');
+    });
+
+    it('should update totals function when qAggrFunc === None', async () => {
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc = 'None';
+      await Modifiers.apply({ model });
+
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc).to.equal('None');
+    });
+
+    it('should update totals function when qAggrFunc !== Expr and !== None', async () => {
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc = 'Avg';
+      await Modifiers.apply({ model });
+
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qAggrFunc).to.equal('Avg');
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base.qAggrFunc).to.be.undefined;
     });
   });
 });

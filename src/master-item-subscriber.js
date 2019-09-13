@@ -1,79 +1,85 @@
-import measureBase from './base';
-import measureBaseAdapter from './base-adapter';
+import util from './utils/util';
 
 export default function MasterItemSubscriber({ model, callback }) {
   let subscriptions = {};
   let effectiveMeasureLibraryIds = {};
   let effectiveDimensionLibraryIds = {};
+  const mainProperties = {
+    dimension: ['qDim.qFieldDefs'],
+    measure: ['qMeasure.qDef', 'qMeasure.qLabel', 'qMeasure.qLabelExpression', 'qMeasure.coloring'],
+  };
+
+  function getPropertiesString(layout) {
+    const properties = {};
+    const type = util.getValue(layout, 'qInfo.qType');
+    if (type && mainProperties[type]) {
+      mainProperties[type].forEach((item) => {
+        properties[item] = util.getValue(layout, item);
+      });
+    }
+    return JSON.stringify(properties);
+  }
 
   function onMasterItemChange(itemLayout) {
     const { qId } = itemLayout.qInfo;
     if (subscriptions[qId]) {
-      if (typeof callback === 'function' && subscriptions[qId].enabled) {
-        callback();
+      const properties = getPropertiesString(itemLayout);
+      if (subscriptions[qId].properties !== properties) {
+        subscriptions[qId].properties = properties;
+        if (typeof callback === 'function' && subscriptions[qId].enabled) {
+          callback(itemLayout);
+        }
       }
       subscriptions[qId].enabled = true;
     }
   }
 
-  function setEffectiveLibraryIds(properties) {
+  function setEffectiveLibraryIds({ measureLibraryIds, dimensionLibraryIds }) {
     effectiveMeasureLibraryIds = {};
-    properties.qHyperCubeDef.qMeasures.forEach((measure) => {
-      if (measureBase.isValid(measure) && measureBaseAdapter.getLibraryId(measure)) {
-        effectiveMeasureLibraryIds[measureBaseAdapter.getLibraryId(measure)] = true;
-      }
+    measureLibraryIds.forEach((libraryId) => {
+      effectiveMeasureLibraryIds[libraryId] = true;
     });
     effectiveDimensionLibraryIds = {};
-    properties.qHyperCubeDef.qDimensions.forEach((dimension) => {
-      if (dimension.qLibraryId) {
-        effectiveDimensionLibraryIds[dimension.qLibraryId] = true;
-      }
+    dimensionLibraryIds.forEach((libraryId) => {
+      effectiveDimensionLibraryIds[libraryId] = true;
     });
   }
 
   function unsubscribeUnusedIds() {
     Object.keys(subscriptions).forEach((libraryId) => {
-      if (!effectiveMeasureLibraryIds[libraryId]) {
+      if (!effectiveMeasureLibraryIds[libraryId] && !effectiveDimensionLibraryIds[libraryId]) {
         subscriptions[libraryId].listener.dispose();
         delete subscriptions[libraryId];
       }
     });
   }
 
-  function subscribeMeasureLibraryId(libraryId) {
-    return model.app.getMeasure(libraryId).then(() => {
+  function subscribeLibraryId(libraryId, methodName) {
+    return model.app[methodName](libraryId).then((itemModel) => {
       subscriptions[libraryId] = {
-        listener: model.layoutSubscribe(onMasterItemChange),
+        listener: itemModel.layoutSubscribe(onMasterItemChange),
         enabled: false,
-      };
-    });
-  }
-
-  function subscribeDimensionLibraryId(libraryId) {
-    return model.app.getDimension(libraryId).then(() => {
-      subscriptions[libraryId] = {
-        listener: model.layoutSubscribe(onMasterItemChange),
-        enabled: false,
+        properties: getPropertiesString(itemModel.layout),
       };
     });
   }
 
   return {
-    subscribe(properties) {
+    subscribe({ measureLibraryIds, dimensionLibraryIds }) {
       const dfds = [];
 
-      setEffectiveLibraryIds(properties);
+      setEffectiveLibraryIds({ measureLibraryIds, dimensionLibraryIds });
       unsubscribeUnusedIds();
 
       if (model.app) {
         Object.keys(effectiveMeasureLibraryIds).forEach((libraryId) => {
           if (effectiveMeasureLibraryIds[libraryId] && !subscriptions[libraryId]) {
-            dfds.push(subscribeMeasureLibraryId(libraryId));
+            dfds.push(subscribeLibraryId(libraryId, 'getMeasure'));
           }
         });
         Object.keys(effectiveDimensionLibraryIds).forEach((libraryId) => {
           if (effectiveDimensionLibraryIds[libraryId] && !subscriptions[libraryId]) {
-            dfds.push(subscribeDimensionLibraryId(libraryId));
+            dfds.push(subscribeLibraryId(libraryId, 'getDimension'));
           }
         });
       }
