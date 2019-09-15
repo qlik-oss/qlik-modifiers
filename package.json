@@ -1,6 +1,6 @@
 {
   "name": "qlik-modifiers",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A javascript library for applying modifiers to Qlik expressions",
   "license": "MIT",
   "author": "QlikTech International AB",
@@ -37,8 +37,8 @@
     "@babel/preset-env": "^7.6.0",
     "@commitlint/cli": "^7.6.1",
     "@commitlint/config-conventional": "^7.6.0",
-    "babel-plugin-istanbul": "^5.2.0",
     "babel-loader": "8.0.6",
+    "babel-plugin-istanbul": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.18.2",
