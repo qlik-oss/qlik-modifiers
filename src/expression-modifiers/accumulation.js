@@ -15,6 +15,12 @@ const DEFAULT_OPTIONS = {
 
 const maxNumDimensionsSupported = 2;
 
+function simplifyExpression(expression) {
+  const s = expression.trim();
+  const expComp = s.substring(0, 1) === '=' ? s.substring(1).trim() : s;
+  return expComp;
+}
+
 function getDimSortCriterias(dimensions, dimIdx = 0) {
   const dimension = dimensions[dimIdx];
   return dimension.qDef.qSortCriterias[0];
@@ -63,8 +69,7 @@ function getAboveComp(modifier, numDimensions) {
 
 function getExpressionComp(modifier, expression) {
   const { showExcludedValues } = modifier;
-  const s = expression.trim();
-  const expComp = s.substring(0, 1) === '=' ? s.substring(1).trim() : s;
+  const expComp = simplifyExpression(expression);
   return showExcludedValues ? `${expComp} + Sum({1} 0)` : expComp;
 }
 
@@ -80,8 +85,46 @@ function needDimension({ modifier, properties, layout }) {
 export default {
   needDimension,
 
+  simplifyExpression,
+
   isApplicable({ properties, layout }) {
     return getNumDimensions({ properties, layout }) <= maxNumDimensionsSupported;
+  },
+
+  extractInputExpression({
+    outputExpression, modifier, properties, layout, numDimensions,
+  }) {
+    if (!modifier) {
+      return;
+    }
+    let numberOfDims;
+    if (typeof numDimensions === 'undefined') {
+      numberOfDims = getNumDimensions({ properties, layout });
+    }
+    const numStepComp = getNumStepComp(modifier, numberOfDims);
+    const aboveComp = getAboveComp(modifier, numberOfDims);
+    const rangeSumCompPrefix = `RangeSum(${aboveComp}`;
+    const rangeSumCompSuffix = `, 0, ${numStepComp}))`;
+    const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
+    const prefix = aggrCompPrefix + rangeSumCompPrefix;
+    const idx1 = outputExpression.indexOf(prefix);
+    if (idx1 === -1) {
+      return;
+    }
+    const idx2 = outputExpression.lastIndexOf(rangeSumCompSuffix);
+    if (idx2 === -1) {
+      return;
+    }
+    let exp = outputExpression.substring(idx1 + prefix.length, idx2);
+    const { showExcludedValues } = modifier;
+    if (showExcludedValues) {
+      const expCompSuffix = ' + Sum({1} 0)';
+      if (exp.substring(exp.length - expCompSuffix.length) !== expCompSuffix) {
+        return;
+      }
+      exp = exp.substring(0, exp.length - expCompSuffix.length);
+    }
+    return exp; // eslint-disable-line consistent-return
   },
 
   generateExpression({

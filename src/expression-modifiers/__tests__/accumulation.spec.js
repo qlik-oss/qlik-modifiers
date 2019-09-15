@@ -8,6 +8,7 @@ describe('accumulation', () => {
   let dim1;
   let dim2;
   let generatedExp;
+  let inputExp;
 
   beforeEach(() => {
     modifier = {
@@ -56,303 +57,695 @@ describe('accumulation', () => {
     };
   });
 
-  describe('One dimension', () => {
-    beforeEach(() => {
-      properties.qHyperCubeDef.qDimensions = [dim1];
+  describe('generateExpression', () => {
+    describe('One dimension', () => {
+      beforeEach(() => {
+        properties.qHyperCubeDef.qDimensions = [dim1];
+      });
+
+      describe('Normal dimension', () => {
+        describe('Full accumulation', () => {
+          beforeEach(() => {
+            modifier.fullAccumulation = true;
+          });
+
+          it('should generate correct expression when suppress missing is false', () => {
+            modifier.showExcludedValues = true;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
+            });
+
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
+          });
+
+          it('should generate correct expression when suppress missing is true', () => {
+            modifier.showExcludedValues = false;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
+            });
+
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, RowNo()))');
+          });
+        });
+
+        describe('Custom accumulation', () => {
+          beforeEach(() => {
+            modifier.fullAccumulation = false;
+          });
+
+          it('should generate correct expression when suppress missing is false', () => {
+            modifier.showExcludedValues = true;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
+            });
+
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
+          });
+
+          it('should generate correct expression when suppress missing is true', () => {
+            modifier.showExcludedValues = false;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
+            });
+
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, 6))');
+          });
+        });
+      });
     });
 
-    describe('Normal dimension', () => {
-      describe('Full accumulation', () => {
+    describe('Two dimension', () => {
+      beforeEach(() => {
+        properties.qHyperCubeDef.qDimensions = [dim1, dim2];
+      });
+
+      describe('Accumulation on the first dimension', () => {
         beforeEach(() => {
-          modifier.fullAccumulation = true;
+          modifier.accumulationDimension = 0;
         });
 
-        it('should generate correct expression when suppress missing is false', () => {
-          modifier.showExcludedValues = true;
-          generatedExp = accumulation.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+        describe('Restart accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = false;
           });
 
-          expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal(
+                  'Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo())), [dim2], [dim1])',
+                );
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales), 0, RowNo())), [dim2], [dim1])');
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])');
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales), 0, 6)), [dim2], [dim1])');
+              });
+            });
+          });
         });
 
-        it('should generate correct expression when suppress missing is true', () => {
-          modifier.showExcludedValues = false;
-          generatedExp = accumulation.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+        describe('Continue accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = true;
           });
 
-          expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, RowNo()))');
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal(
+                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total))), [dim2], [dim1])',
+                );
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal(
+                  'Aggr(RangeSum(Above(Total Sum(Sales), 0, RowNo(Total))), [dim2], [dim1])',
+                );
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal(
+                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])',
+                );
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Total Sum(Sales), 0, 6)), [dim2], [dim1])');
+              });
+            });
+          });
         });
       });
 
-      describe('Custom accumulation', () => {
+      describe('Accumulation on the second dimension', () => {
         beforeEach(() => {
-          modifier.fullAccumulation = false;
+          modifier.accumulationDimension = 1;
         });
 
-        it('should generate correct expression when suppress missing is false', () => {
-          modifier.showExcludedValues = true;
-          generatedExp = accumulation.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+        describe('Restart accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = false;
           });
 
-          expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, RowNo()))');
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, 6))');
+              });
+            });
+          });
         });
 
-        it('should generate correct expression when suppress missing is true', () => {
-          modifier.showExcludedValues = false;
-          generatedExp = accumulation.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+        describe('Continue accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = true;
           });
 
-          expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, 6))');
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total)))');
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales), 0, RowNo(Total)))');
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should generate correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6))');
+              });
+
+              it('should generate correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales), 0, 6))');
+              });
+            });
+          });
         });
       });
     });
   });
 
-  describe('Two dimension', () => {
+  describe('extractInputExpression', () => {
     beforeEach(() => {
-      properties.qHyperCubeDef.qDimensions = [dim1, dim2];
+      expression = 'RangeSum(Above( + Sum({1} 0), 0, RowNo()))';
     });
 
-    describe('Accumulation on the first dimension', () => {
+    describe('One dimension', () => {
       beforeEach(() => {
-        modifier.accumulationDimension = 0;
+        properties.qHyperCubeDef.qDimensions = [dim1];
       });
 
-      describe('Restart accumulation after the primary dimension of accumulation', () => {
-        beforeEach(() => {
-          modifier.crossAllDimensions = false;
-        });
-
-        describe('Normal dimension', () => {
-          describe('Full accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = true;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal(
-                'Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo())), [dim2], [dim1])',
-              );
-            });
-
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales), 0, RowNo())), [dim2], [dim1])');
-            });
+      describe('Normal dimension', () => {
+        describe('Full accumulation', () => {
+          beforeEach(() => {
+            modifier.fullAccumulation = true;
           });
 
-          describe('Custom accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = false;
+          it('should extract correct expression when suppress missing is false', () => {
+            modifier.showExcludedValues = true;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
             });
+            inputExp = accumulation.extractInputExpression({ outputExpression: generatedExp, modifier, properties });
 
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])');
-            });
-
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales), 0, 6)), [dim2], [dim1])');
-            });
-          });
-        });
-      });
-
-      describe('Continue accumulation after the primary dimension of accumulation', () => {
-        beforeEach(() => {
-          modifier.crossAllDimensions = true;
-        });
-
-        describe('Normal dimension', () => {
-          describe('Full accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = true;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal(
-                'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total))), [dim2], [dim1])',
-              );
-            });
-
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('Aggr(RangeSum(Above(Total Sum(Sales), 0, RowNo(Total))), [dim2], [dim1])');
-            });
+            expect(inputExp).to.equal(expression);
           });
 
-          describe('Custom accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = false;
+          it('should extract correct expression when suppress missing is true', () => {
+            modifier.showExcludedValues = false;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
             });
+            inputExp = accumulation.extractInputExpression({ outputExpression: generatedExp, modifier, properties });
 
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
+            expect(inputExp).to.equal(expression);
+          });
+        });
 
-              expect(generatedExp).to.equal(
-                'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])',
-              );
+        describe('Custom accumulation', () => {
+          beforeEach(() => {
+            modifier.fullAccumulation = false;
+          });
+
+          it('should extract correct expression when suppress missing is false', () => {
+            modifier.showExcludedValues = true;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
             });
+            inputExp = accumulation.extractInputExpression({ outputExpression: generatedExp, modifier, properties });
 
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
+            expect(inputExp).to.equal(expression);
+          });
 
-              expect(generatedExp).to.equal('Aggr(RangeSum(Above(Total Sum(Sales), 0, 6)), [dim2], [dim1])');
+          it('should extract correct expression when suppress missing is true', () => {
+            modifier.showExcludedValues = false;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps,
             });
+            inputExp = accumulation.extractInputExpression({ outputExpression: generatedExp, modifier, properties });
+
+            expect(inputExp).to.equal(expression);
           });
         });
       });
     });
 
-    describe('Accumulation on the second dimension', () => {
+    describe('Two dimension', () => {
       beforeEach(() => {
-        modifier.accumulationDimension = 1;
+        properties.qHyperCubeDef.qDimensions = [dim1, dim2];
       });
 
-      describe('Restart accumulation after the primary dimension of accumulation', () => {
+      describe('Accumulation on the first dimension', () => {
         beforeEach(() => {
-          modifier.crossAllDimensions = false;
+          modifier.accumulationDimension = 0;
         });
 
-        describe('Normal dimension', () => {
-          describe('Full accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = true;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
-            });
-
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, RowNo()))');
-            });
+        describe('Restart accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = false;
           });
 
-          describe('Custom accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = false;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
               });
 
-              expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
-            });
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
 
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
+                expect(inputExp).to.equal(expression);
               });
 
-              expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales), 0, 6))');
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+          });
+        });
+
+        describe('Continue accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = true;
+          });
+
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
             });
           });
         });
       });
 
-      describe('Continue accumulation after the primary dimension of accumulation', () => {
+      describe('Accumulation on the second dimension', () => {
         beforeEach(() => {
-          modifier.crossAllDimensions = true;
+          modifier.accumulationDimension = 1;
         });
 
-        describe('Normal dimension', () => {
-          describe('Full accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = true;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total)))');
-            });
-
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
-              });
-
-              expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales), 0, RowNo(Total)))');
-            });
+        describe('Restart accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = false;
           });
 
-          describe('Custom accumulation', () => {
-            beforeEach(() => {
-              modifier.fullAccumulation = false;
-            });
-
-            it('should generate correct expression when suppress missing is false', () => {
-              modifier.showExcludedValues = true;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
               });
 
-              expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6))');
-            });
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
 
-            it('should generate correct expression when suppress missing is true', () => {
-              modifier.showExcludedValues = false;
-              generatedExp = accumulation.generateExpression({
-                expression, modifier, properties, libraryItemsProps,
+                expect(inputExp).to.equal(expression);
               });
 
-              expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales), 0, 6))');
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+          });
+        });
+
+        describe('Continue accumulation after the primary dimension of accumulation', () => {
+          beforeEach(() => {
+            modifier.crossAllDimensions = true;
+          });
+
+          describe('Normal dimension', () => {
+            describe('Full accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = true;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+            });
+
+            describe('Custom accumulation', () => {
+              beforeEach(() => {
+                modifier.fullAccumulation = false;
+              });
+
+              it('should extract correct expression when suppress missing is false', () => {
+                modifier.showExcludedValues = true;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
+
+              it('should extract correct expression when suppress missing is true', () => {
+                modifier.showExcludedValues = false;
+                generatedExp = accumulation.generateExpression({
+                  expression, modifier, properties, libraryItemsProps,
+                });
+                inputExp = accumulation.extractInputExpression({
+                  outputExpression: generatedExp,
+                  modifier,
+                  properties,
+                });
+
+                expect(inputExp).to.equal(expression);
+              });
             });
           });
         });

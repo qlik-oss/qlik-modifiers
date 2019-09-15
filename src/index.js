@@ -17,6 +17,81 @@ function getModifiers(measure) {
   return measure.modifiers || (measure.qDef && measure.qDef.modifiers);
 }
 
+function getBase(measure) {
+  return measure.base || (measure.qDef && measure.qDef.base);
+}
+
+function getLibraryId(measure) {
+  const base = getBase(measure);
+  return measure.qLibraryId || (base && base.qLibraryId);
+}
+
+function isNormalMeasureWithActiveModifiers({ measure, properties, layout }) {
+  const libraryId = getLibraryId(measure);
+  return (
+    !libraryId
+    && isActiveModifiers({
+      modifiers: getModifiers(measure),
+      properties,
+      layout,
+    })
+  );
+}
+
+function hasNormalMeasureWithActiveModifiers({ measures, properties, layout }) {
+  if (!Array.isArray(measures)) {
+    return false;
+  }
+  return measures.some(measure => isNormalMeasureWithActiveModifiers({ measure, properties, layout }));
+}
+
+function isDataReloaded({
+  measures, layout, model, lastReloadTime,
+}) {
+  const qLastReloadTime = util.getValue(model, 'app.layout.qLastReloadTime');
+  const reloaded = qLastReloadTime !== lastReloadTime;
+  return reloaded && hasNormalMeasureWithActiveModifiers({ measures, layout });
+}
+
+function updateMeasureFieldName({ measure, properties }) {
+  if (isNormalMeasureWithActiveModifiers({ measure, properties })) {
+    let activeModifiersPerMeasure = 0;
+    const { modifiers } = measure.qDef;
+
+    Array.isArray(modifiers)
+      && modifiers.forEach((modifier) => {
+        if (typeof modifier === 'object' && !modifier.disabled) {
+          activeModifiersPerMeasure++;
+
+          if (typeof Modifiers.modifiers[modifier.type] !== 'object') {
+            throw new Error(`Modifier "${modifier.type}" is not available`);
+          }
+          if (activeModifiersPerMeasure > 1) {
+            throw new Error('More than 1 modifier on a measure! (not yet supported)');
+          }
+          const inputExpr = Modifiers.modifiers[modifier.type].extractInputExpression({
+            outputExpression: measure.qDef.qDef,
+            modifier,
+            properties,
+          });
+          if (
+            typeof inputExpr !== 'undefined'
+            && getBase(measure)
+            && Modifiers.modifiers[modifier.type].simplifyExpression(measure.qDef.base.qDef)
+              !== Modifiers.modifiers[modifier.type].simplifyExpression(inputExpr)
+          ) {
+            measure.qDef.base.qDef = inputExpr;
+          }
+        }
+      });
+  }
+}
+
+function updateFieldNames({ properties }) {
+  const measures = util.getValue(properties, 'qHyperCubeDef.qMeasures', []);
+  measures.forEach(measure => updateMeasureFieldName({ measure, properties }));
+}
+
 function isActiveModifiers({ modifiers, properties, layout }) {
   const supportedTypes = {};
   return (
@@ -217,9 +292,8 @@ function getLibraryIds(properties) {
   let needDims = false;
   measures.forEach((measure) => {
     const modifiers = getModifiers(measure);
-    const base = measure.base || measure.qDef.base;
     if (isActiveModifiers({ modifiers, properties })) {
-      const libraryId = measure.qLibraryId || (base && base.qLibraryId);
+      const libraryId = getLibraryId(measure);
       if (libraryId) {
         measureLibraryIds.push(libraryId);
       }
@@ -275,17 +349,27 @@ function apply({
   }
 
   const measures = util.getValue(layout, 'qHyperCube.qMeasureInfo');
+  const { lastReloadTime } = objects[model.id];
+  objects[model.id].lastReloadTime = util.getValue(model, 'app.layout.qLastReloadTime');
 
   if (hasActiveModifiers({ measures, layout })) {
-    if (needToUpdateMeasures({
+    const dataReloaded = isDataReloaded({
+      measures, layout, model, lastReloadTime,
+    });
+    if (dataReloaded || needToUpdateMeasures({
       measures, layout, masterItem, isFirstTime,
     })) {
-      return model.getEffectiveProperties().then(effectiveProperties => applyModifiers({
-        model,
-        properties: effectiveProperties,
-        runUpdateIfChange: true,
-        masterItem,
-      }));
+      return model.getEffectiveProperties().then((effectiveProperties) => {
+        if (dataReloaded) {
+          updateFieldNames({ properties: effectiveProperties });
+        }
+        return applyModifiers({
+          model,
+          properties: effectiveProperties,
+          runUpdateIfChange: true,
+          masterItem,
+        });
+      });
     }
     return Promise.resolve();
   }
