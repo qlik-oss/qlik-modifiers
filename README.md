@@ -7,4 +7,4 @@ A JavaScript module for handling expression modifiers in Qlik products.
 
 The idea is to provide a set of useful expression modifiers and a convenient way to work with those.  
 First in place is `accumulation` which can produce results similar to this:
-
+<img width="800" src="./docs/accumulation.png" alt="Accumulation modifier" />
