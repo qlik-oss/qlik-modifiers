@@ -18,7 +18,7 @@ const base = {
    * @param {Boolean} hardSet - force initialize base
    */
   initBase(measure, hardSet) {
-    if (hardSet || this.isValid(measure)) {
+    if (hardSet || base.isValid(measure)) {
       util.setValue(measure, EXPRESSION_BASE_REF, util.getValue(measure, EXPRESSION_REF));
       util.setValue(measure, LIB_BASE_REF, util.getValue(measure, LIB_REF));
       util.setValue(measure, LABEL_BASE_REF, util.getValue(measure, LABEL_REF));
@@ -31,7 +31,7 @@ const base = {
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
    */
   restoreBase(measure) {
-    if (this.isValid(measure)) {
+    if (base.isValid(measure)) {
       util.setValue(measure, EXPRESSION_REF, util.getValue(measure, EXPRESSION_BASE_REF));
       util.setValue(measure, LIB_REF, util.getValue(measure, LIB_BASE_REF));
       util.setValue(measure, LABEL_REF, util.getValue(measure, LABEL_BASE_REF));
