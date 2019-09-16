@@ -56,7 +56,7 @@ function getParent(data, str) {
       return;
     }
     numPart = +part;
-    const newPart = !isNaN(numPart) ? [] : {};
+    const newPart = !Number.isNaN(numPart) ? [] : {};
     data[numPart || part] = isUndef(data[numPart || part])
       ? newPart
       : data[part];
@@ -266,7 +266,7 @@ JSONPatch.apply = function apply(original, patches) {
   patches.forEach((patch) => {
     let parent = getParent(original, patch.path);
     let key = patch.path.split('/').splice(-1)[0];
-    let target = key && isNaN(+key) ? parent[key] : parent[+key] || parent;
+    let target = key && Number.isNaN(+key) ? parent[key] : parent[+key] || parent;
     const from = patch.from ? patch.from.split('/').splice(-1)[0] : null;
 
     if (patch.path === '/') {
