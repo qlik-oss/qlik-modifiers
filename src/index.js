@@ -483,7 +483,7 @@ function showSortingDisclaimer({ measures, properties, layout }) {
 }
 
 function destroy(model) {
-  if (objects[model.id] && objects[model.id].masterItemSubscriber) {
+  if (model && objects[model.id] && objects[model.id].masterItemSubscriber) {
     if (objects[model.id].masterItemSubscriber) {
       objects[model.id].masterItemSubscriber.unsubscribe();
     }
