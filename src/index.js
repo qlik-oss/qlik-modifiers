@@ -468,13 +468,7 @@ function showSortingDisclaimer({ measures, properties, layout }) {
   let needDims = false;
   measures.forEach((measure) => {
     const modifiers = getModifiers(measure);
-    if (
-      isActiveModifiers({
-        modifiers: getModifiers(measure),
-        properties,
-        layout,
-      })
-    ) {
+    if (isActiveModifiers({ modifiers, properties, layout })) {
       hasActive = true;
       needDims = needDims || needDimensionForGeneration({ modifiers, properties, layout });
     }
