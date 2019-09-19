@@ -156,7 +156,7 @@ function cleanUpMeasure(measure) {
  * @static
  */
 function destroy(model) {
-  if (objects[model.id] && objects[model.id].masterItemSubscriber) {
+  if (model && objects[model.id] && objects[model.id].masterItemSubscriber) {
     if (objects[model.id].masterItemSubscriber) {
       objects[model.id].masterItemSubscriber.unsubscribe();
     }
@@ -208,13 +208,7 @@ function showSortingDisclaimer({ measures, properties, layout }) {
   let needDims = false;
   measures.forEach((measure) => {
     const modifiers = getModifiers(measure);
-    if (
-      isActiveModifiers({
-        modifiers: getModifiers(measure),
-        properties,
-        layout,
-      })
-    ) {
+    if (isActiveModifiers({ modifiers, properties, layout })) {
       hasActive = true;
       needDims = needDims || needDimensionForGeneration({ modifiers, properties, layout });
     }
