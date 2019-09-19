@@ -8,10 +8,221 @@ import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
 
+/**
+ * @module Modifiers
+ */
+export default {
+  modifiers: availableModifiers,
+
+  apply,
+
+  applyModifiers,
+
+  cleanUpMeasure,
+
+  destroy,
+
+  hasActiveModifiers,
+
+  initBase: measureBase.initBase,
+
+  isSupportedModifiers,
+
+  isApplicableSupportedModifiers,
+
+  measureBase: measureBaseAdapter,
+
+  showSortingDisclaimer,
+};
+
+const objects = {};
+
+/**
+ * An object literal containing all available modifiers
+ * @type {Object}
+ * @name modifiers
+ * @static
+ */
 const availableModifiers = {
   accumulation,
 };
-const objects = {};
+
+/**
+ * Applies defined modifiers to measures in hypercubeDef
+ * (!subscribes to master items layout changes, call destroy function to unsubscribe)
+ * @param {Object} options - An object with all input parameters
+ * @param {Object} options.model - Enigma model of the object fetched from engine (mandatory)
+ * @param {Object} [options.properties] - object properties.
+ * @param {boolean} [options.isSnapshot=false] - is it a snapshot or not?
+ * @param {Object} [options.masterItem] - layout of master item
+ * @returns {Promise} Promise resolves when properties has been updated
+ * @static
+ */
+function apply({
+  model, properties, isSnapshot = false, masterItem,
+} = {}) {
+  objects[model.id] = objects[model.id] || {
+    isFirstTime: true,
+  };
+  const { isFirstTime } = objects[model.id];
+  objects[model.id].isFirstTime = false;
+
+  if (properties && typeof properties === 'object') {
+    return applyModifiers({ model, properties });
+  }
+
+  const layout = model ? model.layout : undefined;
+  const inSelections = util.getValue(layout, 'qSelectionInfo.qInSelections');
+
+  if (isSnapshot || inSelections) {
+    return Promise.resolve();
+  }
+
+  const measures = util.getValue(layout, 'qHyperCube.qMeasureInfo');
+  const { lastReloadTime } = objects[model.id];
+  objects[model.id].lastReloadTime = util.getValue(model, 'app.layout.qLastReloadTime');
+
+  if (hasActiveModifiers({ measures, layout })) {
+    const dataReloaded = isDataReloaded({
+      measures, layout, model, lastReloadTime,
+    });
+    if (dataReloaded || needToUpdateMeasures({
+      measures, layout, masterItem, isFirstTime,
+    })) {
+      return model.getEffectiveProperties().then((effectiveProperties) => {
+        if (dataReloaded) {
+          updateFieldNames({ properties: effectiveProperties });
+        }
+        return applyModifiers({
+          model,
+          properties: effectiveProperties,
+          runUpdateIfChange: true,
+          masterItem,
+        });
+      });
+    }
+    return Promise.resolve();
+  }
+
+  if (hasSomethingToRemove(measures)) {
+    return model.getEffectiveProperties().then(props => cleanUpModifiers({ model, properties: props }));
+  }
+
+  return Promise.resolve();
+}
+
+/**
+ * Applies defined modifiers to measures in hypercubeDef
+ * (!subscribes to master items layout changes, call destroy function to unsubscribe)
+ * @param {Object} options - An object with all input parameters
+ * @param {Object} options.model - Enigma model of the object fetched from engine (mandatory)
+ * @param {Object} [options.properties] - Object properties
+ * @param {Object[]} [options.measures] - An array of measure properties
+ * @param {boolean} [options.runUpdateIfChange=false] - Wether of not properties should be persisted (soft patched when readonly access)
+ * @param {Object} [options.masterItem] - layout of master item
+ * @returns {Promise} Promise resolves when properties has been updated
+ * @static
+ */
+function applyModifiers({
+  model, properties, measures, runUpdateIfChange = false, masterItem,
+}) {
+  const libraryIds = getLibraryIds(properties);
+
+  return updateMasterItemsSubscription({ model, libraryIds, masterItem }).then(() => {
+    const oldProperties = runUpdateIfChange ? extend(true, {}, properties) : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
+    return updateMeasuresProperties({ measures, properties, model }).then(() => {
+      if (runUpdateIfChange) {
+        return updateIfChanged({ oldProperties, newProperties: properties, model });
+      }
+      return Promise.resolve();
+    });
+  });
+}
+
+/**
+ * Restores the measure properties to how it was before modifiers were applied
+ * @param {Object} measure - The measure properties object from the enigma model
+ * @static
+ */
+function cleanUpMeasure(measure) {
+  measureBase.restoreBase(measure);
+  measure.qDef.coloring && delete measure.qDef.coloring; // eslint-disable-line no-param-reassign
+}
+
+/**
+ * Removes layout subscribers (listeners for master items).
+ * Make sure to run this when not using the object any longer to avoid memory leaks.
+ * @param {Object} model - Enigma model of the object fetched from engine (mandatory)
+ * @static
+ */
+function destroy(model) {
+  if (objects[model.id] && objects[model.id].masterItemSubscriber) {
+    if (objects[model.id].masterItemSubscriber) {
+      objects[model.id].masterItemSubscriber.unsubscribe();
+    }
+    delete objects[model.id];
+  }
+}
+
+/**
+ * Checks if there is some active modifier in any of the provided measures
+ * @param {Object[]} measures - an array of measure properties
+ * @returns {Boolean} true if the there are any active modifiers
+ * @static
+ */
+function hasActiveModifiers({ measures, properties, layout }) {
+  if (!Array.isArray(measures)) {
+    return false;
+  }
+  return measures.some(measure => isActiveModifiers({
+    modifiers: getModifiers(measure),
+    properties,
+    layout,
+  }));
+}
+
+function isSupportedModifiers(modifierTypes) {
+  return Array.isArray(modifierTypes) && modifierTypes.some(modifierType => availableModifiers[modifierType]);
+}
+
+function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
+  return (
+    Array.isArray(modifierTypes)
+    && modifierTypes.some(
+      type => availableModifiers[type] && availableModifiers[type].isApplicable({ properties, layout }),
+    )
+  );
+}
+
+/**
+ * Is sorting capabilities limited due to applied modifier? If so - show a disclaimer.
+ * Can operate either on layout or properties
+ * @param {Object} options - An object with all input parameters
+ * @param {Object[]} options.measures - Array with measure properties or layout
+ * @param {Object} [options.properties] - object properties (needs either this or the layout)
+ * @param {Object} [options.layout] - object layout (needs either this or the properties)
+ * @static
+ */
+function showSortingDisclaimer({ measures, properties, layout }) {
+  let hasActive = false;
+  let needDims = false;
+  measures.forEach((measure) => {
+    const modifiers = getModifiers(measure);
+    if (
+      isActiveModifiers({
+        modifiers: getModifiers(measure),
+        properties,
+        layout,
+      })
+    ) {
+      hasActive = true;
+      needDims = needDims || needDimensionForGeneration({ modifiers, properties, layout });
+    }
+  });
+  return hasActive && !needDims;
+}
+
+/* ----------------------- Private functions ------------------------ */
 
 function getModifiers(measure) {
   return measure.modifiers || (measure.qDef && measure.qDef.modifiers);
@@ -63,13 +274,13 @@ function updateMeasureFieldName({ measure, properties }) {
         if (typeof modifier === 'object' && !modifier.disabled) {
           activeModifiersPerMeasure++;
 
-          if (typeof Modifiers.modifiers[modifier.type] !== 'object') {
+          if (typeof availableModifiers[modifier.type] !== 'object') {
             throw new Error(`Modifier "${modifier.type}" is not available`);
           }
           if (activeModifiersPerMeasure > 1) {
             throw new Error('More than 1 modifier on a measure! (not yet supported)');
           }
-          const inputExpr = Modifiers.modifiers[modifier.type].extractInputExpression({
+          const inputExpr = availableModifiers[modifier.type].extractInputExpression({
             outputExpression: measure.qDef.qDef,
             modifier,
             properties,
@@ -77,8 +288,8 @@ function updateMeasureFieldName({ measure, properties }) {
           if (
             typeof inputExpr !== 'undefined'
             && getBase(measure)
-            && Modifiers.modifiers[modifier.type].simplifyExpression(measure.qDef.base.qDef)
-              !== Modifiers.modifiers[modifier.type].simplifyExpression(inputExpr)
+            && availableModifiers[modifier.type].simplifyExpression(measure.qDef.base.qDef)
+              !== availableModifiers[modifier.type].simplifyExpression(inputExpr)
           ) {
             measure.qDef.base.qDef = inputExpr;
           }
@@ -312,75 +523,6 @@ function getLibraryIds(properties) {
   return { measureLibraryIds, dimensionLibraryIds };
 }
 
-function hasActiveModifiers({ measures, properties, layout }) {
-  if (!Array.isArray(measures)) {
-    return false;
-  }
-  return measures.some(measure => isActiveModifiers({
-    modifiers: getModifiers(measure),
-    properties,
-    layout,
-  }));
-}
-
-function cleanUpMeasure(measure) {
-  measureBase.restoreBase(measure);
-  measure.qDef.coloring && delete measure.qDef.coloring; // eslint-disable-line no-param-reassign
-}
-
-function apply({
-  model, properties, isSnapshot = false, masterItem,
-} = {}) {
-  objects[model.id] = objects[model.id] || {
-    isFirstTime: true,
-  };
-  const { isFirstTime } = objects[model.id];
-  objects[model.id].isFirstTime = false;
-
-  if (properties && typeof properties === 'object') {
-    return applyModifiers({ model, properties });
-  }
-
-  const layout = model ? model.layout : undefined;
-  const inSelections = util.getValue(layout, 'qSelectionInfo.qInSelections');
-
-  if (isSnapshot || inSelections) {
-    return Promise.resolve();
-  }
-
-  const measures = util.getValue(layout, 'qHyperCube.qMeasureInfo');
-  const { lastReloadTime } = objects[model.id];
-  objects[model.id].lastReloadTime = util.getValue(model, 'app.layout.qLastReloadTime');
-
-  if (hasActiveModifiers({ measures, layout })) {
-    const dataReloaded = isDataReloaded({
-      measures, layout, model, lastReloadTime,
-    });
-    if (dataReloaded || needToUpdateMeasures({
-      measures, layout, masterItem, isFirstTime,
-    })) {
-      return model.getEffectiveProperties().then((effectiveProperties) => {
-        if (dataReloaded) {
-          updateFieldNames({ properties: effectiveProperties });
-        }
-        return applyModifiers({
-          model,
-          properties: effectiveProperties,
-          runUpdateIfChange: true,
-          masterItem,
-        });
-      });
-    }
-    return Promise.resolve();
-  }
-
-  if (hasSomethingToRemove(measures)) {
-    return model.getEffectiveProperties().then(props => cleanUpModifiers({ model, properties: props }));
-  }
-
-  return Promise.resolve();
-}
-
 function updateMasterItemsSubscription({ model, libraryIds, masterItem }) {
   if (!masterItem) {
     if (libraryIds && (libraryIds.measureLibraryIds.length || libraryIds.dimensionLibraryIds.length)) {
@@ -433,86 +575,3 @@ function updateMeasuresProperties({ measures, properties, model }) {
     });
   });
 }
-
-function applyModifiers({
-  model, properties, measures, runUpdateIfChange = false, masterItem,
-}) {
-  const libraryIds = getLibraryIds(properties);
-
-  return updateMasterItemsSubscription({ model, libraryIds, masterItem }).then(() => {
-    const oldProperties = runUpdateIfChange ? extend(true, {}, properties) : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
-    return updateMeasuresProperties({ measures, properties, model }).then(() => {
-      if (runUpdateIfChange) {
-        return updateIfChanged({ oldProperties, newProperties: properties, model });
-      }
-      return Promise.resolve();
-    });
-  });
-}
-
-function isSupportedModifiers(modifierTypes) {
-  return Array.isArray(modifierTypes) && modifierTypes.some(modifierType => availableModifiers[modifierType]);
-}
-
-function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
-  return (
-    Array.isArray(modifierTypes)
-    && modifierTypes.some(
-      type => availableModifiers[type] && availableModifiers[type].isApplicable({ properties, layout }),
-    )
-  );
-}
-
-function showSortingDisclaimer({ measures, properties, layout }) {
-  let hasActive = false;
-  let needDims = false;
-  measures.forEach((measure) => {
-    const modifiers = getModifiers(measure);
-    if (
-      isActiveModifiers({
-        modifiers: getModifiers(measure),
-        properties,
-        layout,
-      })
-    ) {
-      hasActive = true;
-      needDims = needDims || needDimensionForGeneration({ modifiers, properties, layout });
-    }
-  });
-  return hasActive && !needDims;
-}
-
-function destroy(model) {
-  if (objects[model.id] && objects[model.id].masterItemSubscriber) {
-    if (objects[model.id].masterItemSubscriber) {
-      objects[model.id].masterItemSubscriber.unsubscribe();
-    }
-    delete objects[model.id];
-  }
-}
-
-const Modifiers = {
-  modifiers: availableModifiers,
-
-  apply,
-
-  hasActiveModifiers,
-
-  applyModifiers,
-
-  isSupportedModifiers,
-
-  isApplicableSupportedModifiers,
-
-  cleanUpMeasure,
-
-  measureBase: measureBaseAdapter,
-
-  initBase: measureBase.initBase,
-
-  showSortingDisclaimer,
-
-  destroy,
-};
-
-export default Modifiers;

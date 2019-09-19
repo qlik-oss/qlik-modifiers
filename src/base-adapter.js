@@ -1,6 +1,3 @@
-/**
- * A tool for handling the base/input of a measure. To be used when generating new expression (expression modifiers etc).
- */
 import util from './utils/util';
 
 const BASE_REF = 'qDef.base';
@@ -13,10 +10,15 @@ const LABEL_EXPRESSION_REF = 'qDef.qLabelExpression';
 const LABEL_BASE_REF = 'qDef.base.qLabel';
 const LABEL_EXPRESSION_BASE_REF = 'qDef.base.qLabelExpression';
 
-export default {
+/**
+ * Utility functions for accessing input/base properties of a measure
+ * @memberof module:Modifiers
+ */
+const measureBase = {
   /**
    * Get the qDef property - from the base if it exists, otherwise returns qDef.qDef of the measure
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} The original/input expression
    */
   getExpression(measure) {
     return util.getValue(measure, EXPRESSION_BASE_REF) || util.getValue(measure, EXPRESSION_REF);
@@ -25,6 +27,7 @@ export default {
   /**
    * Get path to expression (e.g. "qDef.qDef")
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} Reference to the the original/input expression property (qDef)
    */
   getExpressionRef(measure) {
     return util.getValue(measure, EXPRESSION_BASE_REF) ? EXPRESSION_BASE_REF : EXPRESSION_REF;
@@ -33,6 +36,7 @@ export default {
   /**
    * Get path to the qLibraryId property - from the base if it exists, otherwise from the measure as normal
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} Reference to the original/input libraryId property (qLibraryId)
    */
   getLibraryIdRef(measure) {
     return util.getValue(measure, LIB_BASE_REF) ? LIB_BASE_REF : LIB_REF;
@@ -41,16 +45,29 @@ export default {
   /**
    * Get the qLibraryId property - from the base if it exists, otherwise returns qLibraryId of the measure
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} The original/input libraryId
    */
   getLibraryId(measure) {
     return util.getValue(measure, LIB_BASE_REF) || util.getValue(measure, LIB_REF);
   },
 
+  /**
+   * Get the qLabel property - from the base if it exists, otherwise returns qLabel of the measure
+   * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} Reference to the original/input label property (qLabel)
+   */
   getLabelRef(measure) {
     return util.getValue(measure, BASE_REF) ? LABEL_BASE_REF : LABEL_REF;
   },
 
+  /**
+   * Get the qLabelExpression property - from the base if it exists, otherwise returns qLabelExpression of the measure
+   * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
+   * @returns {string} Reference to the original/input labelExpression property (qLabelExpression)
+   */
   getLabelExpressionRef(measure) {
     return util.getValue(measure, BASE_REF) ? LABEL_EXPRESSION_BASE_REF : LABEL_EXPRESSION_REF;
   },
 };
+
+export default measureBase;

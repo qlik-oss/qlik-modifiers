@@ -28,6 +28,8 @@
     "build": "webpack --config ./webpack.config.js",
     "lint": "eslint src",
     "test": "aw -c aw.config.js",
+    "generateDocs": "jsdoc2md ./src/**.js > ./docs/api.md",
+    "generateDocs:watch": "npx nodemon --exec 'jsdoc2md ./src/**.js > ./docs/api.md' --watch src",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "devDependencies": {
@@ -44,6 +46,7 @@
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-mocha": "^6.1.1",
     "extend": "^3.0.2",
+    "jsdoc-to-markdown": "^5.0.1",
     "mocha-junit-reporter": "^1.23.1",
     "uglifyjs-webpack-plugin": "2.2.0",
     "webpack": "4.40.2",
