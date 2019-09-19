@@ -21,3 +21,6 @@ Below is a high-level overview of how the concept works.
 <p>
   <img width="900" src="./docs/assets/properties.jpg" alt="Properties" />
 </p>
+
+### Api
+[See Api documentation](docs/api.md)

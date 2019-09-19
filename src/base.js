@@ -11,14 +11,15 @@ const LABEL_EXPRESSION_BASE_REF = 'qDef.base.qLabelExpression';
 const AGGRFUNC_REF = 'qDef.qAggrFunc';
 const AGGRFUNC_BASE_REF = 'qDef.base.qAggrFunc';
 
-const base = {
+const measureBase = {
   /**
    * Initialize the base for a measure - Creates a base object literal with the original qDef.qDef and qLibrary properties.
+   * @memberof module:Modifiers
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
    * @param {Boolean} hardSet - force initialize base
    */
   initBase(measure, hardSet) {
-    if (hardSet || base.isValid(measure)) {
+    if (hardSet || measureBase.isValid(measure)) {
       util.setValue(measure, EXPRESSION_BASE_REF, util.getValue(measure, EXPRESSION_REF));
       util.setValue(measure, LIB_BASE_REF, util.getValue(measure, LIB_REF));
       util.setValue(measure, LABEL_BASE_REF, util.getValue(measure, LABEL_REF));
@@ -31,7 +32,7 @@ const base = {
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
    */
   restoreBase(measure) {
-    if (base.isValid(measure)) {
+    if (measureBase.isValid(measure)) {
       util.setValue(measure, EXPRESSION_REF, util.getValue(measure, EXPRESSION_BASE_REF));
       util.setValue(measure, LIB_REF, util.getValue(measure, LIB_BASE_REF));
       util.setValue(measure, LABEL_REF, util.getValue(measure, LABEL_BASE_REF));
@@ -43,6 +44,7 @@ const base = {
       delete measure.qDef.base; // eslint-disable-line no-param-reassign
     }
   },
+
   /**
    * Validates if measure has a valid base property (either qDef or qLibraryId defined)
    * @param {Object} measure - Properties for a measure in a hypercube def (from qHyperCubeDef.qMeasures array)
@@ -54,4 +56,4 @@ const base = {
   },
 };
 
-export default base;
+export default measureBase;

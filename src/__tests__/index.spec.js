@@ -1,6 +1,5 @@
 import Modifiers from '..';
 import SoftPropertyHandler from '../soft-property-handler';
-// import accumulation from '../expression-modifiers/accumulation';
 import * as MasterItemSubscriber from '../master-item-subscriber';
 
 describe('measure modifiers', () => {
