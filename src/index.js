@@ -8,10 +8,20 @@ import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
 
+const availableModifiers = {
+  accumulation,
+};
+
 /**
  * @module Modifiers
  */
 export default {
+  /**
+   * An object literal containing all available modifiers
+   * @type {Object}
+   * @name modifiers
+   * @static
+   */
   modifiers: availableModifiers,
 
   apply,
@@ -36,16 +46,6 @@ export default {
 };
 
 const objects = {};
-
-/**
- * An object literal containing all available modifiers
- * @type {Object}
- * @name modifiers
- * @static
- */
-const availableModifiers = {
-  accumulation,
-};
 
 /**
  * Applies defined modifiers to measures in hypercubeDef
