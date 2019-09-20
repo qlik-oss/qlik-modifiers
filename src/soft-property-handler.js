@@ -7,7 +7,7 @@ const softPropertyHandler = {
       return Promise.resolve(false);
     }
 
-    let patches = JSONPatch.generate(model, prevEffectiveProperties, effectiveProperties);
+    let patches = JSONPatch.generate(prevEffectiveProperties, effectiveProperties);
     extend(true, prevEffectiveProperties, effectiveProperties);
 
     if (patches && patches.length) {
