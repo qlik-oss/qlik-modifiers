@@ -55,12 +55,13 @@ const objects = {};
  * @param {Object} [options.properties] - object properties.
  * @param {boolean} [options.isSnapshot=false] - is it a snapshot or not?
  * @param {Object} [options.masterItem] - layout of master item
- * @returns {Promise} Promise resolves when properties has been updated
+ * @returns {Promise} Promise resolving with a boolean - modified: true/false (true if a setProperties or applyPatches has run)
  * @static
  */
 function apply({
   model, properties, isSnapshot = false, masterItem,
 } = {}) {
+  const modified = false;
   objects[model.id] = objects[model.id] || {
     isFirstTime: true,
   };
@@ -75,7 +76,7 @@ function apply({
   const inSelections = util.getValue(layout, 'qSelectionInfo.qInSelections');
 
   if (isSnapshot || inSelections) {
-    return Promise.resolve();
+    return Promise.resolve(modified);
   }
 
   const measures = util.getValue(layout, 'qHyperCube.qMeasureInfo');
@@ -101,14 +102,14 @@ function apply({
         });
       });
     }
-    return Promise.resolve();
+    return Promise.resolve(modified);
   }
 
   if (hasSomethingToRemove(measures)) {
     return model.getEffectiveProperties().then(props => cleanUpModifiers({ model, properties: props }));
   }
 
-  return Promise.resolve();
+  return Promise.resolve(modified);
 }
 
 /**
@@ -120,7 +121,7 @@ function apply({
  * @param {Object[]} [options.measures] - An array of measure properties
  * @param {boolean} [options.runUpdateIfChange=false] - Wether of not properties should be persisted (soft patched when readonly access)
  * @param {Object} [options.masterItem] - layout of master item
- * @returns {Promise} Promise resolves when properties has been updated
+ * @returns {Promise} Promise resolving with a boolean - modified: true/false (true if a setProperties or applyPatches has run)
  * @static
  */
 function applyModifiers({
@@ -132,9 +133,9 @@ function applyModifiers({
     const oldProperties = runUpdateIfChange ? extend(true, {}, properties) : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
     return updateMeasuresProperties({ measures, properties, model }).then(() => {
       if (runUpdateIfChange) {
-        return updateIfChanged({ oldProperties, newProperties: properties, model });
+        return updateIfChanged({ oldProperties, newProperties: properties, model }); // returns promise with modified: true/false
       }
-      return Promise.resolve();
+      return Promise.resolve(false);
     });
   });
 }
@@ -430,15 +431,19 @@ function updateTotalsFunction(measure) {
   }
 }
 
+/**
+ * @returns {Promise} Promise resolving with a boolean - modified: true/false
+ * @private
+ */
 function updateIfChanged({ oldProperties, newProperties, model }) {
-  const hasChanged = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'))
+  const modified = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'))
       !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
     || JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'))
       !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'));
-  if (!hasChanged) {
-    return Promise.resolve();
+  if (!modified) {
+    return Promise.resolve(modified);
   }
-  return updateProperties({ model, oldProperties, newProperties });
+  return updateProperties({ model, oldProperties, newProperties }).then(() => modified);
 }
 
 function applyMeasureModifiers({ measure, properties, libraryItemsProps }) {
@@ -532,6 +537,10 @@ function updateMasterItemsSubscription({ model, libraryIds, masterItem }) {
   return Promise.resolve();
 }
 
+/**
+ * @returns {Promise} Promise resolving with a boolean - modified: true/false
+ * @private
+ */
 function cleanUpModifiers({ model, properties }) {
   const libraryIds = getLibraryIds(properties);
   return updateMasterItemsSubscription({ model, libraryIds }).then(() => {
@@ -539,7 +548,7 @@ function cleanUpModifiers({ model, properties }) {
     const oldProperties = extend(true, {}, properties);
     const measures = util.getValue(properties, 'qHyperCubeDef.qMeasures', []);
     measures.forEach(measure => cleanUpMeasure(measure));
-    return updateIfChanged({ oldProperties, newProperties: properties, model });
+    return updateIfChanged({ oldProperties, newProperties: properties, model }); // returns promise with modified: true/false
   });
 }
 

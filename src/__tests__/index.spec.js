@@ -83,7 +83,7 @@ describe('measure modifiers', () => {
     sandbox.restore();
   });
 
-  it('should resolve immediately if it is snapshot mode, case 1', async () => {
+  it('should resolve immediately if it is a snapshot, case 1', async () => {
     await Modifiers.apply({ model, isSnapshot: true });
 
     expect(model.getEffectiveProperties).to.not.have.been.called;
@@ -106,9 +106,10 @@ describe('measure modifiers', () => {
   describe('hasActiveModifiers', () => {
     it('should resolve promise immediately if there are no modifiers', async () => {
       delete model.layout.qHyperCube.qMeasureInfo[0].modifiers;
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.not.have.been.called;
+      expect(modified, 'should resolve with false if no props were modified').to.be.false;
     });
 
     it('should resolve immediately if there are no supported modifiers', async () => {
@@ -122,9 +123,10 @@ describe('measure modifiers', () => {
     it('should resolve immediately if there are no enabled modifiers', async () => {
       model.layout.qHyperCube.qMeasureInfo[0].modifiers[0].disabled = true;
 
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.not.have.been.called;
+      expect(modified, 'should resolve with false if no props were modified').to.be.false;
     });
 
     it('should resolve immediately if there are no applicable modifiers', async () => {
@@ -340,9 +342,10 @@ describe('measure modifiers', () => {
 
   describe('updateProps (persistance)', () => {
     it('should call softPropertyHandler.saveSoftProperties when there are no update privileges', async () => {
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(SoftPropertyHandler.saveSoftProperties).to.have.been.calledOnce;
+      expect(modified, 'should resolve with true if props were modified and (temp) persisted').to.be.true;
     });
 
     it('should call model.setProperties when there are update privileges', async () => {
@@ -350,19 +353,27 @@ describe('measure modifiers', () => {
         privileges: ['remove', 'update'],
       };
 
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(model.setProperties).to.have.been.calledOnce;
+      expect(modified, 'should resolve with true if props were modified and persisted').to.be.true;
     });
   });
 
   describe('clean up', () => {
     it('should remove base if no active modifiers', async () => {
+      model.layout.qHyperCube.qMeasureInfo[0].base = {
+        qDef: 'Sum(Sales)',
+      };
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.base = {
+        qDef: 'Sum(Sales)',
+      };
       delete model.layout.qHyperCube.qMeasureInfo[0].modifiers;
 
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.base).to.be.undefined;
+      expect(modified, 'should resolve with true if props were modified and persisted').to.be.true;
     });
 
     it('should reset to original qDef if no active modifiers', async () => {
@@ -411,9 +422,10 @@ describe('measure modifiers', () => {
         color: 'bla bla',
       };
 
-      await Modifiers.apply({ model });
+      const modified = await Modifiers.apply({ model });
 
       expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.coloring).to.be.undefined;
+      expect(modified, 'should resolve with true if props were modified and persisted').to.be.true;
     });
   });
 

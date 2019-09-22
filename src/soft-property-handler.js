@@ -4,7 +4,7 @@ import JSONPatch from './utils/json-patch';
 const softPropertyHandler = {
   saveSoftProperties(model, prevEffectiveProperties, effectiveProperties) {
     if (!model) {
-      return Promise.resolve(false);
+      return Promise.resolve();
     }
 
     let patches = JSONPatch.generate(prevEffectiveProperties, effectiveProperties);
@@ -17,9 +17,9 @@ const softPropertyHandler = {
         qPath: p.path,
       }));
 
-      return model.applyPatches(patches, true).then(() => true);
+      return model.applyPatches(patches, true);
     }
-    return Promise.resolve(false);
+    return Promise.resolve();
   },
 };
 
