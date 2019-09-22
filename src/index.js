@@ -42,7 +42,7 @@ export default {
 
   measureBase: measureBaseAdapter,
 
-  showSortingDisclaimer,
+  limitedSorting,
 };
 
 const objects = {};
@@ -196,7 +196,7 @@ function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
 }
 
 /**
- * Is sorting capabilities limited due to applied modifier? If so - show a disclaimer.
+ * Is sorting capabilities limited due to applied modifier?
  * Can operate either on layout or properties
  * @param {Object} options - An object with all input parameters
  * @param {Object[]} options.measures - Array with measure properties or layout
@@ -204,7 +204,7 @@ function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
  * @param {Object} [options.layout] - object layout (needs either this or the properties)
  * @static
  */
-function showSortingDisclaimer({ measures, properties, layout }) {
+function limitedSorting({ measures, properties, layout }) {
   let hasActive = false;
   let needDims = false;
   measures.forEach((measure) => {
