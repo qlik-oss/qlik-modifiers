@@ -167,7 +167,10 @@ function destroy(model) {
 
 /**
  * Checks if there is some active modifier in any of the provided measures
- * @param {Object[]} measures - an array of measure properties
+ * @param {Object} options - An object with all input parameters
+ * @param {Object[]} options.measures - Array with measure properties or layout
+ * @param {Object} [options.properties] - object properties (needs either this or the layout)
+ * @param {Object} [options.layout] - object layout (needs either this or the properties)
  * @returns {Boolean} true if the there are any active modifiers
  * @static
  */

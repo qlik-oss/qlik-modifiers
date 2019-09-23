@@ -16,8 +16,8 @@
     * [.applyModifiers(options)](#module_Modifiers.applyModifiers) ⇒ <code>Promise</code>
     * [.cleanUpMeasure(measure)](#module_Modifiers.cleanUpMeasure)
     * [.destroy(model)](#module_Modifiers.destroy)
-    * [.hasActiveModifiers(measures)](#module_Modifiers.hasActiveModifiers) ⇒ <code>Boolean</code>
-    * [.showSortingDisclaimer(options)](#module_Modifiers.showSortingDisclaimer)
+    * [.hasActiveModifiers(options)](#module_Modifiers.hasActiveModifiers) ⇒ <code>Boolean</code>
+    * [.limitedSorting(options)](#module_Modifiers.limitedSorting)
 
 <a name="module_Modifiers.modifiers"></a>
 
@@ -131,7 +131,7 @@ Applies defined modifiers to measures in hypercubeDef
 (!subscribes to master items layout changes, call destroy function to unsubscribe)
 
 **Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
-**Returns**: <code>Promise</code> - Promise resolves when properties has been updated  
+**Returns**: <code>Promise</code> - Promise resolving with a boolean - modified: true/false (true if a setProperties or applyPatches has run)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -148,7 +148,7 @@ Applies defined modifiers to measures in hypercubeDef
 (!subscribes to master items layout changes, call destroy function to unsubscribe)
 
 **Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
-**Returns**: <code>Promise</code> - Promise resolves when properties has been updated  
+**Returns**: <code>Promise</code> - Promise resolving with a boolean - modified: true/false (true if a setProperties or applyPatches has run)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -184,7 +184,7 @@ Make sure to run this when not using the object any longer to avoid memory leaks
 
 <a name="module_Modifiers.hasActiveModifiers"></a>
 
-### Modifiers.hasActiveModifiers(measures) ⇒ <code>Boolean</code>
+### Modifiers.hasActiveModifiers(options) ⇒ <code>Boolean</code>
 Checks if there is some active modifier in any of the provided measures
 
 **Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
@@ -192,12 +192,15 @@ Checks if there is some active modifier in any of the provided measures
 
 | Param | Type | Description |
 | --- | --- | --- |
-| measures | <code>Array.&lt;Object&gt;</code> | an array of measure properties |
+| options | <code>Object</code> | An object with all input parameters |
+| options.measures | <code>Array.&lt;Object&gt;</code> | Array with measure properties or layout |
+| [options.properties] | <code>Object</code> | object properties (needs either this or the layout) |
+| [options.layout] | <code>Object</code> | object layout (needs either this or the properties) |
 
-<a name="module_Modifiers.showSortingDisclaimer"></a>
+<a name="module_Modifiers.limitedSorting"></a>
 
-### Modifiers.showSortingDisclaimer(options)
-Is sorting capabilities limited due to applied modifier? If so - show a disclaimer.
+### Modifiers.limitedSorting(options)
+Is sorting capabilities limited due to applied modifier?
 Can operate either on layout or properties
 
 **Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
