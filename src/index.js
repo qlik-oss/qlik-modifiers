@@ -4,12 +4,14 @@ import extend from 'extend';
 import util from './utils/util';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
+import movingAverage from './expression-modifiers/moving-average';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
 
 const availableModifiers = {
   accumulation,
+  movingAverage,
 };
 
 /**
