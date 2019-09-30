@@ -1,14 +1,13 @@
-import util from '../utils/util';
-import propertyPanelDef from './accumulation-properties';
+import util from '../../utils/util';
+import propertyPanelDef from './properties';
 
 const DEFAULT_OPTIONS = {
-  type: 'accumulation',
+  type: 'movingAverage',
   disabled: false,
-  auto: true,
-  accumulationDimension: 0,
+  primaryDimension: 0,
   crossAllDimensions: false,
   showExcludedValues: true,
-  fullAccumulation: false,
+  fullRange: false,
   steps: 6,
   outputExpression: '',
 };
@@ -55,8 +54,8 @@ function getDimComp(dimensions, dimIdx, libraryItemsProps) {
 }
 
 function getNumStepComp(modifier, numDimensions) {
-  const { crossAllDimensions, fullAccumulation, steps } = modifier;
-  if (!fullAccumulation) {
+  const { crossAllDimensions, fullRange, steps } = modifier;
+  if (!fullRange) {
     return typeof steps === 'number' && !Number.isNaN(steps) ? steps : 6;
   }
   return numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
@@ -79,7 +78,7 @@ function getNumDimensions({ properties, layout }) {
 }
 
 function needDimension({ modifier, properties, layout }) {
-  return getNumDimensions({ properties, layout }) === 2 && modifier.accumulationDimension === 0;
+  return getNumDimensions({ properties, layout }) === 2 && modifier.primaryDimension === 0;
 }
 
 export default {
@@ -103,7 +102,7 @@ export default {
     }
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumCompPrefix = `RangeSum(${aboveComp}`;
+    const rangeSumCompPrefix = `RangeAvg(${aboveComp}`;
     const rangeSumCompSuffix = `, 0, ${numStepComp}))`;
     const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
     const prefix = aggrCompPrefix + rangeSumCompPrefix;
@@ -140,7 +139,7 @@ export default {
     const expComp = getExpressionComp(modifier, expression);
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumComp = `RangeSum(${aboveComp}${expComp}, 0, ${numStepComp}))`;
+    const rangeSumComp = `RangeAvg(${aboveComp}${expComp}, 0, ${numStepComp}))`;
     let generatedExpression = rangeSumComp;
 
     if (needDimension({ modifier, properties, layout })) {

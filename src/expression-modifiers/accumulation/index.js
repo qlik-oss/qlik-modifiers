@@ -1,10 +1,9 @@
-import util from '../utils/util';
-import propertyPanelDef from './accumulation-properties';
+import util from '../../utils/util';
+import propertyPanelDef from './properties';
 
 const DEFAULT_OPTIONS = {
-  type: 'movingAverage',
+  type: 'accumulation',
   disabled: false,
-  auto: true,
   accumulationDimension: 0,
   crossAllDimensions: false,
   showExcludedValues: true,
@@ -103,7 +102,7 @@ export default {
     }
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumCompPrefix = `RangeAvg(${aboveComp}`;
+    const rangeSumCompPrefix = `RangeSum(${aboveComp}`;
     const rangeSumCompSuffix = `, 0, ${numStepComp}))`;
     const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
     const prefix = aggrCompPrefix + rangeSumCompPrefix;
@@ -140,7 +139,7 @@ export default {
     const expComp = getExpressionComp(modifier, expression);
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumComp = `RangeAvg(${aboveComp}${expComp}, 0, ${numStepComp}))`;
+    const rangeSumComp = `RangeSum(${aboveComp}${expComp}, 0, ${numStepComp}))`;
     let generatedExpression = rangeSumComp;
 
     if (needDimension({ modifier, properties, layout })) {
@@ -163,5 +162,5 @@ export default {
     });
   },
 
-  propertyPanelDef: rootPath => propertyPanelDef(rootPath, 'movingAverage'),
+  propertyPanelDef,
 };
