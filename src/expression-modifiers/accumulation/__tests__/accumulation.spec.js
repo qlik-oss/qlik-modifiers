@@ -1,4 +1,4 @@
-import accumulation from '../accumulation';
+import accumulation from '..';
 
 describe('accumulation', () => {
   let modifier;
