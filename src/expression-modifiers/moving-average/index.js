@@ -82,6 +82,8 @@ function needDimension({ modifier, properties, layout }) {
 }
 
 export default {
+  translationKey: 'properties.modifier.movingAverage',
+
   needDimension,
 
   simplifyExpression,
