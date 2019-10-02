@@ -61,6 +61,16 @@ function getNumStepComp(modifier, numDimensions) {
   return numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
 }
 
+function getDivisorComp(modifier, numDimensions) {
+  const { crossAllDimensions, fullRange, steps } = modifier;
+  const rowNo = numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
+  if (!fullRange) {
+    const numSteps = typeof steps === 'number' && !Number.isNaN(steps) ? steps : 6;
+    return `RangeMin(${numSteps}, ${rowNo})`;
+  }
+  return rowNo;
+}
+
 function getAboveComp(modifier, numDimensions) {
   const { crossAllDimensions } = modifier;
   return numDimensions === 2 && crossAllDimensions ? 'Above(Total ' : 'Above(';
@@ -104,7 +114,7 @@ export default {
     }
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumCompPrefix = `RangeAvg(${aboveComp}`;
+    const rangeSumCompPrefix = `RangeSum(${aboveComp}`;
     const rangeSumCompSuffix = `, 0, ${numStepComp}))`;
     const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
     const prefix = aggrCompPrefix + rangeSumCompPrefix;
@@ -141,12 +151,14 @@ export default {
     const expComp = getExpressionComp(modifier, expression);
     const numStepComp = getNumStepComp(modifier, numberOfDims);
     const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumComp = `RangeAvg(${aboveComp}${expComp}, 0, ${numStepComp}))`;
-    let generatedExpression = rangeSumComp;
+    const rangeSumComp = `RangeSum(${aboveComp}${expComp}, 0, ${numStepComp}))`;
+    const divisorComp = getDivisorComp(modifier, numberOfDims);
+    const averageComp = `${rangeSumComp} / ${divisorComp}`;
+    let generatedExpression = averageComp;
 
     if (needDimension({ modifier, properties, layout })) {
       const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
-      const aggrComp = `Aggr(${rangeSumComp}, ${getDimComp(dimensions, 1, libraryItemsProps)}, ${getDimComp(
+      const aggrComp = `Aggr(${averageComp}, ${getDimComp(dimensions, 1, libraryItemsProps)}, ${getDimComp(
         dimensions,
         0,
         libraryItemsProps,
