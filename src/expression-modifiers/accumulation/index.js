@@ -61,15 +61,43 @@ function getNumStepComp(modifier, numDimensions) {
   return numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
 }
 
-function getAboveComp(modifier, numDimensions) {
+function getAboveCompPrefix(modifier, numDimensions) {
   const { crossAllDimensions } = modifier;
   return numDimensions === 2 && crossAllDimensions ? 'Above(Total ' : 'Above(';
+}
+
+function getAboveCompSuffix(numStepComp) {
+  return `, 0, ${numStepComp})`;
+}
+
+function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
+  const aboveCompPrefix = getAboveCompPrefix(modifier, numDimensions);
+  const aboveCompSuffix = getAboveCompSuffix(numStepComp);
+  return aboveCompPrefix + expComp + aboveCompSuffix;
 }
 
 function getExpressionComp(modifier, expression) {
   const { showExcludedValues } = modifier;
   const expComp = simplifyExpression(expression);
   return showExcludedValues ? `${expComp} + Sum({1} 0)` : expComp;
+}
+
+function getRangeSumCompPrefix() {
+  return 'RangeSum(';
+}
+
+function getFunctionSuffix() {
+  return ')';
+}
+
+function getRangeSumComp(comp) {
+  const rangeSumPrefix = getRangeSumCompPrefix();
+  const rangeSumSuffix = getFunctionSuffix();
+  return rangeSumPrefix + comp + rangeSumSuffix;
+}
+
+function getAggrComp(comp1, comp2, comp3) {
+  return `Aggr(${comp1}, ${comp2}, ${comp3})`;
 }
 
 function getNumDimensions({ properties, layout }) {
@@ -103,16 +131,18 @@ export default {
       numberOfDims = getNumDimensions({ properties, layout });
     }
     const numStepComp = getNumStepComp(modifier, numberOfDims);
-    const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumCompPrefix = `RangeSum(${aboveComp}`;
-    const rangeSumCompSuffix = `, 0, ${numStepComp}))`;
+    const aboveCompPrefix = getAboveCompPrefix(modifier, numberOfDims);
+    const rangeSumCompPrefix = getRangeSumCompPrefix();
     const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
-    const prefix = aggrCompPrefix + rangeSumCompPrefix;
+    const prefix = aggrCompPrefix + rangeSumCompPrefix + aboveCompPrefix;
     const idx1 = outputExpression.indexOf(prefix);
     if (idx1 === -1) {
       return;
     }
-    const idx2 = outputExpression.lastIndexOf(rangeSumCompSuffix);
+    const aboveCompSuffix = getAboveCompSuffix(numStepComp);
+    const rangeSumCompSuffix = getFunctionSuffix();
+    const suffix = aboveCompSuffix + rangeSumCompSuffix;
+    const idx2 = outputExpression.lastIndexOf(suffix);
     if (idx2 === -1) {
       return;
     }
@@ -140,17 +170,15 @@ export default {
     }
     const expComp = getExpressionComp(modifier, expression);
     const numStepComp = getNumStepComp(modifier, numberOfDims);
-    const aboveComp = getAboveComp(modifier, numberOfDims);
-    const rangeSumComp = `RangeSum(${aboveComp}${expComp}, 0, ${numStepComp}))`;
+    const aboveComp = getAboveComp(modifier, numberOfDims, expComp, numStepComp);
+    const rangeSumComp = getRangeSumComp(aboveComp);
     let generatedExpression = rangeSumComp;
 
     if (needDimension({ modifier, properties, layout })) {
       const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
-      const aggrComp = `Aggr(${rangeSumComp}, ${getDimComp(dimensions, 1, libraryItemsProps)}, ${getDimComp(
-        dimensions,
-        0,
-        libraryItemsProps,
-      )})`;
+      const dim1Comp = getDimComp(dimensions, 1, libraryItemsProps);
+      const dim2Comp = getDimComp(dimensions, 0, libraryItemsProps);
+      const aggrComp = getAggrComp(rangeSumComp, dim1Comp, dim2Comp);
       generatedExpression = aggrComp;
     }
     return generatedExpression;
