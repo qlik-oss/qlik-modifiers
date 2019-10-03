@@ -40,5 +40,5 @@ const createConfig = function createConfig(isDebug) {
 
 module.exports = [
   createConfig(true),
-  createConfig(false),
+  createConfig(true),
 ];

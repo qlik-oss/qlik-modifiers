@@ -75,7 +75,6 @@ export default function (rootPath) {
           return handler.layout.qHyperCube.qDimensionInfo.length > 1;
         },
       },
-
       fullRange: {
         refFn: data => `${getRef(data, rootPath)}.fullAccumulation`,
         type: 'boolean',

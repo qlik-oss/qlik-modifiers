@@ -5,6 +5,7 @@ import util from './utils/util';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
+import difference from './expression-modifiers/difference';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
@@ -12,6 +13,7 @@ import measureBase from './base';
 const availableModifiers = {
   accumulation,
   movingAverage,
+  difference,
 };
 
 /**
