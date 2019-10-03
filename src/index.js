@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 import extend from 'extend';
 import util from './utils/util';
+import helper from './expression-modifiers/accumulation/helper';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
@@ -288,8 +289,8 @@ function updateMeasureFieldName({ measure, properties }) {
           if (
             typeof inputExpr !== 'undefined'
             && getBase(measure)
-            && availableModifiers[modifier.type].simplifyExpression(measure.qDef.base.qDef)
-              !== availableModifiers[modifier.type].simplifyExpression(inputExpr)
+            && helper.simplifyExpression(measure.qDef.base.qDef)
+              !== helper.simplifyExpression(inputExpr)
           ) {
             measure.qDef.base.qDef = inputExpr;
           }
