@@ -47,7 +47,7 @@ export default {
     if (typeof numberOfDims === 'undefined') {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
-    const expComp = helper.getExpressionComp(modifier, expression);
+    const expComp = helper.getExpressionComp(expression, modifier);
     const numStepComp = helper.getNumStepComp(modifier, numberOfDims);
     const aboveComp = helper.getAboveComp(modifier, numberOfDims, expComp, numStepComp);
     const rangeSumComp = helper.getRangeSumComp(aboveComp);
@@ -59,7 +59,7 @@ export default {
       const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
       const dim1Comp = helper.getDimComp(dimensions, 1, libraryItemsProps);
       const dim2Comp = helper.getDimComp(dimensions, 0, libraryItemsProps);
-      const aggrComp = helper.getAggrComp(rangeSumComp, dim1Comp, dim2Comp);
+      const aggrComp = helper.getAggrComp(generatedExpression, dim1Comp, dim2Comp);
       generatedExpression = aggrComp;
     }
     return generatedExpression;
