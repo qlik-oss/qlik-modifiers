@@ -69,7 +69,7 @@ describe('accumulation', () => {
             modifier.fullAccumulation = true;
           });
 
-          it('should generate correct expression when suppress missing is false', () => {
+          it('should generate correct expression when showExcludedValues = true', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -78,7 +78,7 @@ describe('accumulation', () => {
             expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
           });
 
-          it('should generate correct expression when suppress missing is true', () => {
+          it('should generate correct expression when showExcludedValues = false', () => {
             modifier.showExcludedValues = false;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -93,7 +93,7 @@ describe('accumulation', () => {
             modifier.fullAccumulation = false;
           });
 
-          it('should generate correct expression when suppress missing is false', () => {
+          it('should generate correct expression when showExcludedValues = true', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -102,7 +102,7 @@ describe('accumulation', () => {
             expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
           });
 
-          it('should generate correct expression when suppress missing is true', () => {
+          it('should generate correct expression when showExcludedValues = false', () => {
             modifier.showExcludedValues = false;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -135,7 +135,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -146,7 +146,7 @@ describe('accumulation', () => {
                 );
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -161,7 +161,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -170,7 +170,7 @@ describe('accumulation', () => {
                 expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])');
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -193,7 +193,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -204,7 +204,7 @@ describe('accumulation', () => {
                 );
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -221,7 +221,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -232,7 +232,7 @@ describe('accumulation', () => {
                 );
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -261,7 +261,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -270,7 +270,7 @@ describe('accumulation', () => {
                 expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -285,7 +285,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -294,7 +294,7 @@ describe('accumulation', () => {
                 expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -317,7 +317,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -326,7 +326,7 @@ describe('accumulation', () => {
                 expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total)))');
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -341,7 +341,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should generate correct expression when suppress missing is false', () => {
+              it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -350,7 +350,7 @@ describe('accumulation', () => {
                 expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6))');
               });
 
-              it('should generate correct expression when suppress missing is true', () => {
+              it('should generate correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -381,7 +381,7 @@ describe('accumulation', () => {
             modifier.fullAccumulation = true;
           });
 
-          it('should extract correct expression when suppress missing is false', () => {
+          it('should extract correct expression when showExcludedValues = true', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -391,7 +391,7 @@ describe('accumulation', () => {
             expect(inputExp).to.equal(expression);
           });
 
-          it('should extract correct expression when suppress missing is true', () => {
+          it('should extract correct expression when showExcludedValues = false', () => {
             modifier.showExcludedValues = false;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -407,7 +407,7 @@ describe('accumulation', () => {
             modifier.fullAccumulation = false;
           });
 
-          it('should extract correct expression when suppress missing is false', () => {
+          it('should extract correct expression when showExcludedValues = true', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -417,7 +417,7 @@ describe('accumulation', () => {
             expect(inputExp).to.equal(expression);
           });
 
-          it('should extract correct expression when suppress missing is true', () => {
+          it('should extract correct expression when showExcludedValues = false', () => {
             modifier.showExcludedValues = false;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -451,7 +451,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -465,7 +465,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -485,7 +485,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -499,7 +499,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -527,7 +527,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -541,7 +541,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -561,7 +561,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -575,7 +575,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -609,7 +609,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -623,7 +623,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -643,7 +643,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -657,7 +657,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -685,7 +685,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = true;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -699,7 +699,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -719,7 +719,7 @@ describe('accumulation', () => {
                 modifier.fullAccumulation = false;
               });
 
-              it('should extract correct expression when suppress missing is false', () => {
+              it('should extract correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,
@@ -733,7 +733,7 @@ describe('accumulation', () => {
                 expect(inputExp).to.equal(expression);
               });
 
-              it('should extract correct expression when suppress missing is true', () => {
+              it('should extract correct expression when showExcludedValues = false', () => {
                 modifier.showExcludedValues = false;
                 generatedExp = accumulation.generateExpression({
                   expression, modifier, properties, libraryItemsProps,

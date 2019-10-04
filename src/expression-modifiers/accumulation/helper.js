@@ -97,7 +97,7 @@ function getNumDimensions({ properties, layout }) {
 }
 
 function needDimension({ modifier, properties, layout }) {
-  const primaryDimension = typeof modifier.primaryDimension === 'undefined' ? modifier.primaryDimension : modifier.primaryDimension;
+  const primaryDimension = typeof modifier.primaryDimension === 'undefined' ? modifier.accumulationDimension : modifier.primaryDimension;
   return getNumDimensions({ properties, layout }) === 2 && primaryDimension === 0;
 }
 
