@@ -25,7 +25,7 @@ function getSuffix({
 }) {
   const excludedComp = helper.getExcludedComp(modifier);
   const aboveCompPrefix = helper.getAboveCompPrefix(modifier, numDimensions);
-  return excludedComp + aboveCompPrefix;
+  return `${excludedComp} - ${aboveCompPrefix}`;
 }
 
 export default {
