@@ -53,7 +53,7 @@ function getAboveCompPrefix(modifier, numDimensions) {
 }
 
 function getAboveCompSuffix(numStepComp) {
-  return `, 0, ${numStepComp})`;
+  return typeof numStepComp === 'undefined' ? ')' : `, 0, ${numStepComp})`;
 }
 
 function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
@@ -62,10 +62,15 @@ function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
   return aboveCompPrefix + expComp + aboveCompSuffix;
 }
 
-function getExpressionComp(modifier, expression) {
+function getExcludedComp(modifier = {}) {
   const { showExcludedValues } = modifier;
+  return showExcludedValues ? ' + Sum({1} 0)' : '';
+}
+
+function getExpressionComp(expression, modifier) {
   const expComp = simplifyExpression(expression);
-  return showExcludedValues ? `${expComp} + Sum({1} 0)` : expComp;
+  const excludedComp = getExcludedComp(modifier);
+  return expComp + excludedComp;
 }
 
 function getRangeSumCompPrefix() {
@@ -92,7 +97,45 @@ function getNumDimensions({ properties, layout }) {
 }
 
 function needDimension({ modifier, properties, layout }) {
-  return getNumDimensions({ properties, layout }) === 2 && modifier.accumulationDimension === 0;
+  const primaryDimension = typeof modifier.primaryDimension === 'undefined' ? modifier.primaryDimension : modifier.primaryDimension;
+  return getNumDimensions({ properties, layout }) === 2 && primaryDimension === 0;
+}
+
+function getPrefix({
+  modifier, properties, layout, numDimensions,
+}) {
+  let numberOfDims;
+  if (typeof numDimensions === 'undefined') {
+    numberOfDims = getNumDimensions({ properties, layout });
+  }
+  const aboveCompPrefix = getAboveCompPrefix(modifier, numberOfDims);
+  const rangeSumCompPrefix = getRangeSumCompPrefix();
+  const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
+  return aggrCompPrefix + rangeSumCompPrefix + aboveCompPrefix;
+}
+
+function getSuffix({
+  modifier, properties, layout, numDimensions,
+}) {
+  let numberOfDims;
+  if (typeof numDimensions === 'undefined') {
+    numberOfDims = getNumDimensions({ properties, layout });
+  }
+  const numStepComp = getNumStepComp(modifier, numberOfDims);
+  const aboveCompSuffix = getAboveCompSuffix(numStepComp);
+  const rangeSumCompSuffix = getFunctionSuffix();
+  return aboveCompSuffix + rangeSumCompSuffix;
+}
+
+function removeExcludedComp(exp, modifier) {
+  const excludedComp = getExcludedComp(modifier);
+  if (excludedComp) {
+    if (exp.substring(exp.length - excludedComp.length) !== excludedComp) {
+      return exp;
+    }
+    return exp.substring(0, exp.length - excludedComp.length);
+  }
+  return exp;
 }
 
 function extractInputExpression({
@@ -101,36 +144,22 @@ function extractInputExpression({
   if (!modifier) {
     return;
   }
-  let numberOfDims;
-  if (typeof numDimensions === 'undefined') {
-    numberOfDims = getNumDimensions({ properties, layout });
-  }
-  const numStepComp = getNumStepComp(modifier, numberOfDims);
-  const aboveCompPrefix = getAboveCompPrefix(modifier, numberOfDims);
-  const rangeSumCompPrefix = getRangeSumCompPrefix();
-  const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
-  const prefix = aggrCompPrefix + rangeSumCompPrefix + aboveCompPrefix;
+  const prefix = getPrefix({
+    modifier, properties, layout, numDimensions,
+  });
   const idx1 = outputExpression.indexOf(prefix);
   if (idx1 === -1) {
     return;
   }
-  const aboveCompSuffix = getAboveCompSuffix(numStepComp);
-  const rangeSumCompSuffix = getFunctionSuffix();
-  const suffix = aboveCompSuffix + rangeSumCompSuffix;
+  const suffix = getSuffix({
+    modifier, properties, layout, numDimensions,
+  });
   const idx2 = outputExpression.lastIndexOf(suffix);
   if (idx2 === -1) {
     return;
   }
-  let exp = outputExpression.substring(idx1 + prefix.length, idx2);
-  const { showExcludedValues } = modifier;
-  if (showExcludedValues) {
-    const expCompSuffix = ' + Sum({1} 0)';
-    if (exp.substring(exp.length - expCompSuffix.length) !== expCompSuffix) {
-      return;
-    }
-    exp = exp.substring(0, exp.length - expCompSuffix.length);
-  }
-  return exp; // eslint-disable-line consistent-return
+  const exp = outputExpression.substring(idx1 + prefix.length, idx2);
+  return removeExcludedComp(exp, modifier); // eslint-disable-line consistent-return
 }
 
 function initModifier(modifier, defaultOptions) {
@@ -161,6 +190,8 @@ export default {
   getRangeSumComp,
 
   getAggrComp,
+
+  getExcludedComp,
 
   needDimension,
 

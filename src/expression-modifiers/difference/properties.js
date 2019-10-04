@@ -1,6 +1,6 @@
 import util from '../../utils/util';
 
-const MODIFIER_TYPE = 'movingAverage';
+const MODIFIER_TYPE = 'difference';
 
 function getModifierIndex(measure, modifiersRef) {
   const modifiers = util.getValue(measure, modifiersRef);
@@ -39,7 +39,7 @@ export default function (rootPath) {
     items: {
       disclaimer: {
         component: 'text',
-        translation: 'properties.modifier.movingAverage.disclaimer',
+        translation: 'properties.modifier.difference.disclaimer',
         show(itemData, handler) {
           return handler.maxDimensions() > 2;
         },
@@ -49,7 +49,7 @@ export default function (rootPath) {
         type: 'integer',
         translation: 'properties.modifier.primaryDimension',
         title: {
-          translation: 'properties.modifier.movingAverage.primaryDimension.tooltip',
+          translation: 'properties.modifier.difference.primaryDimension.tooltip',
         },
         component: 'dropdown',
         schemaIgnore: true,
@@ -67,48 +67,12 @@ export default function (rootPath) {
         type: 'boolean',
         translation: 'properties.modifier.crossAllDimensions',
         title: {
-          translation: 'properties.modifier.movingAverage.crossAllDimensions.tooltip',
+          translation: 'properties.modifier.difference.crossAllDimensions.tooltip',
         },
         schemaIgnore: true,
         defaultValue: false,
         show(itemData, handler) {
           return handler.layout.qHyperCube.qDimensionInfo.length > 1;
-        },
-      },
-      fullRange: {
-        refFn: data => `${getRef(data, rootPath)}.fullRange`,
-        type: 'boolean',
-        translation: 'properties.modifier.range',
-        component: 'dropdown',
-        schemaIgnore: true,
-        defaultValue: false,
-        options: [
-          {
-            value: true,
-            translation: 'properties.modifier.range.full',
-          },
-          {
-            value: false,
-            translation: 'properties.modifier.range.custom',
-          },
-        ],
-      },
-      steps: {
-        refFn: data => `${getRef(data, rootPath)}.steps`,
-        type: 'integer',
-        translation: 'properties.modifier.range.steps',
-        schemaIgnore: true,
-        defaultValue: 6,
-        change(itemData) {
-          const modifier = getModifier(itemData, rootPath);
-          if (modifier) {
-            const { steps } = modifier;
-            modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 6;
-          }
-        },
-        show(itemData) {
-          const modifier = getModifier(itemData, rootPath);
-          return modifier && !modifier.fullRange;
         },
       },
       showExcludedValues: {
