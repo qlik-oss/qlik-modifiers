@@ -1,4 +1,5 @@
 import util from '../../utils/util';
+import helper from '../helper';
 
 const MODIFIER_TYPE = 'movingAverage';
 
@@ -41,82 +42,104 @@ export default function (rootPath) {
         component: 'text',
         translation: 'properties.modifier.movingAverage.disclaimer',
         show(itemData, handler) {
-          return handler.maxDimensions() > 2;
+          return !helper.isApplicable({ properties: handler.properties });
         },
       },
-      primaryDimension: {
-        refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
-        type: 'integer',
-        translation: 'properties.modifier.primaryDimension',
-        title: {
-          translation: 'properties.modifier.movingAverage.primaryDimension.tooltip',
-        },
-        component: 'dropdown',
-        schemaIgnore: true,
-        defaultValue: 1,
-        options(itemData, handler) {
-          const { qDimensionInfo } = handler.layout.qHyperCube;
-          return qDimensionInfo.map((dim, idx) => ({ value: idx, label: dim.qGroupFallbackTitles[0] })); // To avoid depending on the layout, we use the first dimension in the drill down dimension
+      settings: {
+        type: 'items',
+        items: {
+          primaryDimension: {
+            refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
+            type: 'integer',
+            translation: 'properties.modifier.primaryDimension',
+            title: {
+              translation: 'properties.modifier.movingAverage.primaryDimension.tooltip',
+            },
+            component: 'dropdown',
+            schemaIgnore: true,
+            defaultValue: 1,
+            options(itemData, handler) {
+              const { qDimensionInfo } = handler.layout.qHyperCube;
+              return qDimensionInfo.map((dim, idx) => ({ value: idx, label: dim.qGroupFallbackTitles[0] })); // To avoid depending on the layout, we use the first dimension in the drill down dimension
+            },
+            show(itemData, handler) {
+              return handler.layout.qHyperCube.qDimensionInfo.length > 1;
+            },
+          },
+          crossAllDimensions: {
+            refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
+            type: 'boolean',
+            translation: 'properties.modifier.crossAllDimensions',
+            title: {
+              translation: 'properties.modifier.movingAverage.crossAllDimensions.tooltip',
+            },
+            schemaIgnore: true,
+            defaultValue: false,
+            show(itemData, handler) {
+              return handler.layout.qHyperCube.qDimensionInfo.length > 1;
+            },
+          },
+          fullRange: {
+            refFn: data => `${getRef(data, rootPath)}.fullRange`,
+            type: 'boolean',
+            translation: 'properties.modifier.range',
+            component: 'dropdown',
+            schemaIgnore: true,
+            defaultValue: false,
+            options: [
+              {
+                value: true,
+                translation: 'properties.modifier.range.full',
+              },
+              {
+                value: false,
+                translation: 'properties.modifier.range.custom',
+              },
+            ],
+          },
+          steps: {
+            refFn: data => `${getRef(data, rootPath)}.steps`,
+            type: 'integer',
+            translation: 'properties.modifier.range.steps',
+            schemaIgnore: true,
+            defaultValue: 6,
+            change(itemData) {
+              const modifier = getModifier(itemData, rootPath);
+              if (modifier) {
+                const { steps } = modifier;
+                modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 6;
+              }
+            },
+            show(itemData) {
+              const modifier = getModifier(itemData, rootPath);
+              return modifier && !modifier.fullRange;
+            },
+          },
+          showExcludedValues: {
+            refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
+            type: 'boolean',
+            translation: 'properties.modifier.showExcludedValues',
+            title: {
+              translation: 'properties.modifier.showExcludedValues.tooltip',
+            },
+            schemaIgnore: true,
+            defaultValue: true,
+          },
+          nullSuppression: {
+            refFn: data => `${getRef(data, rootPath)}.nullSuppression`,
+            type: 'boolean',
+            translation: 'properties.dimensions.showNull',
+            title: {
+              translation: 'properties.modifier.nullSuppression.tooltip',
+            },
+            schemaIgnore: true,
+            defaultValue: false,
+            inverted: true,
+          },
         },
         show(itemData, handler) {
-          return handler.layout.qHyperCube.qDimensionInfo.length > 1;
+          return helper.isApplicable({ properties: handler.properties });
         },
-      },
-      crossAllDimensions: {
-        refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
-        type: 'boolean',
-        translation: 'properties.modifier.crossAllDimensions',
-        title: {
-          translation: 'properties.modifier.movingAverage.crossAllDimensions.tooltip',
-        },
-        schemaIgnore: true,
-        defaultValue: false,
-        show(itemData, handler) {
-          return handler.layout.qHyperCube.qDimensionInfo.length > 1;
-        },
-      },
-      fullRange: {
-        refFn: data => `${getRef(data, rootPath)}.fullRange`,
-        type: 'boolean',
-        translation: 'properties.modifier.range',
-        component: 'dropdown',
-        schemaIgnore: true,
-        defaultValue: false,
-        options: [
-          {
-            value: true,
-            translation: 'properties.modifier.range.full',
-          },
-          {
-            value: false,
-            translation: 'properties.modifier.range.custom',
-          },
-        ],
-      },
-      steps: {
-        refFn: data => `${getRef(data, rootPath)}.steps`,
-        type: 'integer',
-        translation: 'properties.modifier.range.steps',
-        schemaIgnore: true,
-        defaultValue: 6,
-        change(itemData) {
-          const modifier = getModifier(itemData, rootPath);
-          if (modifier) {
-            const { steps } = modifier;
-            modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 6;
-          }
-        },
-        show(itemData) {
-          const modifier = getModifier(itemData, rootPath);
-          return modifier && !modifier.fullRange;
-        },
-      },
-      showExcludedValues: {
-        refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
-        type: 'boolean',
-        translation: 'properties.modifier.showExcludedValues',
-        schemaIgnore: true,
-        defaultValue: true,
       },
     },
     show(itemData) {

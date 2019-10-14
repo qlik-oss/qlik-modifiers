@@ -1,5 +1,5 @@
 import util from '../../utils/util';
-import helper from '../accumulation/helper';
+import helper from '../helper';
 
 import propertyPanelDef from './properties';
 
@@ -12,14 +12,15 @@ const DEFAULT_OPTIONS = {
   fullRange: false,
   steps: 6,
   outputExpression: '',
+  nullSuppression: false,
 };
 
 const maxNumDimensionsSupported = 2;
 
 function getDivisorComp(modifier, numDimensions) {
-  const { crossAllDimensions, fullRange, steps } = modifier;
-  const rowNo = numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
-  if (!fullRange) {
+  const rowNo = helper.getRowNoComp(modifier, numDimensions);
+  if (!helper.isFullRange(modifier)) {
+    const { steps } = modifier;
     const numSteps = typeof steps === 'number' && !Number.isNaN(steps) ? steps : 6;
     return `RangeMin(${numSteps}, ${rowNo})`;
   }
@@ -31,38 +32,54 @@ export default {
 
   needDimension: helper.needDimension,
 
-  extractInputExpression: helper.extractInputExpression,
-
   isApplicable({ properties, layout }) {
-    return helper.getNumDimensions({ properties, layout }) <= maxNumDimensionsSupported;
+    return helper.isApplicable({
+      properties, layout, minDimensions: 1, maxDimensions: maxNumDimensionsSupported,
+    });
   },
 
   generateExpression({
-    expression, modifier, properties, libraryItemsProps, layout, numDimensions,
+    expression, modifier, properties, libraryItemsProps, layout, numDimensions, dimensionAndFieldList,
   }) {
     if (!modifier) {
       return expression;
     }
+    let averageComp;
     let numberOfDims = numDimensions;
     if (typeof numberOfDims === 'undefined') {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
-    const expComp = helper.getExpressionComp(expression, modifier);
+    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+    const expWithExcludedComp = helper.getExpressionWithExcludedComp({
+      expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+    });
     const numStepComp = helper.getNumStepComp(modifier, numberOfDims);
-    const aboveComp = helper.getAboveComp(modifier, numberOfDims, expComp, numStepComp);
-    const rangeSumComp = helper.getRangeSumComp(aboveComp);
-    const divisorComp = getDivisorComp(modifier, numberOfDims);
-    const averageComp = `${rangeSumComp} / ${divisorComp}`;
+    const aboveComp = helper.getAboveComp(modifier, numberOfDims, expWithExcludedComp, numStepComp);
+    if (modifier.nullSuppression) {
+      averageComp = helper.getRangeComp('RangeAvg', aboveComp);
+    } else {
+      const rangeSumComp = helper.getRangeComp('RangeSum', aboveComp);
+      const divisorComp = getDivisorComp(modifier, numberOfDims);
+      averageComp = `${rangeSumComp} / ${divisorComp}`;
+    }
     let generatedExpression = averageComp;
 
     if (helper.needDimension({ modifier, properties, layout })) {
-      const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
       const dim1Comp = helper.getDimComp(dimensions, 1, libraryItemsProps);
       const dim2Comp = helper.getDimComp(dimensions, 0, libraryItemsProps);
       const aggrComp = helper.getAggrComp(generatedExpression, dim1Comp, dim2Comp);
       generatedExpression = aggrComp;
     }
     return generatedExpression;
+  },
+
+  extractInputExpression({
+    outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, dimensionAndFieldList,
+  }) {
+    const functionName = modifier && modifier.nullSuppression ? 'RangeAvg' : 'RangeSum';
+    return helper.extractInputExpression({
+      outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, functionName, dimensionAndFieldList,
+    });
   },
 
   initModifier(modifier) {

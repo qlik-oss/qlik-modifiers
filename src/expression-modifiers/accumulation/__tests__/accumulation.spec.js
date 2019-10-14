@@ -9,8 +9,18 @@ describe('accumulation', () => {
   let dim2;
   let generatedExp;
   let inputExp;
+  let dimensionAndFieldList;
 
   beforeEach(() => {
+    dimensionAndFieldList = {
+      fieldList: [{
+        qName: 'dim1',
+        qTags: ['$numeric'],
+      }, {
+        qName: 'dim2',
+        qTags: ['$numeric'],
+      }],
+    };
     modifier = {
       accumulationDimension: 0,
       crossAllDimensions: true,
@@ -69,7 +79,16 @@ describe('accumulation', () => {
             modifier.fullAccumulation = true;
           });
 
-          it('should generate correct expression when showExcludedValues = true', () => {
+          it('should generate correct expression when showExcludedValues = true and dimension is numeric', () => {
+            modifier.showExcludedValues = true;
+            generatedExp = accumulation.generateExpression({
+              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+            });
+
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"}>}0), 0, RowNo()))');
+          });
+
+          it('should generate correct expression when showExcludedValues = true and dimension is non-numeric', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
               expression, modifier, properties, libraryItemsProps,
@@ -96,10 +115,10 @@ describe('accumulation', () => {
           it('should generate correct expression when showExcludedValues = true', () => {
             modifier.showExcludedValues = true;
             generatedExp = accumulation.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
+              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
             });
 
-            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
+            expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"}>}0), 0, 6))');
           });
 
           it('should generate correct expression when showExcludedValues = false', () => {
@@ -138,11 +157,11 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
                 expect(generatedExp).to.equal(
-                  'Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo())), [dim2], [dim1])',
+                  'Aggr(RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, RowNo())), [dim2], [dim1])',
                 );
               });
 
@@ -164,10 +183,10 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])');
+                expect(generatedExp).to.equal('Aggr(RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, 6)), [dim2], [dim1])');
               });
 
               it('should generate correct expression when showExcludedValues = false', () => {
@@ -196,11 +215,11 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
                 expect(generatedExp).to.equal(
-                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total))), [dim2], [dim1])',
+                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, RowNo(Total))), [dim2], [dim1])',
                 );
               });
 
@@ -224,11 +243,11 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
                 expect(generatedExp).to.equal(
-                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6)), [dim2], [dim1])',
+                  'Aggr(RangeSum(Above(Total Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, 6)), [dim2], [dim1])',
                 );
               });
 
@@ -264,10 +283,10 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, RowNo()))');
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, RowNo()))');
               });
 
               it('should generate correct expression when showExcludedValues = false', () => {
@@ -288,10 +307,10 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1} 0), 0, 6))');
+                expect(generatedExp).to.equal('RangeSum(Above(Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, 6))');
               });
 
               it('should generate correct expression when showExcludedValues = false', () => {
@@ -320,10 +339,10 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, RowNo(Total)))');
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, RowNo(Total)))');
               });
 
               it('should generate correct expression when showExcludedValues = false', () => {
@@ -344,10 +363,10 @@ describe('accumulation', () => {
               it('should generate correct expression when showExcludedValues = true', () => {
                 modifier.showExcludedValues = true;
                 generatedExp = accumulation.generateExpression({
-                  expression, modifier, properties, libraryItemsProps,
+                  expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1} 0), 0, 6))');
+                expect(generatedExp).to.equal('RangeSum(Above(Total Sum(Sales) + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0, 6))');
               });
 
               it('should generate correct expression when showExcludedValues = false', () => {

@@ -1,5 +1,5 @@
 import util from '../../utils/util';
-import helper from '../accumulation/helper';
+import helper from '../helper';
 import propertyPanelDef from './properties';
 
 const DEFAULT_OPTIONS = {
@@ -21,9 +21,9 @@ function getPrefix({
 }
 
 function getSuffix({
-  modifier, numDimensions,
+  modifier, numDimensions, dimensions, libraryItemsProps, dimensionAndFieldList,
 }) {
-  const excludedComp = helper.getExcludedComp(modifier);
+  const excludedComp = helper.getExcludedComp(modifier, dimensions, libraryItemsProps, dimensionAndFieldList);
   const aboveCompPrefix = helper.getAboveCompPrefix(modifier, numDimensions);
   return `${excludedComp} - ${aboveCompPrefix}`;
 }
@@ -34,24 +34,27 @@ export default {
   needDimension: helper.needDimension,
 
   isApplicable({ properties, layout }) {
-    return helper.getNumDimensions({ properties, layout }) <= maxNumDimensionsSupported;
+    return helper.isApplicable({
+      properties, layout, minDimensions: 1, maxDimensions: maxNumDimensionsSupported,
+    });
   },
 
   extractInputExpression({
-    outputExpression, modifier, properties, layout, numDimensions,
+    outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, dimensionAndFieldList,
   }) {
     if (!modifier) {
       return;
     }
     const prefix = getPrefix({
-      modifier, properties, layout, numDimensions,
+      modifier, properties, layout,
     });
     const idx1 = prefix ? outputExpression.indexOf(prefix) : 0;
     if (idx1 === -1) {
       return;
     }
+    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
     const suffix = getSuffix({
-      modifier, numDimensions,
+      modifier, numDimensions, dimensions, libraryItemsProps, dimensionAndFieldList,
     });
     const idx2 = outputExpression.lastIndexOf(suffix);
     if (idx2 === -1) {
@@ -62,7 +65,7 @@ export default {
   },
 
   generateExpression({
-    expression, modifier, properties, libraryItemsProps, layout, numDimensions,
+    expression, modifier, properties, libraryItemsProps, layout, numDimensions, dimensionAndFieldList,
   }) {
     if (!modifier) {
       return expression;
@@ -71,14 +74,14 @@ export default {
     if (typeof numberOfDims === 'undefined') {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
-    const expComp = helper.getExpressionComp(expression);
+    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+    const expComp = helper.simplifyExpression(expression);
     const aboveComp = helper.getAboveComp(modifier, numberOfDims, expComp);
-    const excludedComp = helper.getExcludedComp(modifier);
+    const excludedComp = helper.getExcludedComp(modifier, dimensions, libraryItemsProps, dimensionAndFieldList);
     const differenceComp = `${expComp}${excludedComp} - ${aboveComp}`;
     let generatedExpression = differenceComp;
 
     if (helper.needDimension({ modifier, properties, layout })) {
-      const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
       const dim1Comp = helper.getDimComp(dimensions, 1, libraryItemsProps);
       const dim2Comp = helper.getDimComp(dimensions, 0, libraryItemsProps);
       const aggrComp = helper.getAggrComp(generatedExpression, dim1Comp, dim2Comp);
