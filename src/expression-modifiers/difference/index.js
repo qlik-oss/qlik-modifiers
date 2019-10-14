@@ -23,7 +23,9 @@ function getPrefix({
 function getSuffix({
   modifier, numDimensions, dimensions, libraryItemsProps, dimensionAndFieldList,
 }) {
-  const excludedComp = helper.getExcludedComp(modifier, dimensions, libraryItemsProps, dimensionAndFieldList);
+  const excludedComp = helper.getExcludedComp({
+    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+  });
   const aboveCompPrefix = helper.getAboveCompPrefix(modifier, numDimensions);
   return `${excludedComp} - ${aboveCompPrefix}`;
 }
@@ -77,7 +79,9 @@ export default {
     const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
     const expComp = helper.simplifyExpression(expression);
     const aboveComp = helper.getAboveComp(modifier, numberOfDims, expComp);
-    const excludedComp = helper.getExcludedComp(modifier, dimensions, libraryItemsProps, dimensionAndFieldList);
+    const excludedComp = helper.getExcludedComp({
+      modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+    });
     const differenceComp = `${expComp}${excludedComp} - ${aboveComp}`;
     let generatedExpression = differenceComp;
 
