@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import extend from 'extend';
 import util from './utils/util';
-import helper from './expression-modifiers/accumulation/helper';
+import helper from './expression-modifiers/helper';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
@@ -96,15 +96,20 @@ function apply({
       measures, layout, masterItem, isFirstTime,
     })) {
       return model.getEffectiveProperties().then((effectiveProperties) => {
-        if (dataReloaded) {
-          updateFieldNames({ properties: effectiveProperties });
-        }
-        return applyModifiers({
-          model,
-          properties: effectiveProperties,
-          runUpdateIfChange: true,
-          masterItem,
-        });
+        const libraryIds = getLibraryIds(effectiveProperties);
+        return getDimensionAndFieldList({ model }).then(dimensionAndFieldList => getLibraryItemsProperties({ libraryIds, model }).then((libraryItemsProps) => {
+          if (dataReloaded) {
+            updateFieldNames({ properties: effectiveProperties, libraryItemsProps, dimensionAndFieldList });
+          }
+          return applyModifiers({
+            model,
+            properties: effectiveProperties,
+            runUpdateIfChange: true,
+            masterItem,
+            libraryItemsProps,
+            dimensionAndFieldList,
+          });
+        }));
       });
     }
     return Promise.resolve(modified);
@@ -130,13 +135,15 @@ function apply({
  * @static
  */
 function applyModifiers({
-  model, properties, measures, runUpdateIfChange = false, masterItem,
+  model, properties, measures, runUpdateIfChange = false, masterItem, libraryItemsProps, dimensionAndFieldList,
 }) {
   const libraryIds = getLibraryIds(properties);
 
   return updateMasterItemsSubscription({ model, libraryIds, masterItem }).then(() => {
     const oldProperties = runUpdateIfChange ? extend(true, {}, properties) : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
-    return updateMeasuresProperties({ measures, properties, model }).then(() => {
+    return updateMeasuresProperties({
+      measures, properties, model, libraryItemsProps, dimensionAndFieldList,
+    }).then(() => {
       if (runUpdateIfChange) {
         return updateIfChanged({ oldProperties, newProperties: properties, model }); // returns promise with modified: true/false
       }
@@ -267,7 +274,9 @@ function isDataReloaded({
   return reloaded && hasNormalMeasureWithActiveModifiers({ measures, layout });
 }
 
-function updateMeasureFieldName({ measure, properties }) {
+function updateMeasureFieldName({
+  measure, properties, libraryItemsProps, dimensionAndFieldList,
+}) {
   if (isNormalMeasureWithActiveModifiers({ measure, properties })) {
     let activeModifiersPerMeasure = 0;
     const { modifiers } = measure.qDef;
@@ -287,6 +296,8 @@ function updateMeasureFieldName({ measure, properties }) {
             outputExpression: measure.qDef.qDef,
             modifier,
             properties,
+            libraryItemsProps,
+            dimensionAndFieldList,
           });
           if (
             typeof inputExpr !== 'undefined'
@@ -301,9 +312,11 @@ function updateMeasureFieldName({ measure, properties }) {
   }
 }
 
-function updateFieldNames({ properties }) {
+function updateFieldNames({ properties, libraryItemsProps, dimensionAndFieldList }) {
   const measures = util.getValue(properties, 'qHyperCubeDef.qMeasures', []);
-  measures.forEach(measure => updateMeasureFieldName({ measure, properties }));
+  measures.forEach(measure => updateMeasureFieldName({
+    measure, properties, libraryItemsProps, dimensionAndFieldList,
+  }));
 }
 
 function isActiveModifiers({ modifiers, properties, layout }) {
@@ -367,7 +380,27 @@ function updateProperties({ model, oldProperties, newProperties }) {
   return SoftPropertyHandler.saveSoftProperties(model, oldProperties, newProperties);
 }
 
-function getLibraryItemsProperties({ libraryIds, model }) {
+function getDimensionAndFieldList({ model, dimensionAndFieldList }) {
+  if (dimensionAndFieldList) {
+    return Promise.resolve(dimensionAndFieldList);
+  }
+  const promises = [];
+  const items = {};
+  const p1 = model.app.getDimensionList().then((dimensionList) => {
+    items.dimensionList = dimensionList;
+  });
+  promises.push(p1);
+  const p2 = model.app.getFieldList().then((fieldList) => {
+    items.fieldList = fieldList;
+  });
+  promises.push(p2);
+  return Promise.all(promises).then(() => items);
+}
+
+function getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }) {
+  if (libraryItemsProps) {
+    return Promise.resolve(libraryItemsProps);
+  }
   const { measureLibraryIds, dimensionLibraryIds } = libraryIds;
   const masterItems = {};
   const promises = [];
@@ -387,7 +420,7 @@ function getLibraryItemsProperties({ libraryIds, model }) {
 }
 
 function modifyMeasure({
-  measure, modifier, libraryId, properties, libraryItemsProps,
+  measure, modifier, libraryId, properties, libraryItemsProps, dimensionAndFieldList,
 }) {
   const props = libraryItemsProps[libraryId];
   const generatedExpression = availableModifiers[modifier.type].generateExpression({
@@ -395,6 +428,7 @@ function modifyMeasure({
     modifier,
     properties,
     libraryItemsProps,
+    dimensionAndFieldList,
   });
   modifier.outputExpression = generatedExpression;
   measure.qDef.qDef = modifier.outputExpression;
@@ -410,7 +444,7 @@ function modifyMeasure({
 }
 
 function modifyExpression({
-  measure, modifier, properties, libraryItemsProps,
+  measure, modifier, properties, libraryItemsProps, dimensionAndFieldList,
 }) {
   const expression = measureBaseAdapter.getExpression(measure);
   const generatedExpression = availableModifiers[modifier.type].generateExpression({
@@ -418,6 +452,7 @@ function modifyExpression({
     modifier,
     properties,
     libraryItemsProps,
+    dimensionAndFieldList,
   });
   modifier.outputExpression = generatedExpression;
   measure.qDef.qDef = modifier.outputExpression;
@@ -454,7 +489,9 @@ function updateIfChanged({ oldProperties, newProperties, model }) {
   return updateProperties({ model, oldProperties, newProperties }).then(() => modified);
 }
 
-function applyMeasureModifiers({ measure, properties, libraryItemsProps }) {
+function applyMeasureModifiers({
+  measure, properties, libraryItemsProps, dimensionAndFieldList,
+}) {
   let activeModifiersPerMeasure = 0;
   if (!measureBase.isValid(measure)) {
     measureBase.initBase(measure, true);
@@ -477,11 +514,11 @@ function applyMeasureModifiers({ measure, properties, libraryItemsProps }) {
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);
         if (libraryId) {
           modifyMeasure({
-            measure, modifier, libraryId, properties, libraryItemsProps,
+            measure, modifier, libraryId, properties, libraryItemsProps, dimensionAndFieldList,
           });
         } else {
           modifyExpression({
-            measure, modifier, properties, libraryItemsProps,
+            measure, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
         }
         updateTotalsFunction(measure);
@@ -518,15 +555,13 @@ function getLibraryIds(properties) {
       needDims = needDims || needDimensionForGeneration({ modifiers, properties });
     }
   });
-  if (needDims) {
-    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
-    dimensions.forEach((dimension) => {
-      const libraryId = dimension.qLibraryId;
-      if (libraryId) {
-        dimensionLibraryIds.push(libraryId);
-      }
-    });
-  }
+  const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+  dimensions.forEach((dimension) => {
+    const libraryId = dimension.qLibraryId;
+    if (libraryId) {
+      dimensionLibraryIds.push(libraryId);
+    }
+  });
   return { measureLibraryIds, dimensionLibraryIds };
 }
 
@@ -560,7 +595,9 @@ function cleanUpModifiers({ model, properties }) {
   });
 }
 
-function updateMeasuresProperties({ measures, properties, model }) {
+function updateMeasuresProperties({
+  measures, properties, model, libraryItemsProps, dimensionAndFieldList,
+}) {
   if (!measures) {
     measures = util
       .getValue(properties, 'qHyperCubeDef.qMeasures', [])
@@ -576,13 +613,15 @@ function updateMeasuresProperties({ measures, properties, model }) {
     return Promise.resolve();
   }
 
-  const libraryIds = getLibraryIds(properties);
-  return getLibraryItemsProperties({ libraryIds, model }).then((libraryItemsProps) => {
+  const libraryIds = libraryItemsProps ? undefined : getLibraryIds(properties);
+  return getDimensionAndFieldList({ model, dimensionAndFieldList }).then(list => getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }).then((libraryItems) => {
     measures.forEach((measure) => {
       const { modifiers } = measure.qDef;
       if (isActiveModifiers({ modifiers, properties })) {
-        applyMeasureModifiers({ measure, properties, libraryItemsProps });
+        applyMeasureModifiers({
+          measure, properties, libraryItemsProps: libraryItems, dimensionAndFieldList: list,
+        });
       }
     });
-  });
+  }));
 }

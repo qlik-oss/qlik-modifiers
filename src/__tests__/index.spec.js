@@ -32,6 +32,7 @@ describe('measure modifiers', () => {
       id: 'dummy-id1',
       layout: {
         qHyperCube: {
+          qDimensionInfo: [{}],
           qMeasureInfo: [
             {
               modifiers: [
@@ -45,6 +46,7 @@ describe('measure modifiers', () => {
       },
       properties: {
         qHyperCubeDef: {
+          qDimensions: [{}],
           qMeasures: [
             {
               qDef: {
@@ -67,6 +69,8 @@ describe('measure modifiers', () => {
       app: {
         clearUndoBuffer: sinon.spy(),
         getMeasure: libId => Promise.resolve(mockedLibItems[libId]),
+        getDimensionList: () => Promise.resolve([]),
+        getFieldList: () => Promise.resolve([]),
       },
     };
 
@@ -129,8 +133,15 @@ describe('measure modifiers', () => {
       expect(modified, 'should resolve with false if no props were modified').to.be.false;
     });
 
-    it('should resolve immediately if there are no applicable modifiers', async () => {
+    it('should resolve immediately if there are more than two dimensions', async () => {
       model.layout.qHyperCube.qDimensionInfo = [{}, {}, {}];
+      await Modifiers.apply({ model });
+
+      expect(model.getEffectiveProperties).to.not.have.been.called;
+    });
+
+    it('should resolve immediately if there are no dimension', async () => {
+      model.layout.qHyperCube.qDimensionInfo = [];
       await Modifiers.apply({ model });
 
       expect(model.getEffectiveProperties).to.not.have.been.called;
