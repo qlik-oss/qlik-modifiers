@@ -119,9 +119,11 @@ export default function (rootPath) {
             refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
             type: 'boolean',
             translation: 'properties.modifier.showExcludedValues',
+            /*
             title: {
               translation: 'properties.modifier.showExcludedValues.tooltip',
             },
+            */
             schemaIgnore: true,
             defaultValue: true,
           },
@@ -129,9 +131,11 @@ export default function (rootPath) {
             refFn: data => `${getRef(data, rootPath)}.nullSuppression`,
             type: 'boolean',
             translation: 'properties.dimensions.showNull',
+            /*
             title: {
               translation: 'properties.modifier.nullSuppression.tooltip',
             },
+            */
             schemaIgnore: true,
             defaultValue: false,
             inverted: true,

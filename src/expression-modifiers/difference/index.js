@@ -13,23 +13,6 @@ const DEFAULT_OPTIONS = {
 
 const maxNumDimensionsSupported = 2;
 
-function getPrefix({
-  modifier, properties, layout,
-}) {
-  const aggrCompPrefix = helper.needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
-  return aggrCompPrefix;
-}
-
-function getSuffix({
-  modifier, numDimensions, dimensions, libraryItemsProps, dimensionAndFieldList,
-}) {
-  const excludedComp = helper.getExcludedComp({
-    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
-  });
-  const aboveCompPrefix = helper.getAboveCompPrefix(modifier, numDimensions);
-  return excludedComp ? ` + ${excludedComp} - ${aboveCompPrefix}` : ` - ${aboveCompPrefix}`;
-}
-
 export default {
   translationKey: 'properties.modifier.difference',
 
