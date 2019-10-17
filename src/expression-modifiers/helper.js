@@ -1,5 +1,20 @@
 import util from '../utils/util';
 
+const NO_BREAK_SPACE = ' ';
+const IDEOGRAPHIC_SPACE = '　';
+const MARKER1 = `${NO_BREAK_SPACE}(${IDEOGRAPHIC_SPACE}`;
+const MARKER2 = `${IDEOGRAPHIC_SPACE})${NO_BREAK_SPACE}`;
+
+function getExpressionWithMarkers(expression) {
+  return MARKER1 + expression + MARKER2;
+}
+
+function canExtract(outputExpression) {
+  const idx1 = outputExpression.indexOf(MARKER1);
+  const idx2 = outputExpression.indexOf(MARKER2);
+  return idx1 > -1 && idx2 > -1 && idx1 < idx2;
+}
+
 function findLibraryDimension(id, dimensionList) {
   if (!dimensionList) {
     return null;
@@ -145,6 +160,11 @@ function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
   return aboveCompPrefix + expComp + aboveCompSuffix;
 }
 
+function getRangeLimit(isDimNumeric, dim) {
+  return isDimNumeric ? `${dim}={">=$(=Min(${dim}))<=$(=Max(${dim}))"}`
+    : `${dim}={"=Only({1}${dim})>='$(=MinString(${dim}))' and Only({1}${dim})<='$(=MaxString(${dim}))'"}`;
+}
+
 function getExcludedComp({
   modifier = {}, dimensions, libraryItemsProps, dimensionAndFieldList,
 }) {
@@ -152,43 +172,49 @@ function getExcludedComp({
   if (!showExcludedValues) {
     return '';
   }
+  const valueComp = '0';
+  const funcComp = 'Sum';
   if (dimensions && dimensions.length === 1) {
     const isDim1Numeric = isNumeric(dimensions[0], dimensionAndFieldList);
-    if (isDim1Numeric) {
-      const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
-      const filter1 = `${dim1}={">=$(=Min(${dim1}))<=$(=Max(${dim1}))"}`;
-      return ` + Sum({1<${filter1}>}0)`;
-    }
+    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
+    const filter1Comp = getRangeLimit(isDim1Numeric, dim1);
+    return `${funcComp}({1<${filter1Comp}>}${valueComp})`;
   }
   if (dimensions && dimensions.length === 2) {
     const isDim1Numeric = isNumeric(dimensions[0], dimensionAndFieldList);
     const isDim2Numeric = isNumeric(dimensions[1], dimensionAndFieldList);
     const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
     const dim2 = getDimDefWithWrapper(dimensions, 1, libraryItemsProps);
-    if (isDim1Numeric) {
-      const filter1 = `${dim1}={">=$(=Min(${dim1}))<=$(=Max(${dim1}))"}`;
-      if (isDim2Numeric) {
-        const filter2 = `${dim2}={">=$(=Min(${dim2}))<=$(=Max(${dim2}))"}`;
-        return ` + Sum({1<${filter1},${filter2}>}0)`;
-      }
-      return ` + Sum({1<${filter1}>}0)`;
-    }
-    if (isDim2Numeric) {
-      const filter2 = `${dim2}={">=$(=Min(${dim2}))<=$(=Max(${dim2}))"}`;
-      return ` + Sum({1<${filter2}>}0)`;
-    }
+    const filter1Comp = getRangeLimit(isDim1Numeric, dim1);
+    const filter2Comp = getRangeLimit(isDim2Numeric, dim2);
+    return `${funcComp}({1<${filter1Comp},${filter2Comp}>}${valueComp})`;
   }
-  return ' + Sum({1} 0)';
+  return `${funcComp}({1}${valueComp})`;
 }
 
 function getExpressionWithExcludedComp({
-  expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+  expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
 }) {
   const expComp = simplifyExpression(expression);
+  const expWithMarkersComp = getExpressionWithMarkers(expComp);
+  const { showExcludedValues } = modifier;
+  if (!showExcludedValues) {
+    return expWithMarkersComp;
+  }
   const excludedComp = getExcludedComp({
-    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+    modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
   });
-  return expComp + excludedComp;
+  const valueComp = treatMissingAsNull ? '' : ', 0';
+  if (dimensions && dimensions.length === 1) {
+    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
+    return `If(Count(${dim1}) > 0, ${expWithMarkersComp} + ${excludedComp}${valueComp})`;
+  }
+  if (dimensions && dimensions.length === 2) {
+    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
+    const dim2 = getDimDefWithWrapper(dimensions, 1, libraryItemsProps);
+    return `If(Count(${dim1}) * Count(${dim2}) > 0, ${expWithMarkersComp} + ${excludedComp}${valueComp})`;
+  }
+  return expWithMarkersComp;
 }
 
 function getFunctionPrefix(functionName) {
@@ -219,73 +245,23 @@ function needDimension({ modifier, properties, layout }) {
   return getNumDimensions({ properties, layout }) === 2 && primaryDimension === 0;
 }
 
-function getPrefix({
-  modifier, properties, layout, numDimensions, functionName,
-}) {
-  let numberOfDims;
-  if (typeof numDimensions === 'undefined') {
-    numberOfDims = getNumDimensions({ properties, layout });
-  }
-  const aboveCompPrefix = getAboveCompPrefix(modifier, numberOfDims);
-  const rangeSumCompPrefix = getFunctionPrefix(functionName);
-  const aggrCompPrefix = needDimension({ modifier, properties, layout }) ? 'Aggr(' : '';
-  return aggrCompPrefix + rangeSumCompPrefix + aboveCompPrefix;
-}
-
-function getSuffix({
-  modifier, properties, layout, numDimensions,
-}) {
-  let numberOfDims;
-  if (typeof numDimensions === 'undefined') {
-    numberOfDims = getNumDimensions({ properties, layout });
-  }
-  const numStepComp = getNumStepComp(modifier, numberOfDims);
-  const aboveCompSuffix = getAboveCompSuffix(numStepComp);
-  const rangeSumCompSuffix = getFunctionSuffix();
-  return aboveCompSuffix + rangeSumCompSuffix;
-}
-
-function removeExcludedComp({
-  expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
-}) {
-  const excludedComp = getExcludedComp({
-    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
-  });
-  if (excludedComp) {
-    if (expression.substring(expression.length - excludedComp.length) !== excludedComp) {
-      return expression;
-    }
-    return expression.substring(0, expression.length - excludedComp.length);
-  }
-  return expression;
-}
-
 function extractInputExpression({
-  outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, functionName, dimensionAndFieldList,
+  outputExpression, modifier,
 }) {
   if (!modifier) {
     return;
   }
-  const prefix = getPrefix({
-    modifier, properties, layout, numDimensions, functionName,
-  });
-  const idx1 = outputExpression.indexOf(prefix);
+  const idx1 = outputExpression.indexOf(MARKER1);
   if (idx1 === -1) {
     return;
   }
-  const suffix = getSuffix({
-    modifier, properties, layout, numDimensions,
-  });
-  const idx2 = outputExpression.lastIndexOf(suffix);
+  const idx2 = outputExpression.indexOf(MARKER2);
   if (idx2 === -1) {
     return;
   }
-  const expression = outputExpression.substring(idx1 + prefix.length, idx2);
-  const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+  const expression = outputExpression.substring(idx1 + MARKER1.length, idx2);
   // eslint-disable-next-line consistent-return
-  return removeExcludedComp({
-    expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
-  });
+  return expression;
 }
 
 function initModifier(modifier, defaultOptions) {
@@ -343,5 +319,9 @@ export default {
   isNumeric,
 
   isApplicable,
+
+  getExpressionWithMarkers,
+
+  canExtract,
 
 };

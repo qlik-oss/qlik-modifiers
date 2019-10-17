@@ -27,7 +27,7 @@ function getSuffix({
     modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
   });
   const aboveCompPrefix = helper.getAboveCompPrefix(modifier, numDimensions);
-  return `${excludedComp} - ${aboveCompPrefix}`;
+  return excludedComp ? ` + ${excludedComp} - ${aboveCompPrefix}` : ` - ${aboveCompPrefix}`;
 }
 
 export default {
@@ -41,30 +41,7 @@ export default {
     });
   },
 
-  extractInputExpression({
-    outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, dimensionAndFieldList,
-  }) {
-    if (!modifier) {
-      return;
-    }
-    const prefix = getPrefix({
-      modifier, properties, layout,
-    });
-    const idx1 = prefix ? outputExpression.indexOf(prefix) : 0;
-    if (idx1 === -1) {
-      return;
-    }
-    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
-    const suffix = getSuffix({
-      modifier, numDimensions, dimensions, libraryItemsProps, dimensionAndFieldList,
-    });
-    const idx2 = outputExpression.lastIndexOf(suffix);
-    if (idx2 === -1) {
-      return;
-    }
-    const exp = outputExpression.substring(idx1 + prefix.length, idx2);
-    return exp; // eslint-disable-line consistent-return
-  },
+  extractInputExpression: helper.extractInputExpression,
 
   generateExpression({
     expression, modifier, properties, libraryItemsProps, layout, numDimensions, dimensionAndFieldList,
@@ -77,12 +54,11 @@ export default {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
     const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
-    const expComp = helper.simplifyExpression(expression);
-    const aboveComp = helper.getAboveComp(modifier, numberOfDims, expComp);
-    const excludedComp = helper.getExcludedComp({
-      modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+    const expWithExcludedComp = helper.getExpressionWithExcludedComp({
+      expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
     });
-    const differenceComp = `${expComp}${excludedComp} - ${aboveComp}`;
+    const aboveComp = helper.getAboveComp(modifier, numberOfDims, expWithExcludedComp);
+    const differenceComp = `${expWithExcludedComp} - ${aboveComp}`;
     let generatedExpression = differenceComp;
 
     if (helper.needDimension({ modifier, properties, layout })) {

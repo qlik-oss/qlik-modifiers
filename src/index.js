@@ -99,7 +99,7 @@ function apply({
         const libraryIds = getLibraryIds(effectiveProperties);
         return getDimensionAndFieldList({ model }).then(dimensionAndFieldList => getLibraryItemsProperties({ libraryIds, model }).then((libraryItemsProps) => {
           if (dataReloaded) {
-            updateFieldNames({ properties: effectiveProperties, libraryItemsProps, dimensionAndFieldList });
+            updateFieldNames({ properties: effectiveProperties });
           }
           return applyModifiers({
             model,
@@ -274,9 +274,7 @@ function isDataReloaded({
   return reloaded && hasNormalMeasureWithActiveModifiers({ measures, layout });
 }
 
-function updateMeasureFieldName({
-  measure, properties, libraryItemsProps, dimensionAndFieldList,
-}) {
+function updateMeasureFieldName({ measure, properties }) {
   if (isNormalMeasureWithActiveModifiers({ measure, properties })) {
     let activeModifiersPerMeasure = 0;
     const { modifiers } = measure.qDef;
@@ -292,13 +290,7 @@ function updateMeasureFieldName({
           if (activeModifiersPerMeasure > 1) {
             throw new Error('More than 1 modifier on a measure! (not yet supported)');
           }
-          const inputExpr = availableModifiers[modifier.type].extractInputExpression({
-            outputExpression: measure.qDef.qDef,
-            modifier,
-            properties,
-            libraryItemsProps,
-            dimensionAndFieldList,
-          });
+          const inputExpr = availableModifiers[modifier.type].extractInputExpression({ outputExpression: measure.qDef.qDef, modifier });
           if (
             typeof inputExpr !== 'undefined'
             && getBase(measure)
@@ -312,11 +304,9 @@ function updateMeasureFieldName({
   }
 }
 
-function updateFieldNames({ properties, libraryItemsProps, dimensionAndFieldList }) {
+function updateFieldNames({ properties }) {
   const measures = util.getValue(properties, 'qHyperCubeDef.qMeasures', []);
-  measures.forEach(measure => updateMeasureFieldName({
-    measure, properties, libraryItemsProps, dimensionAndFieldList,
-  }));
+  measures.forEach(measure => updateMeasureFieldName({ measure, properties }));
 }
 
 function isActiveModifiers({ modifiers, properties, layout }) {
