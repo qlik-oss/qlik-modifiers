@@ -50,8 +50,9 @@ export default {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
     const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+    const treatMissingAsNull = modifier.showExcludedValues && modifier.nullSuppression;
     const expWithExcludedComp = helper.getExpressionWithExcludedComp({
-      expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+      expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
     });
     const numStepComp = helper.getNumStepComp(modifier, numberOfDims);
     const aboveComp = helper.getAboveComp(modifier, numberOfDims, expWithExcludedComp, numStepComp);
@@ -73,14 +74,7 @@ export default {
     return generatedExpression;
   },
 
-  extractInputExpression({
-    outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, dimensionAndFieldList,
-  }) {
-    const functionName = modifier && modifier.nullSuppression ? 'RangeAvg' : 'RangeSum';
-    return helper.extractInputExpression({
-      outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, functionName, dimensionAndFieldList,
-    });
-  },
+  extractInputExpression: helper.extractInputExpression,
 
   initModifier(modifier) {
     helper.initModifier(modifier, DEFAULT_OPTIONS);

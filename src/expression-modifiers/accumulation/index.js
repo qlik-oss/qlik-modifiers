@@ -54,13 +54,7 @@ export default {
     return generatedExpression;
   },
 
-  extractInputExpression({
-    outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, dimensionAndFieldList,
-  }) {
-    return helper.extractInputExpression({
-      outputExpression, modifier, properties, layout, numDimensions, libraryItemsProps, functionName: 'RangeSum', dimensionAndFieldList,
-    });
-  },
+  extractInputExpression: helper.extractInputExpression,
 
   initModifier(modifier) {
     helper.initModifier(modifier, DEFAULT_OPTIONS);
