@@ -93,8 +93,28 @@ function getRowNoComp(modifier, numDimensions) {
   return numDimensions === 2 && crossAllDimensions ? 'RowNo(Total)' : 'RowNo()';
 }
 
+function stripLineComments(expression) {
+  return expression.replace(/\/\/(.*)$/gm, '');
+}
+
+function stripBlockComments(expression) {
+  return expression.replace(/\/\*[^]*?\*\//g, '');
+}
+
+function stripComments(expression) {
+  if (!expression) {
+    return '';
+  }
+  // eslint-disable-next-line no-param-reassign
+  expression = stripLineComments(expression);
+  // eslint-disable-next-line no-param-reassign
+  expression = stripBlockComments(expression);
+  return expression.trim();
+}
+
 function simplifyExpression(expression) {
-  const s = expression.trim();
+  const exp = stripComments(expression);
+  const s = exp.trim();
   const expComp = s.substring(0, 1) === '=' ? s.substring(1).trim() : s;
   return expComp;
 }
@@ -106,14 +126,25 @@ function getDimSortCriterias(dimensions, dimIdx = 0) {
 
 function getDimDef(dimensions, dimIdx = 0, libraryItemsProps) {
   const dimension = dimensions[dimIdx];
-  return dimension.qLibraryId
+  const dimDef = dimension.qLibraryId
     ? libraryItemsProps[dimension.qLibraryId].qDim.qFieldDefs[0]
     : dimension.qDef.qFieldDefs[0];
+  return stripComments(dimDef);
+}
+
+function escapeField(field) {
+  if (!field || field === ']') {
+    return field;
+  }
+  if (/^[A-Za-z][A-Za-z0-9_]*$/.test(field)) {
+    return field;
+  }
+  return `[${field.replace(/\]/g, ']]')}]`;
 }
 
 function getDimDefWithWrapper(dimensions, dimIdx = 0, libraryItemsProps) {
   const dimDef = getDimDef(dimensions, dimIdx, libraryItemsProps);
-  return `[${dimDef}]`;
+  return escapeField(dimDef);
 }
 
 function getDimComp(dimensions, dimIdx, libraryItemsProps) {
@@ -166,14 +197,12 @@ function getRangeLimit(isDimNumeric, dim) {
 }
 
 function getExcludedComp({
-  modifier = {}, dimensions, libraryItemsProps, dimensionAndFieldList,
+  modifier = {}, dimensions, libraryItemsProps, dimensionAndFieldList, funcComp = 'Sum', valueComp = '0',
 }) {
   const { showExcludedValues } = modifier;
   if (!showExcludedValues) {
     return '';
   }
-  const valueComp = '0';
-  const funcComp = 'Sum';
   if (dimensions && dimensions.length === 1) {
     const isDim1Numeric = isNumeric(dimensions[0], dimensionAndFieldList);
     const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
@@ -202,7 +231,7 @@ function getExpressionWithExcludedComp({
     return expWithMarkersComp;
   }
   const excludedComp = getExcludedComp({
-    modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
+    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
   });
   const valueComp = treatMissingAsNull ? '' : ', 0';
   if (dimensions && dimensions.length === 1) {
@@ -242,7 +271,7 @@ function getNumDimensions({ properties, layout }) {
 
 function needDimension({ modifier, properties, layout }) {
   const primaryDimension = getPrimaryDimension(modifier);
-  return getNumDimensions({ properties, layout }) === 2 && primaryDimension === 0;
+  return primaryDimension === 0 && getNumDimensions({ properties, layout }) === 2;
 }
 
 function extractInputExpression({
