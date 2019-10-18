@@ -82,7 +82,7 @@ describe('difference', () => {
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal('If(Count([dim1]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"}>}0), 0) - Above(If(Count([dim1]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"}>}0), 0))');
+          expect(outputExpression).to.equal('If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"}>}0), 0) - Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"}>}0), 0))');
         });
 
         it('should generate correct expression when dimension is non-numeric', () => {
@@ -90,7 +90,7 @@ describe('difference', () => {
             expression, modifier, properties, libraryItemsProps,
           });
 
-          expect(outputExpression).to.equal('If(Count([dim1]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"}>}0), 0) - Above(If(Count([dim1]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"}>}0), 0))');
+          expect(outputExpression).to.equal('If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"}>}0), 0) - Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"}>}0), 0))');
         });
       });
 
@@ -133,7 +133,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(outputExpression).to.equal('Aggr(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0) - Above(Total If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0)), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Only({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0) - Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0)), dim2, dim1))');
               });
 
               it('should generate correct expression when dimension is non-numeric', () => {
@@ -141,7 +141,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('Aggr(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0) - Above(Total If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0)), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Only({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0) - Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0)), dim2, dim1))');
               });
             });
 
@@ -155,7 +155,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('Aggr( (　Sum(Sales)　)  - Above(Total  (　Sum(Sales)　) ), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Aggr( (　Sum(Sales)　)  - Above(Total  (　Sum(Sales)　) ), dim2, dim1)');
               });
             });
           });
@@ -175,7 +175,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(outputExpression).to.equal('Aggr(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0) - Above(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0)), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Only({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0) - Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0)), dim2, dim1))');
               });
 
               it('should generate correct expression when dimension is non-numeric', () => {
@@ -183,7 +183,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('Aggr(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0) - Above(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0)), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Only({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0) - Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0)), dim2, dim1))');
               });
             });
 
@@ -197,7 +197,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('Aggr( (　Sum(Sales)　)  - Above( (　Sum(Sales)　) ), [dim2], [dim1])');
+                expect(outputExpression).to.equal('Aggr( (　Sum(Sales)　)  - Above( (　Sum(Sales)　) ), dim2, dim1)');
               });
             });
           });
@@ -223,7 +223,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(outputExpression).to.equal('If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0) - Above(Total If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0))');
+                expect(outputExpression).to.equal('If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0) - Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0))');
               });
 
               it('should generate correct expression when dimension is non-numeric', () => {
@@ -231,7 +231,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0) - Above(Total If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0))');
+                expect(outputExpression).to.equal('If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0) - Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0))');
               });
             });
 
@@ -265,7 +265,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                 });
 
-                expect(outputExpression).to.equal('If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0) - Above(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={">=$(=Min([dim1]))<=$(=Max([dim1]))"},[dim2]={">=$(=Min([dim2]))<=$(=Max([dim2]))"}>}0), 0))');
+                expect(outputExpression).to.equal('If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0) - Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0))');
               });
 
               it('should generate correct expression when dimension is non-numeric', () => {
@@ -273,7 +273,7 @@ describe('difference', () => {
                   expression, modifier, properties, libraryItemsProps,
                 });
 
-                expect(outputExpression).to.equal('If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0) - Above(If(Count([dim1]) * Count([dim2]) > 0,  (　Sum(Sales)　)  + Sum({1<[dim1]={"=Only({1}[dim1])>=\'$(=MinString([dim1]))\' and Only({1}[dim1])<=\'$(=MaxString([dim1]))\'"},[dim2]={"=Only({1}[dim2])>=\'$(=MinString([dim2]))\' and Only({1}[dim2])<=\'$(=MaxString([dim2]))\'"}>}0), 0))');
+                expect(outputExpression).to.equal('If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0) - Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0))');
               });
             });
 
@@ -299,7 +299,7 @@ describe('difference', () => {
   describe('extractExpression', () => {
     describe('One dimension', () => {
       beforeEach(() => {
-        properties.qHyperCubeDef.qDimensions = [dim1];
+        properties.qHyperCubeDef.qDimensions = dim1;
       });
 
       describe('showExcludedValues = true', () => {

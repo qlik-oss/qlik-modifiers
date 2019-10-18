@@ -49,7 +49,10 @@ export default {
       const dim1Comp = helper.getDimComp(dimensions, 1, libraryItemsProps);
       const dim2Comp = helper.getDimComp(dimensions, 0, libraryItemsProps);
       const aggrComp = helper.getAggrComp(generatedExpression, dim1Comp, dim2Comp);
-      generatedExpression = aggrComp;
+      generatedExpression = !modifier.showExcludedValues ? aggrComp
+        : helper.getExcludedComp({
+          modifier, dimensions, libraryItemsProps, dimensionAndFieldList, valueComp: aggrComp,
+        });
     }
     return generatedExpression;
   },
