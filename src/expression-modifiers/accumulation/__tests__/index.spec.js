@@ -90,7 +90,7 @@ describe('accumulation', () => {
                 expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
               });
 
-              expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"}>}0), 0), 0, RowNo()))');
+              expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), 0, RowNo()))');
             });
 
             it('should generate correct expression when dimension is non-numeric', () => {
@@ -98,7 +98,7 @@ describe('accumulation', () => {
                 expression, modifier, properties, libraryItemsProps,
               });
 
-              expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"}>}0), 0), 0, RowNo()))');
+              expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), 0, RowNo()))');
             });
           });
 
@@ -131,7 +131,7 @@ describe('accumulation', () => {
                 expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
               });
 
-              expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"}>}0), 0), 0, 6))');
+              expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), 0, 6))');
             });
 
             it('should generate correct expression when dimension is non-numeric', () => {
@@ -139,7 +139,7 @@ describe('accumulation', () => {
                 expression, modifier, properties, libraryItemsProps,
               });
 
-              expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"}>}0), 0), 0, 6))');
+              expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), 0, 6))');
             });
           });
 
@@ -190,7 +190,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, RowNo(Total))), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}Aggr(RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, RowNo(Total))), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -198,7 +198,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, RowNo(Total))), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}Aggr(RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, RowNo(Total))), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
               });
 
@@ -212,7 +212,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Aggr(RangeSum(Above(Total  (　Sum(Sales)　) , 0, RowNo(Total))), dim2, dim1)');
+                  expect(outputExpression).to.equal('Aggr(RangeSum(Above(Total  (　Sum(Sales)　) , 0, RowNo(Total))), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))])');
                 });
               });
             });
@@ -232,7 +232,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, 6)), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}Aggr(RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -240,7 +240,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, 6)), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}Aggr(RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
               });
 
@@ -254,7 +254,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Aggr(RangeSum(Above(Total  (　Sum(Sales)　) , 0, 6)), dim2, dim1)');
+                  expect(outputExpression).to.equal('Aggr(RangeSum(Above(Total  (　Sum(Sales)　) , 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))])');
                 });
               });
             });
@@ -280,7 +280,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, RowNo())), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}Aggr(RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, RowNo())), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -288,7 +288,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, RowNo())), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}Aggr(RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, RowNo())), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
               });
 
@@ -302,7 +302,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Aggr(RangeSum(Above( (　Sum(Sales)　) , 0, RowNo())), dim2, dim1)');
+                  expect(outputExpression).to.equal('Aggr(RangeSum(Above( (　Sum(Sales)　) , 0, RowNo())), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))])');
                 });
               });
             });
@@ -322,7 +322,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}Aggr(RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, 6)), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}Aggr(RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -330,7 +330,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}Aggr(RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, 6)), dim2, dim1))');
+                  expect(outputExpression).to.equal('Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}Aggr(RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
                 });
               });
 
@@ -344,7 +344,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('Aggr(RangeSum(Above( (　Sum(Sales)　) , 0, 6)), dim2, dim1)');
+                  expect(outputExpression).to.equal('Aggr(RangeSum(Above( (　Sum(Sales)　) , 0, 6)), [$(=Replace(GetObjectField(1),\']\',\']]\'))], [$(=Replace(GetObjectField(0),\']\',\']]\'))])');
                 });
               });
             });
@@ -376,7 +376,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, RowNo(Total)))');
+                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, RowNo(Total)))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -384,7 +384,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, RowNo(Total)))');
+                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, RowNo(Total)))');
                 });
               });
 
@@ -418,7 +418,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, 6))');
+                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, 6))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -426,7 +426,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, 6))');
+                  expect(outputExpression).to.equal('RangeSum(Above(Total If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, 6))');
                 });
               });
 
@@ -466,7 +466,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, RowNo()))');
+                  expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, RowNo()))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -474,7 +474,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, RowNo()))');
+                  expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, RowNo()))');
                 });
               });
 
@@ -508,7 +508,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={">=$(=Min(dim1))<=$(=Max(dim1))"},dim2={">=$(=Min(dim2))<=$(=Max(dim2))"}>}0), 0), 0, 6))');
+                  expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(1),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(1),\']\',\']]\'))]))"}>}0), 0), 0, 6))');
                 });
 
                 it('should generate correct expression when dimension is non-numeric', () => {
@@ -516,7 +516,7 @@ describe('accumulation', () => {
                     expression, modifier, properties, libraryItemsProps,
                   });
 
-                  expect(outputExpression).to.equal('RangeSum(Above(If(Count(dim1) * Count(dim2) > 0,  (　Sum(Sales)　)  + Sum({1<dim1={"=Only({1}dim1)>=\'$(=MinString(dim1))\' and Only({1}dim1)<=\'$(=MaxString(dim1))\'"},dim2={"=Only({1}dim2)>=\'$(=MinString(dim2))\' and Only({1}dim2)<=\'$(=MaxString(dim2))\'"}>}0), 0), 0, 6))');
+                  expect(outputExpression).to.equal('RangeSum(Above(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) * Count([$(=Replace(GetObjectField(1),\']\',\']]\'))]) > 0,  (　Sum(Sales)　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"},[$(=Replace(GetObjectField(1),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(1),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(1),\']\',\']]\'))]))\'"}>}0), 0), 0, 6))');
                 });
               });
 
@@ -547,7 +547,7 @@ describe('accumulation', () => {
 
     describe('One dimension', () => {
       beforeEach(() => {
-        properties.qHyperCubeDef.qDimensions = dim1;
+        properties.qHyperCubeDef.qDimensions = [dim1];
       });
 
       describe('Normal dimension', () => {
