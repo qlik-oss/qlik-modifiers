@@ -295,7 +295,7 @@ function updateMeasureFieldName({ measure, properties }) {
             typeof inputExpr !== 'undefined'
             && getBase(measure)
             && helper.simplifyExpression(measure.qDef.base.qDef)
-              !== helper.simplifyExpression(inputExpr)
+            !== helper.simplifyExpression(inputExpr)
           ) {
             measure.qDef.base.qDef = inputExpr;
           }
@@ -417,7 +417,6 @@ function modifyMeasure({
     expression: props.qMeasure.qDef,
     modifier,
     properties,
-    libraryItemsProps,
     dimensionAndFieldList,
   });
   modifier.outputExpression = generatedExpression;
@@ -434,14 +433,13 @@ function modifyMeasure({
 }
 
 function modifyExpression({
-  measure, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+  measure, modifier, properties, dimensionAndFieldList,
 }) {
   const expression = measureBaseAdapter.getExpression(measure);
   const generatedExpression = availableModifiers[modifier.type].generateExpression({
     expression,
     modifier,
     properties,
-    libraryItemsProps,
     dimensionAndFieldList,
   });
   modifier.outputExpression = generatedExpression;
@@ -470,9 +468,9 @@ function updateTotalsFunction(measure) {
  */
 function updateIfChanged({ oldProperties, newProperties, model }) {
   const modified = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'))
-      !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
+    !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
     || JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'))
-      !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'));
+    !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'));
   if (!modified) {
     return Promise.resolve(modified);
   }
@@ -508,7 +506,7 @@ function applyMeasureModifiers({
           });
         } else {
           modifyExpression({
-            measure, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+            measure, modifier, properties, dimensionAndFieldList,
           });
         }
         updateTotalsFunction(measure);

@@ -34,12 +34,20 @@ export default {
 
   isApplicable({ properties, layout }) {
     return helper.isApplicable({
-      properties, layout, minDimensions: 1, maxDimensions: maxNumDimensionsSupported,
+      properties,
+      layout,
+      minDimensions: 1,
+      maxDimensions: maxNumDimensionsSupported,
     });
   },
 
   generateExpression({
-    expression, modifier, properties, libraryItemsProps, layout, numDimensions, dimensionAndFieldList,
+    expression,
+    modifier,
+    properties,
+    layout,
+    numDimensions,
+    dimensionAndFieldList,
   }) {
     if (!modifier) {
       return expression;
@@ -49,13 +57,26 @@ export default {
     if (typeof numberOfDims === 'undefined') {
       numberOfDims = helper.getNumDimensions({ properties, layout });
     }
-    const dimensions = util.getValue(properties, 'qHyperCubeDef.qDimensions', []);
+    const dimensions = util.getValue(
+      properties,
+      'qHyperCubeDef.qDimensions',
+      [],
+    );
     const treatMissingAsNull = modifier.showExcludedValues && modifier.nullSuppression;
     const expWithExcludedComp = helper.getExpressionWithExcludedComp({
-      expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
+      expression,
+      modifier,
+      dimensions,
+      dimensionAndFieldList,
+      treatMissingAsNull,
     });
     const numStepComp = helper.getNumStepComp(modifier, numberOfDims);
-    const aboveComp = helper.getAboveComp(modifier, numberOfDims, expWithExcludedComp, numStepComp);
+    const aboveComp = helper.getAboveComp(
+      modifier,
+      numberOfDims,
+      expWithExcludedComp,
+      numStepComp,
+    );
     if (modifier.nullSuppression) {
       averageComp = helper.getRangeComp('RangeAvg', aboveComp);
     } else {
@@ -66,12 +87,21 @@ export default {
     let generatedExpression = averageComp;
 
     if (helper.needDimension({ modifier, properties, layout })) {
-      const dim1Comp = helper.getDimComp(dimensions, 1, libraryItemsProps);
-      const dim2Comp = helper.getDimComp(dimensions, 0, libraryItemsProps);
-      const aggrComp = helper.getAggrComp(generatedExpression, dim1Comp, dim2Comp);
-      generatedExpression = !modifier.showExcludedValues ? aggrComp
+      const dim1Comp = helper.getDimComp(dimensions, 1);
+      const dim2Comp = helper.getDimComp(dimensions, 0);
+      const aggrComp = helper.getAggrComp(
+        generatedExpression,
+        dim1Comp,
+        dim2Comp,
+      );
+      generatedExpression = !modifier.showExcludedValues
+        ? aggrComp
         : helper.getExcludedComp({
-          modifier, dimensions, libraryItemsProps, dimensionAndFieldList, funcComp: 'Only', valueComp: aggrComp,
+          modifier,
+          dimensions,
+          dimensionAndFieldList,
+          funcComp: 'Only',
+          valueComp: aggrComp,
         });
     }
     return generatedExpression;
