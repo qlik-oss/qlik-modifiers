@@ -57,7 +57,11 @@ function findField(name, fieldList) {
       return field;
     }
     if (field.qDerivedFieldData) {
-      for (let j = 0; j < field.qDerivedFieldData.qDerivedFieldLists.length; ++j) {
+      for (
+        let j = 0;
+        j < field.qDerivedFieldData.qDerivedFieldLists.length;
+        ++j
+      ) {
         const derived = field.qDerivedFieldData.qDerivedFieldLists[j];
         for (let k = 0; k < derived.qFieldDefs.length; ++k) {
           const derivedField = derived.qFieldDefs[k];
@@ -73,15 +77,23 @@ function findField(name, fieldList) {
 
 function isNumeric(dimension, dimensionAndFieldList = {}) {
   if (dimension.qLibraryId) {
-    const libDim = findLibraryDimension(dimension.qLibraryId, dimensionAndFieldList.dimensionList);
+    const libDim = findLibraryDimension(
+      dimension.qLibraryId,
+      dimensionAndFieldList.dimensionList,
+    );
     return libDim && libDim.qData.info[0].qTags.indexOf('$numeric') > -1;
   }
-  const field = findField(dimension.qDef.qFieldDefs[0], dimensionAndFieldList.fieldList);
+  const field = findField(
+    dimension.qDef.qFieldDefs[0],
+    dimensionAndFieldList.fieldList,
+  );
   return field && field.qTags.indexOf('$numeric') > -1;
 }
 
 function getPrimaryDimension(modifier) {
-  return typeof modifier.primaryDimension === 'undefined' ? modifier.accumulationDimension : modifier.primaryDimension;
+  return typeof modifier.primaryDimension === 'undefined'
+    ? modifier.accumulationDimension
+    : modifier.primaryDimension;
 }
 
 function isFullRange(modifier) {
@@ -124,38 +136,27 @@ function getDimSortCriterias(dimensions, dimIdx = 0) {
   return dimension.qDef.qSortCriterias[0];
 }
 
-function getDimDef(dimensions, dimIdx = 0, libraryItemsProps) {
-  const dimension = dimensions[dimIdx];
-  const dimDef = dimension.qLibraryId
-    ? libraryItemsProps[dimension.qLibraryId].qDim.qFieldDefs[0]
-    : dimension.qDef.qFieldDefs[0];
-  return stripComments(dimDef);
+function getDimDefWithWrapper(dimIdx = 0) {
+  return `[$(=Replace(GetObjectField(${dimIdx}),']',']]'))]`;
 }
 
-function escapeField(field) {
-  if (!field || field === ']') {
-    return field;
-  }
-  if (/^[A-Za-z][A-Za-z0-9_]*$/.test(field)) {
-    return field;
-  }
-  return `[${field.replace(/\]/g, ']]')}]`;
-}
-
-function getDimDefWithWrapper(dimensions, dimIdx = 0, libraryItemsProps) {
-  const dimDef = getDimDef(dimensions, dimIdx, libraryItemsProps);
-  return escapeField(dimDef);
-}
-
-function getDimComp(dimensions, dimIdx, libraryItemsProps) {
+function getDimComp(dimensions, dimIdx) {
   const sortCriterias = getDimSortCriterias(dimensions, dimIdx);
-  const dimDef = getDimDefWithWrapper(dimensions, dimIdx, libraryItemsProps);
-  if (!sortCriterias.qSortByExpression && !sortCriterias.qSortByNumeric && !sortCriterias.qSortByAscii) {
+  const dimDef = getDimDefWithWrapper(dimIdx);
+  if (
+    !sortCriterias.qSortByExpression
+    && !sortCriterias.qSortByNumeric
+    && !sortCriterias.qSortByAscii
+  ) {
     return dimDef;
   }
   const type = ['Descending', 'Ascending'];
-  const numericComp = sortCriterias.qSortByNumeric ? `(Numeric, ${type[(sortCriterias.qSortByNumeric + 1) / 2]})` : '';
-  const textComp = sortCriterias.qSortByAscii ? `(Text, ${type[(sortCriterias.qSortByAscii + 1) / 2]})` : '';
+  const numericComp = sortCriterias.qSortByNumeric
+    ? `(Numeric, ${type[(sortCriterias.qSortByNumeric + 1) / 2]})`
+    : '';
+  const textComp = sortCriterias.qSortByAscii
+    ? `(Text, ${type[(sortCriterias.qSortByAscii + 1) / 2]})`
+    : '';
   if (sortCriterias.qSortByNumeric && sortCriterias.qSortByAscii) {
     return `(${dimDef}, ${numericComp}, ${textComp})`;
   }
@@ -192,12 +193,17 @@ function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
 }
 
 function getRangeLimit(isDimNumeric, dim) {
-  return isDimNumeric ? `${dim}={">=$(=Min(${dim}))<=$(=Max(${dim}))"}`
+  return isDimNumeric
+    ? `${dim}={">=$(=Min(${dim}))<=$(=Max(${dim}))"}`
     : `${dim}={"=Only({1}${dim})>='$(=MinString(${dim}))' and Only({1}${dim})<='$(=MaxString(${dim}))'"}`;
 }
 
 function getExcludedComp({
-  modifier = {}, dimensions, libraryItemsProps, dimensionAndFieldList, funcComp = 'Sum', valueComp = '0',
+  modifier = {},
+  dimensions,
+  dimensionAndFieldList,
+  funcComp = 'Sum',
+  valueComp = '0',
 }) {
   const { showExcludedValues } = modifier;
   if (!showExcludedValues) {
@@ -205,15 +211,15 @@ function getExcludedComp({
   }
   if (dimensions && dimensions.length === 1) {
     const isDim1Numeric = isNumeric(dimensions[0], dimensionAndFieldList);
-    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
+    const dim1 = getDimDefWithWrapper(0);
     const filter1Comp = getRangeLimit(isDim1Numeric, dim1);
     return `${funcComp}({1<${filter1Comp}>}${valueComp})`;
   }
   if (dimensions && dimensions.length === 2) {
     const isDim1Numeric = isNumeric(dimensions[0], dimensionAndFieldList);
     const isDim2Numeric = isNumeric(dimensions[1], dimensionAndFieldList);
-    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
-    const dim2 = getDimDefWithWrapper(dimensions, 1, libraryItemsProps);
+    const dim1 = getDimDefWithWrapper(0);
+    const dim2 = getDimDefWithWrapper(1);
     const filter1Comp = getRangeLimit(isDim1Numeric, dim1);
     const filter2Comp = getRangeLimit(isDim2Numeric, dim2);
     return `${funcComp}({1<${filter1Comp},${filter2Comp}>}${valueComp})`;
@@ -222,7 +228,11 @@ function getExcludedComp({
 }
 
 function getExpressionWithExcludedComp({
-  expression, modifier, dimensions, libraryItemsProps, dimensionAndFieldList, treatMissingAsNull,
+  expression,
+  modifier,
+  dimensions,
+  dimensionAndFieldList,
+  treatMissingAsNull,
 }) {
   const expComp = simplifyExpression(expression);
   const expWithMarkersComp = getExpressionWithMarkers(expComp);
@@ -231,16 +241,18 @@ function getExpressionWithExcludedComp({
     return expWithMarkersComp;
   }
   const excludedComp = getExcludedComp({
-    modifier, dimensions, libraryItemsProps, dimensionAndFieldList,
+    modifier,
+    dimensions,
+    dimensionAndFieldList,
   });
   const valueComp = treatMissingAsNull ? '' : ', 0';
   if (dimensions && dimensions.length === 1) {
-    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
+    const dim1 = getDimDefWithWrapper(0);
     return `If(Count(${dim1}) > 0, ${expWithMarkersComp} + ${excludedComp}${valueComp})`;
   }
   if (dimensions && dimensions.length === 2) {
-    const dim1 = getDimDefWithWrapper(dimensions, 0, libraryItemsProps);
-    const dim2 = getDimDefWithWrapper(dimensions, 1, libraryItemsProps);
+    const dim1 = getDimDefWithWrapper(0);
+    const dim2 = getDimDefWithWrapper(1);
     return `If(Count(${dim1}) * Count(${dim2}) > 0, ${expWithMarkersComp} + ${excludedComp}${valueComp})`;
   }
   return expWithMarkersComp;
@@ -265,18 +277,21 @@ function getAggrComp(comp1, comp2, comp3) {
 }
 
 function getNumDimensions({ properties, layout }) {
-  return util.getValue(properties, 'qHyperCubeDef.qDimensions', util.getValue(layout, 'qHyperCube.qDimensionInfo', []))
-    .length;
+  return util.getValue(
+    properties,
+    'qHyperCubeDef.qDimensions',
+    util.getValue(layout, 'qHyperCube.qDimensionInfo', []),
+  ).length;
 }
 
 function needDimension({ modifier, properties, layout }) {
   const primaryDimension = getPrimaryDimension(modifier);
-  return primaryDimension === 0 && getNumDimensions({ properties, layout }) === 2;
+  return (
+    primaryDimension === 0 && getNumDimensions({ properties, layout }) === 2
+  );
 }
 
-function extractInputExpression({
-  outputExpression, modifier,
-}) {
+function extractInputExpression({ outputExpression, modifier }) {
   if (!modifier) {
     return;
   }
@@ -302,7 +317,10 @@ function initModifier(modifier, defaultOptions) {
 }
 
 function isApplicable({
-  properties, layout, minDimensions = 1, maxDimensions = 2,
+  properties,
+  layout,
+  minDimensions = 1,
+  maxDimensions = 2,
 }) {
   const numDimensions = getNumDimensions({ properties, layout });
   return numDimensions >= minDimensions && numDimensions <= maxDimensions;
@@ -352,5 +370,4 @@ export default {
   getExpressionWithMarkers,
 
   canExtract,
-
 };
