@@ -34,13 +34,13 @@ function getRef(measure, modifiersRef) {
   return index > -1 ? `${modifiersRef}.${index}` : modifiersRef;
 }
 
-export default function (rootPath) {
+export default function (rootPath, translationKeys = {}) {
   const modifierProperties = {
     type: 'items',
     items: {
       disclaimer: {
         component: 'text',
-        translation: 'properties.modifier.accumulation.disclaimer',
+        translation: translationKeys.disclaimer || 'properties.modifier.accumulation.disclaimer',
         show(itemData, handler) {
           return !helper.isApplicable({ properties: handler.properties });
         },
@@ -51,9 +51,9 @@ export default function (rootPath) {
           primaryDimension: {
             refFn: data => `${getRef(data, rootPath)}.accumulationDimension`,
             type: 'integer',
-            translation: 'properties.modifier.primaryDimension',
+            translation: translationKeys.primaryDimension || 'properties.modifier.primaryDimension',
             title: {
-              translation: 'properties.modifier.accumulation.primaryDimension.tooltip',
+              translation: translationKeys.primaryDimensionTooltip || 'properties.modifier.accumulation.primaryDimension.tooltip',
             },
             component: 'dropdown',
             schemaIgnore: true,
@@ -69,9 +69,9 @@ export default function (rootPath) {
           crossAllDimensions: {
             refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
             type: 'boolean',
-            translation: 'properties.modifier.crossAllDimensions',
+            translation: translationKeys.crossAllDimensions || 'properties.modifier.crossAllDimensions',
             title: {
-              translation: 'properties.modifier.accumulation.crossAllDimensions.tooltip',
+              translation: translationKeys.crossAllDimensionsTooltip || 'properties.modifier.accumulation.crossAllDimensions.tooltip',
             },
             schemaIgnore: true,
             defaultValue: false,
@@ -82,25 +82,25 @@ export default function (rootPath) {
           fullRange: {
             refFn: data => `${getRef(data, rootPath)}.fullAccumulation`,
             type: 'boolean',
-            translation: 'properties.modifier.range',
+            translation: translationKeys.range || 'properties.modifier.range',
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: false,
             options: [
               {
                 value: true,
-                translation: 'properties.modifier.range.full',
+                translation: translationKeys.rangeFull || 'properties.modifier.range.full',
               },
               {
                 value: false,
-                translation: 'properties.modifier.range.custom',
+                translation: translationKeys.rangeCustom || 'properties.modifier.range.custom',
               },
             ],
           },
           steps: {
             refFn: data => `${getRef(data, rootPath)}.steps`,
             type: 'integer',
-            translation: 'properties.modifier.range.steps',
+            translation: translationKeys.rangeSteps || 'properties.modifier.range.steps',
             schemaIgnore: true,
             defaultValue: 6,
             change(itemData) {
@@ -118,7 +118,7 @@ export default function (rootPath) {
           showExcludedValues: {
             refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
             type: 'boolean',
-            translation: 'properties.modifier.showExcludedValues',
+            translation: translationKeys.showExcludedValues || 'properties.modifier.showExcludedValues',
             schemaIgnore: true,
             defaultValue: true,
           },
