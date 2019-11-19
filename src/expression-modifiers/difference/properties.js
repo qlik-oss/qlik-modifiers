@@ -34,13 +34,13 @@ function getRef(measure, modifiersRef) {
   return index > -1 ? `${modifiersRef}.${index}` : modifiersRef;
 }
 
-export default function (rootPath) {
+export default function (rootPath, translationKeys = {}) {
   const modifierProperties = {
     type: 'items',
     items: {
       disclaimer: {
         component: 'text',
-        translation: 'properties.modifier.difference.disclaimer',
+        translation: translationKeys.disclaimer || 'properties.modifier.difference.disclaimer',
         show(itemData, handler) {
           return !helper.isApplicable({ properties: handler.properties });
         },
@@ -51,9 +51,9 @@ export default function (rootPath) {
           primaryDimension: {
             refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
             type: 'integer',
-            translation: 'properties.modifier.primaryDimension',
+            translation: translationKeys.primaryDimension || 'properties.modifier.primaryDimension',
             title: {
-              translation: 'properties.modifier.difference.primaryDimension.tooltip',
+              translation: translationKeys.primaryDimensionTooltip || 'properties.modifier.difference.primaryDimension.tooltip',
             },
             component: 'dropdown',
             schemaIgnore: true,
@@ -69,9 +69,9 @@ export default function (rootPath) {
           crossAllDimensions: {
             refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
             type: 'boolean',
-            translation: 'properties.modifier.crossAllDimensions',
+            translation: translationKeys.crossAllDimensions || 'properties.modifier.crossAllDimensions',
             title: {
-              translation: 'properties.modifier.difference.crossAllDimensions.tooltip',
+              translation: translationKeys.crossAllDimensionsTooltip || 'properties.modifier.difference.crossAllDimensions.tooltip',
             },
             schemaIgnore: true,
             defaultValue: false,
@@ -82,7 +82,7 @@ export default function (rootPath) {
           showExcludedValues: {
             refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
             type: 'boolean',
-            translation: 'properties.modifier.showExcludedValues',
+            translation: translationKeys.showExcludedValues || 'properties.modifier.showExcludedValues',
             schemaIgnore: true,
             defaultValue: true,
           },
