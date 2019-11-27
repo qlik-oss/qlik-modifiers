@@ -51,7 +51,7 @@ export default {
       'qHyperCubeDef.qDimensions',
       [],
     );
-    const dim1 = helper.getDimDefWithWrapper(0);
+    const dim = helper.getDimDefWithWrapper(modifier.primaryDimension);
 
     const expWithExcludedComp = helper.getExpressionWithExcludedComp({
       expression,
@@ -64,13 +64,13 @@ export default {
 
     switch (modifier.relativeNumbers) {
       case 0:
-        generatedExpression = helper.getSum(helper.getTotal(helper.getAggrOneDim(generatedExpression, dim1)));
+        generatedExpression = helper.getSum(helper.getTotal(helper.getAggrOneDim(generatedExpression, dim)));
         break;
       case 1:
-        generatedExpression = helper.getSumDisregardSelec(helper.getAggrDisregadSelec(generatedExpression, dim1));
+        generatedExpression = helper.getSumDisregardSelec(helper.getAggrDisregadSelec(generatedExpression, dim));
         break;
       case 2:
-        generatedExpression = helper.getSumDisregardSelec(helper.getTotal(helper.getAggrDisregadSelec(generatedExpression, dim1)));
+        generatedExpression = helper.getSumDisregardSelec(helper.getTotal(helper.getAggrDisregadSelec(generatedExpression, dim)));
         break;
       default:
         generatedExpression = expWithExcludedComp;
