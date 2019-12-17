@@ -15,6 +15,29 @@ const DEFAULT_OPTIONS = {
 
 const maxNumDimensionsSupported = 2;
 
+function getAggrOneDim(expression, dim1) {
+  return `Aggr(${expression}, ${dim1})`;
+}
+
+function getAggrDisregadSelec(expression, dim1) {
+  return `Aggr({1}${expression}, ${dim1})`;
+}
+
+function getTotal(expression) {
+  return `total ${expression}`;
+}
+function getSum(expression) {
+  return `Sum (${expression})`;
+}
+
+function getDivide(measureExp, expression) {
+  return `${measureExp}/${expression}`;
+}
+
+function getSumDisregardSelec(expression) {
+  return `Sum({1} ${expression})`;
+}
+
 export default {
   translationKey: 'properties.modifier.normalization',
 
@@ -64,18 +87,18 @@ export default {
 
     switch (modifier.relativeNumbers) {
       case 0:
-        generatedExpression = helper.getSum(helper.getTotal(helper.getAggrOneDim(generatedExpression, dim)));
+        generatedExpression = getSum(getTotal(getAggrOneDim(generatedExpression, dim)));
         break;
       case 1:
-        generatedExpression = helper.getSumDisregardSelec(helper.getAggrDisregadSelec(generatedExpression, dim));
+        generatedExpression = getSumDisregardSelec(getAggrDisregadSelec(generatedExpression, dim));
         break;
       case 2:
-        generatedExpression = helper.getSumDisregardSelec(helper.getTotal(helper.getAggrDisregadSelec(generatedExpression, dim)));
+        generatedExpression = getSumDisregardSelec(getTotal(getAggrDisregadSelec(generatedExpression, dim)));
         break;
       default:
         generatedExpression = expWithExcludedComp;
     }
-    generatedExpression = helper.getDivide(expWithExcludedComp, generatedExpression);
+    generatedExpression = getDivide(expWithExcludedComp, generatedExpression);
     return generatedExpression;
   },
 

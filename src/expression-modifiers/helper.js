@@ -277,29 +277,6 @@ function getAggrComp(comp1, comp2, comp3) {
   return `Aggr(${comp1}, ${comp2}, ${comp3})`;
 }
 
-function getAggrOneDim(expression, dim1) {
-  return `Aggr(${expression}, ${dim1})`;
-}
-
-function getAggrDisregadSelec(expression, dim1) {
-  return `Aggr({1}${expression}, ${dim1})`;
-}
-
-function getTotal(expression) {
-  return `total ${expression}`;
-}
-function getSum(expression) {
-  return `Sum (${expression})`;
-}
-
-function getDivide(measureExp, expression) {
-  return `${measureExp}/${expression}`;
-}
-
-function getSumDisregardSelec(expression) {
-  return `Sum({1} ${expression})`;
-}
-
 function getNumDimensions({ properties, layout }) {
   return util.getValue(
     properties,
@@ -394,18 +371,6 @@ export default {
   getExpressionWithMarkers,
 
   canExtract,
-
-  getTotal,
-
-  getAggrOneDim,
-
-  getAggrDisregadSelec,
-
-  getSum,
-
-  getSumDisregardSelec,
-
-  getDivide,
 
   getDimDefWithWrapper,
 };
