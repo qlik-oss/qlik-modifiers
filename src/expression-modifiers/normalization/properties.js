@@ -39,13 +39,13 @@ function getRef(measure, modifiersRef) {
   return index > -1 ? `${modifiersRef}.${index}` : modifiersRef;
 }
 
-export default function (rootPath) {
+export default function (rootPath, translationKeys = {}) {
   const modifierProperties = {
     type: 'items',
     items: {
       disclaimer: {
         component: 'text',
-        translation: 'properties.modifier.normalization.disclaimer',
+        translation: translationKeys.disclaimer || 'properties.modifier.normalization.disclaimer',
         show(itemData, handler) {
           return !helper.isApplicable({ properties: handler.properties });
         },
@@ -56,10 +56,10 @@ export default function (rootPath) {
           primaryDimension: {
             refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
             type: 'integer',
-            translation: 'properties.modifier.primaryDimension',
+            translation: translationKeys.primaryDimension || 'properties.modifier.primaryDimension',
             title: {
               translation:
-                'properties.modifier.normalization.primaryDimension.tooltip',
+              translationKeys.primaryDimensionTooltip || 'properties.modifier.normalization.primaryDimension.tooltip',
             },
             component: 'dropdown',
             schemaIgnore: true,
@@ -78,10 +78,10 @@ export default function (rootPath) {
           relativeNumbers: {
             refFn: data => `${getRef(data, rootPath)}.relativeNumbers`,
             type: 'string',
-            translation: 'properties.modifier.relativeNumbers',
+            translation: translationKeys.modifierRelativeNumbers || 'properties.modifier.relativeNumbers',
             title: {
               translation:
-                'properties.modifier.relativeNumbers.tooltip',
+              translationKeys.modifierRelativeNumbersTooltip || 'properties.modifier.relativeNumbers.tooltip',
             },
             component: 'dropdown',
             schemaIgnore: true,
@@ -89,25 +89,25 @@ export default function (rootPath) {
             options: [
               {
                 value: NORMALIZATION_TYPES.RELATIVE_TO_TOTAL_SELECTION,
-                translation: 'properties.modifier.relativeNumbers.total.selection',
+                translation: translationKeys.relativeNumbersTotalSelection || 'properties.modifier.relativeNumbers.total.selection',
               },
               {
                 value: NORMALIZATION_TYPES.RELATIVE_TO_DIM_UNIVERSE,
-                translation: 'properties.modifier.relativeNumbers.dimensional.universe',
+                translation: translationKeys.relativeNumbersDimUniverse || 'properties.modifier.relativeNumbers.dimensional.universe',
               },
               {
                 value: NORMALIZATION_TYPES.RELATIVE_TO_TOTAL_UNIVERSE,
-                translation: 'properties.modifier.relativeNumbers.total.universe',
+                translation: translationKeys.relativeNumbersTotalUniverse || 'properties.modifier.relativeNumbers.total.universe',
               },
             ],
           },
           crossAllDimensions: {
             refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
             type: 'boolean',
-            translation: 'properties.modifier.crossAllDimensions',
+            translation: translationKeys.crossAllDimensions || 'properties.modifier.crossAllDimensions',
             title: {
               translation:
-                'properties.modifier.normalization.crossAllDimensions.tooltip',
+              translationKeys.crossAllDimensionsTooltip || 'properties.modifier.normalization.crossAllDimensions.tooltip',
             },
             schemaIgnore: true,
             defaultValue: false,
@@ -118,7 +118,7 @@ export default function (rootPath) {
           showExcludedValues: {
             refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
             type: 'boolean',
-            translation: 'properties.modifier.showExcludedValues',
+            translation: translationKeys.showExcludedValues || 'properties.modifier.showExcludedValues',
             schemaIgnore: true,
             defaultValue: true,
           },
