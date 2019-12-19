@@ -128,7 +128,12 @@ export default function (rootPath, translationKeys = {}) {
         },
       },
     },
-    show(itemData) {
+    show(itemData, handler, args) {
+      const modifierTypes = args.ext.support.modifiers;
+      const supported = modifierTypes && Array.isArray(modifierTypes) && modifierTypes.indexOf(MODIFIER_TYPE) !== -1;
+      if (!supported) {
+        return false;
+      }
       const modifier = getModifier(itemData, rootPath);
       return modifier && !modifier.disabled;
     },
