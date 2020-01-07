@@ -19,7 +19,7 @@ function getAggrOneDim(expression, dim1) {
   return `Aggr(${expression}, ${dim1})`;
 }
 
-function getAggrDisregadSelec(expression, dim1) {
+function getAggrDisregardSelect(expression, dim1) {
   return `Aggr({1}${expression}, ${dim1})`;
 }
 
@@ -90,10 +90,10 @@ export default {
         generatedExpression = getSum(getTotal(getAggrOneDim(generatedExpression, dim)));
         break;
       case 1:
-        generatedExpression = getSumDisregardSelec(getAggrDisregadSelec(generatedExpression, dim));
+        generatedExpression = getSumDisregardSelec(getAggrDisregardSelect(generatedExpression, dim));
         break;
       case 2:
-        generatedExpression = getSumDisregardSelec(getTotal(getAggrDisregadSelec(generatedExpression, dim)));
+        generatedExpression = getSumDisregardSelec(getTotal(getAggrDisregardSelect(generatedExpression, dim)));
         break;
       default:
         generatedExpression = expWithExcludedComp;
