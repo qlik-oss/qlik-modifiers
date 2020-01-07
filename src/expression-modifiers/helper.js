@@ -136,6 +136,7 @@ function getDimSortCriterias(dimensions, dimIdx = 0) {
   return dimension.qDef.qSortCriterias[0];
 }
 
+// Engine will get right dimension, works for drill-down and alternative dimension
 function getDimDefWithWrapper(dimIdx = 0) {
   return `[$(=Replace(GetObjectField(${dimIdx}),']',']]'))]`;
 }
@@ -370,4 +371,6 @@ export default {
   getExpressionWithMarkers,
 
   canExtract,
+
+  getDimDefWithWrapper,
 };

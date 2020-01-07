@@ -7,6 +7,7 @@ import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
 import difference from './expression-modifiers/difference';
+import normalization from './expression-modifiers/normalization';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
@@ -15,6 +16,7 @@ const availableModifiers = {
   accumulation,
   movingAverage,
   difference,
+  normalization,
 };
 
 /**
@@ -86,37 +88,53 @@ function apply({
 
   const measures = util.getValue(layout, 'qHyperCube.qMeasureInfo');
   const { lastReloadTime } = objects[model.id];
-  objects[model.id].lastReloadTime = util.getValue(model, 'app.layout.qLastReloadTime');
+  objects[model.id].lastReloadTime = util.getValue(
+    model,
+    'app.layout.qLastReloadTime',
+  );
 
   if (hasActiveModifiers({ measures, layout })) {
     const dataReloaded = isDataReloaded({
-      measures, layout, model, lastReloadTime,
+      measures,
+      layout,
+      model,
+      lastReloadTime,
     });
-    if (dataReloaded || needToUpdateMeasures({
-      measures, layout, masterItem, isFirstTime,
-    })) {
+    if (
+      dataReloaded
+      || needToUpdateMeasures({
+        measures,
+        layout,
+        masterItem,
+        isFirstTime,
+      })
+    ) {
       return model.getEffectiveProperties().then((effectiveProperties) => {
         const libraryIds = getLibraryIds(effectiveProperties);
-        return getDimensionAndFieldList({ model }).then(dimensionAndFieldList => getLibraryItemsProperties({ libraryIds, model }).then((libraryItemsProps) => {
-          if (dataReloaded) {
-            updateFieldNames({ properties: effectiveProperties });
-          }
-          return applyModifiers({
-            model,
-            properties: effectiveProperties,
-            runUpdateIfChange: true,
-            masterItem,
-            libraryItemsProps,
-            dimensionAndFieldList,
-          });
-        }));
+        return getDimensionAndFieldList({ model }).then(dimensionAndFieldList => getLibraryItemsProperties({ libraryIds, model }).then(
+          (libraryItemsProps) => {
+            if (dataReloaded) {
+              updateFieldNames({ properties: effectiveProperties });
+            }
+            return applyModifiers({
+              model,
+              properties: effectiveProperties,
+              runUpdateIfChange: true,
+              masterItem,
+              libraryItemsProps,
+              dimensionAndFieldList,
+            });
+          },
+        ));
       });
     }
     return Promise.resolve(modified);
   }
 
   if (hasSomethingToRemove(measures)) {
-    return model.getEffectiveProperties().then(props => cleanUpModifiers({ model, properties: props }));
+    return model
+      .getEffectiveProperties()
+      .then(props => cleanUpModifiers({ model, properties: props }));
   }
 
   return Promise.resolve(modified);
@@ -135,21 +153,39 @@ function apply({
  * @static
  */
 function applyModifiers({
-  model, properties, measures, runUpdateIfChange = false, masterItem, libraryItemsProps, dimensionAndFieldList,
+  model,
+  properties,
+  measures,
+  runUpdateIfChange = false,
+  masterItem,
+  libraryItemsProps,
+  dimensionAndFieldList,
 }) {
   const libraryIds = getLibraryIds(properties);
 
-  return updateMasterItemsSubscription({ model, libraryIds, masterItem }).then(() => {
-    const oldProperties = runUpdateIfChange ? extend(true, {}, properties) : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
-    return updateMeasuresProperties({
-      measures, properties, model, libraryItemsProps, dimensionAndFieldList,
-    }).then(() => {
-      if (runUpdateIfChange) {
-        return updateIfChanged({ oldProperties, newProperties: properties, model }); // returns promise with modified: true/false
-      }
-      return Promise.resolve(false);
-    });
-  });
+  return updateMasterItemsSubscription({ model, libraryIds, masterItem }).then(
+    () => {
+      const oldProperties = runUpdateIfChange
+        ? extend(true, {}, properties)
+        : properties; // Copy the current porperties and use the current properties to update values. This will work for 'set property' here or later through a change in property panel
+      return updateMeasuresProperties({
+        measures,
+        properties,
+        model,
+        libraryItemsProps,
+        dimensionAndFieldList,
+      }).then(() => {
+        if (runUpdateIfChange) {
+          return updateIfChanged({
+            oldProperties,
+            newProperties: properties,
+            model,
+          }); // returns promise with modified: true/false
+        }
+        return Promise.resolve(false);
+      });
+    },
+  );
 }
 
 /**
@@ -198,14 +234,18 @@ function hasActiveModifiers({ measures, properties, layout }) {
 }
 
 function isSupportedModifiers(modifierTypes) {
-  return Array.isArray(modifierTypes) && modifierTypes.some(modifierType => availableModifiers[modifierType]);
+  return (
+    Array.isArray(modifierTypes)
+    && modifierTypes.some(modifierType => availableModifiers[modifierType])
+  );
 }
 
 function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
   return (
     Array.isArray(modifierTypes)
     && modifierTypes.some(
-      type => availableModifiers[type] && availableModifiers[type].isApplicable({ properties, layout }),
+      type => availableModifiers[type]
+        && availableModifiers[type].isApplicable({ properties, layout }),
     )
   );
 }
@@ -226,7 +266,8 @@ function limitedSorting({ measures, properties, layout }) {
     const modifiers = getModifiers(measure);
     if (isActiveModifiers({ modifiers, properties, layout })) {
       hasActive = true;
-      needDims = needDims || needDimensionForGeneration({ modifiers, properties, layout });
+      needDims = needDims
+        || needDimensionForGeneration({ modifiers, properties, layout });
     }
   });
   return hasActive && !needDims;
@@ -288,14 +329,21 @@ function updateMeasureFieldName({ measure, properties }) {
             throw new Error(`Modifier "${modifier.type}" is not available`);
           }
           if (activeModifiersPerMeasure > 1) {
-            throw new Error('More than 1 modifier on a measure! (not yet supported)');
+            throw new Error(
+              'More than 1 modifier on a measure! (not yet supported)',
+            );
           }
-          const inputExpr = availableModifiers[modifier.type].extractInputExpression({ outputExpression: measure.qDef.qDef, modifier });
+          const inputExpr = availableModifiers[
+            modifier.type
+          ].extractInputExpression({
+            outputExpression: measure.qDef.qDef,
+            modifier,
+          });
           if (
             typeof inputExpr !== 'undefined'
             && getBase(measure)
             && helper.simplifyExpression(measure.qDef.base.qDef)
-            !== helper.simplifyExpression(inputExpr)
+              !== helper.simplifyExpression(inputExpr)
           ) {
             measure.qDef.base.qDef = inputExpr;
           }
@@ -314,9 +362,15 @@ function isActiveModifiers({ modifiers, properties, layout }) {
   return (
     Array.isArray(modifiers)
     && modifiers.some((modifier) => {
-      if (typeof modifier === 'object' && !modifier.disabled && availableModifiers[modifier.type]) {
+      if (
+        typeof modifier === 'object'
+        && !modifier.disabled
+        && availableModifiers[modifier.type]
+      ) {
         if (typeof supportedTypes[modifier.type] === 'undefined') {
-          supportedTypes[modifier.type] = availableModifiers[modifier.type].isApplicable({ properties, layout });
+          supportedTypes[modifier.type] = availableModifiers[
+            modifier.type
+          ].isApplicable({ properties, layout });
         }
         return supportedTypes[modifier.type];
       }
@@ -353,7 +407,11 @@ function needToUpdateMeasures({
   // 2: a master measure or a master dimension (which is used for generation of the expression) is changed, or
   // 3: (TODO) data is reloaded (e.g. a field is renamed and then reloaded)
 
-  return isFirstTime || masterItem || measures.some(measure => needToUpdateMeasure({ measure, layout }));
+  return (
+    isFirstTime
+    || masterItem
+    || measures.some(measure => needToUpdateMeasure({ measure, layout }))
+  );
 }
 
 function updateProperties({ model, oldProperties, newProperties }) {
@@ -367,7 +425,11 @@ function updateProperties({ model, oldProperties, newProperties }) {
     return model.setProperties(newProperties);
   }
 
-  return SoftPropertyHandler.saveSoftProperties(model, oldProperties, newProperties);
+  return SoftPropertyHandler.saveSoftProperties(
+    model,
+    oldProperties,
+    newProperties,
+  );
 }
 
 function getDimensionAndFieldList({ model, dimensionAndFieldList }) {
@@ -410,10 +472,17 @@ function getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }) {
 }
 
 function modifyMeasure({
-  measure, modifier, libraryId, properties, libraryItemsProps, dimensionAndFieldList,
+  measure,
+  modifier,
+  libraryId,
+  properties,
+  libraryItemsProps,
+  dimensionAndFieldList,
 }) {
   const props = libraryItemsProps[libraryId];
-  const generatedExpression = availableModifiers[modifier.type].generateExpression({
+  const generatedExpression = availableModifiers[
+    modifier.type
+  ].generateExpression({
     expression: props.qMeasure.qDef,
     modifier,
     properties,
@@ -433,10 +502,15 @@ function modifyMeasure({
 }
 
 function modifyExpression({
-  measure, modifier, properties, dimensionAndFieldList,
+  measure,
+  modifier,
+  properties,
+  dimensionAndFieldList,
 }) {
   const expression = measureBaseAdapter.getExpression(measure);
-  const generatedExpression = availableModifiers[modifier.type].generateExpression({
+  const generatedExpression = availableModifiers[
+    modifier.type
+  ].generateExpression({
     expression,
     modifier,
     properties,
@@ -468,17 +542,32 @@ function updateTotalsFunction(measure) {
  */
 function updateIfChanged({ oldProperties, newProperties, model }) {
   const modified = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'))
-    !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
-    || JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'))
-    !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures'));
+      !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
+    || JSON.stringify(
+      util.getValue(
+        oldProperties,
+        'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
+      ),
+    )
+      !== JSON.stringify(
+        util.getValue(
+          newProperties,
+          'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
+        ),
+      );
   if (!modified) {
     return Promise.resolve(modified);
   }
-  return updateProperties({ model, oldProperties, newProperties }).then(() => modified);
+  return updateProperties({ model, oldProperties, newProperties }).then(
+    () => modified,
+  );
 }
 
 function applyMeasureModifiers({
-  measure, properties, libraryItemsProps, dimensionAndFieldList,
+  measure,
+  properties,
+  libraryItemsProps,
+  dimensionAndFieldList,
 }) {
   let activeModifiersPerMeasure = 0;
   if (!measureBase.isValid(measure)) {
@@ -495,18 +584,28 @@ function applyMeasureModifiers({
           throw new Error(`Modifier "${modifier.type}" is not available`);
         }
         if (activeModifiersPerMeasure > 1) {
-          throw new Error('More than 1 modifier on a measure! (not yet supported)');
+          throw new Error(
+            'More than 1 modifier on a measure! (not yet supported)',
+          );
         }
         availableModifiers[modifier.type].initModifier(modifier);
 
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);
         if (libraryId) {
           modifyMeasure({
-            measure, modifier, libraryId, properties, libraryItemsProps, dimensionAndFieldList,
+            measure,
+            modifier,
+            libraryId,
+            properties,
+            libraryItemsProps,
+            dimensionAndFieldList,
           });
         } else {
           modifyExpression({
-            measure, modifier, properties, dimensionAndFieldList,
+            measure,
+            modifier,
+            properties,
+            dimensionAndFieldList,
           });
         }
         updateTotalsFunction(measure);
@@ -521,7 +620,11 @@ function needDimensionForGeneration({ modifiers, properties, layout }) {
       modifier => typeof modifier === 'object'
         && !modifier.disabled
         && availableModifiers[modifier.type]
-        && availableModifiers[modifier.type].needDimension({ modifier, properties, layout }),
+        && availableModifiers[modifier.type].needDimension({
+          modifier,
+          properties,
+          layout,
+        }),
     )
   );
 }
@@ -529,7 +632,13 @@ function needDimensionForGeneration({ modifiers, properties, layout }) {
 function getLibraryIds(properties) {
   const measures = util
     .getValue(properties, 'qHyperCubeDef.qMeasures', [])
-    .concat(util.getValue(properties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures', []));
+    .concat(
+      util.getValue(
+        properties,
+        'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
+        [],
+      ),
+    );
   const measureLibraryIds = [];
   const dimensionLibraryIds = [];
   let needDims = false;
@@ -555,7 +664,11 @@ function getLibraryIds(properties) {
 
 function updateMasterItemsSubscription({ model, libraryIds, masterItem }) {
   if (!masterItem) {
-    if (libraryIds && (libraryIds.measureLibraryIds.length || libraryIds.dimensionLibraryIds.length)) {
+    if (
+      libraryIds
+      && (libraryIds.measureLibraryIds.length
+        || libraryIds.dimensionLibraryIds.length)
+    ) {
       objects[model.id].masterItemSubscriber = objects[model.id].masterItemSubscriber
         || MasterItemSubscriber({
           model,
@@ -584,12 +697,22 @@ function cleanUpModifiers({ model, properties }) {
 }
 
 function updateMeasuresProperties({
-  measures, properties, model, libraryItemsProps, dimensionAndFieldList,
+  measures,
+  properties,
+  model,
+  libraryItemsProps,
+  dimensionAndFieldList,
 }) {
   if (!measures) {
     measures = util
       .getValue(properties, 'qHyperCubeDef.qMeasures', [])
-      .concat(util.getValue(properties, 'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures', []));
+      .concat(
+        util.getValue(
+          properties,
+          'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
+          [],
+        ),
+      );
   }
 
   if (!measures.length) {
@@ -602,14 +725,19 @@ function updateMeasuresProperties({
   }
 
   const libraryIds = libraryItemsProps ? undefined : getLibraryIds(properties);
-  return getDimensionAndFieldList({ model, dimensionAndFieldList }).then(list => getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }).then((libraryItems) => {
-    measures.forEach((measure) => {
-      const { modifiers } = measure.qDef;
-      if (isActiveModifiers({ modifiers, properties })) {
-        applyMeasureModifiers({
-          measure, properties, libraryItemsProps: libraryItems, dimensionAndFieldList: list,
-        });
-      }
-    });
-  }));
+  return getDimensionAndFieldList({ model, dimensionAndFieldList }).then(list => getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }).then(
+    (libraryItems) => {
+      measures.forEach((measure) => {
+        const { modifiers } = measure.qDef;
+        if (isActiveModifiers({ modifiers, properties })) {
+          applyMeasureModifiers({
+            measure,
+            properties,
+            libraryItemsProps: libraryItems,
+            dimensionAndFieldList: list,
+          });
+        }
+      });
+    },
+  ));
 }
