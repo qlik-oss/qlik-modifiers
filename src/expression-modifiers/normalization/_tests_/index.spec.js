@@ -26,9 +26,6 @@ describe('normalization', () => {
       disabled: false,
       primaryDimension: 0,
       relativeNumbers: 0,
-      crossAllDimensions: false,
-      showExcludedValues: true,
-      fullNormalization: false,
       outputExpression: '',
     };
     expression = 'Sum([Sales])';

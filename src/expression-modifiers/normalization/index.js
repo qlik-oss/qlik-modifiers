@@ -7,9 +7,6 @@ const DEFAULT_OPTIONS = {
   disabled: false,
   primaryDimension: 0,
   relativeNumbers: 0,
-  crossAllDimensions: false,
-  showExcludedValues: true,
-  fullNormalization: false,
   outputExpression: '',
 };
 
@@ -41,7 +38,7 @@ function getSumDisregardSelec(expression) {
 export default {
   translationKey: 'properties.modifier.normalization',
 
-  needDimension: helper.needDimension,
+  needDimension: () => true,
 
   isApplicable({ properties, layout }) {
     return helper.isApplicable({
