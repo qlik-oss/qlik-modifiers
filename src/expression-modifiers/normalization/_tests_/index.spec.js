@@ -73,7 +73,7 @@ describe('normalization', () => {
         properties.qHyperCubeDef.qDimensions = [dim1];
       });
 
-      describe('showExcludedValues = true', () => {
+      describe.skip('showExcludedValues = true', () => {
         beforeEach(() => {
           modifier.showExcludedValues = true;
         });
@@ -88,7 +88,7 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
             });
 
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum (total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum(Total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
 
           it('should generate correct expression when dimension is non-numeric', () => {
@@ -96,7 +96,7 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps,
             });
 
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum (total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum(Total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
         });
 
@@ -132,7 +132,7 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
             });
 
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum({1} total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum({1} Total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
 
           it('should generate correct expression when dimension is non-numeric', () => {
@@ -140,7 +140,7 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps,
             });
 
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum({1} total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum({1} Total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
         });
       });
@@ -160,7 +160,7 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps,
             });
 
-            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum (total Aggr( (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum(Total Aggr( (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
         });
 
@@ -188,20 +188,64 @@ describe('normalization', () => {
               expression, modifier, properties, libraryItemsProps,
             });
 
-            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} total Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Total Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
           });
+        });
+      });
+    });
+
+    describe('Two dimension', () => {
+      describe('normalization type = relative to total selection', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 0;
+        });
+
+        it('should generate correct expression ', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum(Total Aggr( (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+        });
+      });
+
+      describe('normalization type = relative to dimensional universe', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 1;
+        });
+
+        it('should generate correct expression ', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+        });
+      });
+
+      describe('normalization type = relative to total universe', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 2;
+        });
+
+        it('should generate correct expression ', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Total Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
     });
   });
 
   describe('extractExpression', () => {
-    describe('one dimension', () => {
+    describe('One dimension', () => {
       beforeEach(() => {
         properties.qHyperCubeDef.qDimensions = [dim1];
       });
 
-      describe('showExcludedValues = true', () => {
+      describe.skip('showExcludedValues = true', () => {
         beforeEach(() => {
           modifier.showExcludedValues = true;
         });
@@ -339,6 +383,56 @@ describe('normalization', () => {
 
             expect(inputExp).to.equal(expression);
           });
+        });
+      });
+    });
+
+    describe('Two dimensions', () => {
+      describe('normalization type = relative to total selection', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 0;
+        });
+        it('should extract correct expression', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+      });
+
+      describe('normalization type = relative to dimensional universe', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 1;
+        });
+        it('should extract correct expression', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+      });
+
+      describe('normalization type = relative to total universe', () => {
+        beforeEach(() => {
+          modifier.relativeNumbers = 2;
+        });
+        it('should extract correct expression', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps,
+          });
+
+          expect(inputExp).to.equal(expression);
         });
       });
     });
