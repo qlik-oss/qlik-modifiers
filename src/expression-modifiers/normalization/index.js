@@ -12,19 +12,30 @@ const DEFAULT_OPTIONS = {
 
 const maxNumDimensionsSupported = 2;
 
-function getAggrOneDim(expression, dim1) {
-  return `Aggr(${expression}, ${dim1})`;
+function getDimsComp(numberOfDims) {
+  const dims = [];
+  for (let i = 0; i < numberOfDims; i++) {
+    dims[i] = helper.getDimDefWithWrapper(i);
+  }
+  const s = dims.join(', ');
+  return s;
 }
 
-function getAggrDisregardSelect(expression, dim1) {
-  return `Aggr({1}${expression}, ${dim1})`;
+function getAggr(expression, numberOfDims) {
+  const dimsComp = getDimsComp(numberOfDims);
+  return `Aggr(${expression}, ${dimsComp})`;
+}
+
+function getAggrDisregardSelect(expression, numberOfDims) {
+  const dimsComp = getDimsComp(numberOfDims);
+  return `Aggr({1}${expression}, ${dimsComp})`;
 }
 
 function getTotal(expression) {
-  return `total ${expression}`;
+  return `Total ${expression}`;
 }
 function getSum(expression) {
-  return `Sum (${expression})`;
+  return `Sum(${expression})`;
 }
 
 function getDivide(measureExp, expression) {
@@ -71,8 +82,6 @@ export default {
       'qHyperCubeDef.qDimensions',
       [],
     );
-    const dim = helper.getDimDefWithWrapper(modifier.primaryDimension);
-
     const expWithExcludedComp = helper.getExpressionWithExcludedComp({
       expression,
       modifier,
@@ -84,13 +93,13 @@ export default {
 
     switch (modifier.relativeNumbers) {
       case 0:
-        generatedExpression = getSum(getTotal(getAggrOneDim(generatedExpression, dim)));
+        generatedExpression = getSum(getTotal(getAggr(generatedExpression, numberOfDims)));
         break;
       case 1:
-        generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, dim));
+        generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, numberOfDims));
         break;
       case 2:
-        generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, dim)));
+        generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, numberOfDims)));
         break;
       default:
         generatedExpression = expWithExcludedComp;
