@@ -31,7 +31,7 @@ function getDivide(measureExp, expression) {
   return `${measureExp}/${expression}`;
 }
 
-function getSumDisregardSelec(expression) {
+function getSumDisregardSelect(expression) {
   return `Sum({1} ${expression})`;
 }
 
@@ -87,10 +87,10 @@ export default {
         generatedExpression = getSum(getTotal(getAggrOneDim(generatedExpression, dim)));
         break;
       case 1:
-        generatedExpression = getSumDisregardSelec(getAggrDisregardSelect(generatedExpression, dim));
+        generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, dim));
         break;
       case 2:
-        generatedExpression = getSumDisregardSelec(getTotal(getAggrDisregardSelect(generatedExpression, dim)));
+        generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, dim)));
         break;
       default:
         generatedExpression = expWithExcludedComp;
