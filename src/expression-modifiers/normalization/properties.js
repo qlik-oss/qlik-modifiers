@@ -6,6 +6,7 @@ const NORMALIZATION_TYPES = {
   RELATIVE_TO_TOTAL_SELECTION: 0,
   RELATIVE_TO_DIM_UNIVERSE: 1,
   RELATIVE_TO_TOTAL_UNIVERSE: 2,
+  RELATIVE_TO_TOTAL_WITHIN_GROUP: 3,
 };
 
 function getModifierIndex(measure, modifiersRef) {
@@ -72,7 +73,9 @@ export default function (rootPath, translationKeys = {}) {
               })); // To avoid depending on the layout, we use the first dimension in the drill down dimension
             },
             show(itemData, handler) {
-              return handler.layout.qHyperCube.qDimensionInfo.length > 1;
+              const modifier = getModifier(itemData, rootPath);
+              const { relativeNumbers } = modifier;
+              return relativeNumbers === NORMALIZATION_TYPES.RELATIVE_TO_TOTAL_WITHIN_GROUP && handler.layout.qHyperCube.qDimensionInfo.length > 1;
             },
           },
           relativeNumbers: {
@@ -100,20 +103,6 @@ export default function (rootPath, translationKeys = {}) {
                 translation: translationKeys.relativeNumbersTotalUniverse || 'properties.modifier.relativeNumbers.total.universe',
               },
             ],
-          },
-          crossAllDimensions: {
-            refFn: data => `${getRef(data, rootPath)}.crossAllDimensions`,
-            type: 'boolean',
-            translation: translationKeys.crossAllDimensions || 'properties.modifier.crossAllDimensions',
-            title: {
-              translation:
-              translationKeys.crossAllDimensionsTooltip || 'properties.modifier.normalization.crossAllDimensions.tooltip',
-            },
-            schemaIgnore: true,
-            defaultValue: false,
-            show(itemData, handler) {
-              return handler.layout.qHyperCube.qDimensionInfo.length > 1;
-            },
           },
         },
         show(itemData, handler) {
