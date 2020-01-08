@@ -115,13 +115,6 @@ export default function (rootPath, translationKeys = {}) {
               return handler.layout.qHyperCube.qDimensionInfo.length > 1;
             },
           },
-          showExcludedValues: {
-            refFn: data => `${getRef(data, rootPath)}.showExcludedValues`,
-            type: 'boolean',
-            translation: translationKeys.showExcludedValues || 'properties.modifier.showExcludedValues',
-            schemaIgnore: true,
-            defaultValue: true,
-          },
         },
         show(itemData, handler) {
           return helper.isApplicable({ properties: handler.properties });
