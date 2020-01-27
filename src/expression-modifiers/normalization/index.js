@@ -38,6 +38,7 @@ function getAggrWithField(expression, numberOfDims, field, value) {
 function getTotal(expression) {
   return `Total ${expression}`;
 }
+
 function getTotalDim(expression, dim) {
   return `Total <${dim}> ${expression}`;
 }
