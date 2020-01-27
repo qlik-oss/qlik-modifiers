@@ -25,10 +25,13 @@ describe('normalization', () => {
       type: 'normalization',
       disabled: false,
       primaryDimension: 0,
-      relativeNumbers: 0,
+      dimensionalScope: 0,
+      selectionScope: 0,
       outputExpression: '',
+      field: 'Product',
+      value: 'Jeans',
     };
-    expression = 'Sum([Sales])';
+    expression = 'Sum(Sales)';
     dim1 = {
       qDef: {
         qFieldDefs: ['dim1'],
@@ -68,368 +71,449 @@ describe('normalization', () => {
   });
 
   describe('generateExpression', () => {
-    describe('One dimension', () => {
+    describe('Selection scope = Current selection', () => {
       beforeEach(() => {
-        properties.qHyperCubeDef.qDimensions = [dim1];
+        modifier.selectionScope = 0;
       });
-
-      describe.skip('showExcludedValues = true', () => {
+      describe('Dimensional scope = Respect one dimension', () => {
         beforeEach(() => {
-          modifier.showExcludedValues = true;
+          modifier.dimensionalScope = 0;
         });
-
-        describe('normalization type = relative to total selection', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 0;
+        it('should not generate expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should generate correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum(Total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
-
-          it('should generate correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum(Total Aggr(If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
+          expect(outputExpression).to.equal(undefined);
         });
-
-        describe('normalization type = relative to dimensional universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 1;
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should generate correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum({1} Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
-
-          it('should generate correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum({1} Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
-        });
-
-        describe('normalization type = relative to total universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 2;
-          });
-
-          it('should generate correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0)/Sum({1} Total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={">=$(=Min([$(=Replace(GetObjectField(0),\']\',\']]\'))]))<=$(=Max([$(=Replace(GetObjectField(0),\']\',\']]\'))]))"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
-
-          it('should generate correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal('If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0)/Sum({1} Total Aggr({1}If(Count([$(=Replace(GetObjectField(0),\']\',\']]\'))]) > 0,  (　Sum([Sales])　)  + Sum({1<[$(=Replace(GetObjectField(0),\']\',\']]\'))]={"=Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])>=\'$(=MinString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\' and Only({1}[$(=Replace(GetObjectField(0),\']\',\']]\'))])<=\'$(=MaxString([$(=Replace(GetObjectField(0),\']\',\']]\'))]))\'"}>}0), 0), [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum(Total <[$(=Replace(GetObjectField(0),\']\',\']]\'))]> Aggr( (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
-
-      describe('showExcludedValues = false', () => {
+      describe('Dimensional scope = Respect all dimensions', () => {
         beforeEach(() => {
-          modifier.showExcludedValues = false;
+          modifier.dimensionalScope = 1;
         });
-
-        describe('normalization type = relative to total selection', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 0;
+        it('should not generate expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should generate correct expression ', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum(Total Aggr( (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
+          expect(outputExpression).to.equal(undefined);
         });
-
-        describe('normalization type = relative to dimensional universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 1;
+        it('should not generate expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should generate correct expression ', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
-          });
+          expect(outputExpression).to.equal(undefined);
         });
-
-        describe('normalization type = relative to total universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 2;
+      });
+      describe('Dimensional scope = Disregard the dimensions', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 2;
+        });
+        it('should generate correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should generate correct expression ', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Total Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum(Total Aggr( (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum(Total Aggr( (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
     });
 
-    describe('Two dimension', () => {
-      describe('normalization type = relative to total selection', () => {
+    describe('Selection scope = Select a field', () => {
+      beforeEach(() => {
+        modifier.selectionScope = 1;
+      });
+      describe('Dimensional scope = Respect one dimension', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 0;
+          modifier.dimensionalScope = 0;
         });
-
-        it('should generate correct expression ', () => {
+        it('should not generate expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum(Total Aggr( (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(undefined);
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({$<Product={\'Jeans\'}>} Total <[$(=Replace(GetObjectField(0),\']\',\']]\'))]> Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
-
-      describe('normalization type = relative to dimensional universe', () => {
+      describe('Dimensional scope = Respect all dimensions', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 1;
+          modifier.dimensionalScope = 1;
         });
-
-        it('should generate correct expression ', () => {
+        it('should generate correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({$<Product={\'Jeans\'}>} Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({$<Product={\'Jeans\'}>} Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
-
-      describe('normalization type = relative to total universe', () => {
+      describe('Dimensional scope = Disregard the dimensions', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 2;
+          modifier.dimensionalScope = 2;
         });
-
-        it('should generate correct expression ', () => {
+        it('should generate correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum([Sales])　) /Sum({1} Total Aggr({1} (　Sum([Sales])　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({$<Product={\'Jeans\'}>} Total Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({$<Product={\'Jeans\'}>} Total Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+        });
+      });
+    });
+
+    describe('Selection scope = Total', () => {
+      beforeEach(() => {
+        modifier.selectionScope = 2;
+      });
+      describe('Dimensional scope = Respect one dimension', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 0;
+        });
+        it('should not generate expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(undefined);
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({1} Total <[$(=Replace(GetObjectField(0),\']\',\']]\'))]> Aggr({1} (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+        });
+      });
+      describe('Dimensional scope = Respect all dimensions', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 1;
+        });
+        it('should generate correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({1} Aggr({1} (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({1} Aggr({1} (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+        });
+      });
+      describe('Dimensional scope = Disregard the dimensions', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 2;
+        });
+        it('should generate correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({1} Total Aggr({1} (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+        });
+        it('should generate correct expression for chart with two dimesions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) /Sum({1} Total Aggr({1} (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
     });
   });
 
   describe('extractExpression', () => {
-    describe('One dimension', () => {
+    describe('Selection scope = Current selection', () => {
       beforeEach(() => {
-        properties.qHyperCubeDef.qDimensions = [dim1];
+        modifier.selectionScope = 0;
       });
-
-      describe.skip('showExcludedValues = true', () => {
+      describe('dimensionalScope = Respect one dimension', () => {
         beforeEach(() => {
-          modifier.showExcludedValues = true;
+          modifier.dimensionalScope = 0;
         });
-
-        describe('normalization type = relative to total selection', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 0;
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
-          it('should extract correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(inputExp).to.equal(expression);
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          it('should extract correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
-        });
-
-        describe('normalization type = relative to dimensional universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 1;
-          });
-          it('should extract correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
-
-          it('should extract correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
-        });
-
-        describe('normalization type = relative to total universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 2;
-          });
-          it('should extract correct expression when dimension is numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
-
-          it('should extract correct expression when dimension is non-numeric', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
+          expect(inputExp).to.equal(expression);
         });
       });
 
-      describe('showExcludedValues = false', () => {
+      describe('dimensionalScope = Disregard the dimensions', () => {
         beforeEach(() => {
-          modifier.showExcludedValues = false;
+          modifier.dimensionalScope = 2;
         });
-
-        describe('normalization type = relative to total selection', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 0;
+        it('should extract correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
-          it('should extract correct expression', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
+
+          expect(inputExp).to.equal(expression);
         });
-
-        describe('normalization type = relative to dimensional universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 1;
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
-          it('should extract correct expression', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
-        });
 
-        describe('normalization type = relative to total universe', () => {
-          beforeEach(() => {
-            modifier.relativeNumbers = 2;
-          });
-          it('should extract correct expression', () => {
-            outputExpression = normalization.generateExpression({
-              expression, modifier, properties, libraryItemsProps,
-            });
-            inputExp = normalization.extractInputExpression({
-              outputExpression, modifier, properties, libraryItemsProps,
-            });
-
-            expect(inputExp).to.equal(expression);
-          });
+          expect(inputExp).to.equal(expression);
         });
       });
     });
 
-    describe('Two dimensions', () => {
-      describe('normalization type = relative to total selection', () => {
+    describe('Selection scope = Select a field', () => {
+      beforeEach(() => {
+        modifier.selectionScope = 1;
+      });
+      describe('Dimensional scope = Respect one dimension', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 0;
+          modifier.dimensionalScope = 0;
         });
-        it('should extract correct expression', () => {
+        it('should extract correct expression for chart with two dimensions', () => {
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
           inputExp = normalization.extractInputExpression({
-            outputExpression, modifier, properties, libraryItemsProps,
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
           expect(inputExp).to.equal(expression);
         });
       });
-
-      describe('normalization type = relative to dimensional universe', () => {
+      describe('Dimensional scope = Respect all dimensions', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 1;
+          modifier.dimensionalScope = 1;
         });
-        it('should extract correct expression', () => {
+        it('should extract correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
           inputExp = normalization.extractInputExpression({
-            outputExpression, modifier, properties, libraryItemsProps,
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
           expect(inputExp).to.equal(expression);
         });
       });
-
-      describe('normalization type = relative to total universe', () => {
+      describe('Dimensional scope = Disregard the dimensions', () => {
         beforeEach(() => {
-          modifier.relativeNumbers = 2;
+          modifier.dimensionalScope = 2;
         });
-        it('should extract correct expression', () => {
+        it('should extract correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
           outputExpression = normalization.generateExpression({
-            expression, modifier, properties, libraryItemsProps,
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
           inputExp = normalization.extractInputExpression({
-            outputExpression, modifier, properties, libraryItemsProps,
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+      });
+    });
+
+    describe('Selection scope = Total', () => {
+      beforeEach(() => {
+        modifier.selectionScope = 2;
+      });
+      describe('Dimensional scope = Respect one dimension', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 0;
+        });
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+      });
+      describe('Dimensional scope = Respect all dimensions', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 1;
+        });
+        it('should extract correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+      });
+      describe('Dimensional scope = Disregard the dimensions', () => {
+        beforeEach(() => {
+          modifier.dimensionalScope = 2;
+        });
+        it('should extract correct expression for chart with one dimension', () => {
+          properties.qHyperCubeDef.qDimensions = [dim1];
+          dimensionAndFieldList.fieldList = [{
+            qName: 'dim1',
+            qTags: ['$numeric'],
+          }];
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+
+          expect(inputExp).to.equal(expression);
+        });
+        it('should extract correct expression for chart with two dimensions', () => {
+          outputExpression = normalization.generateExpression({
+            expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
+          });
+          inputExp = normalization.extractInputExpression({
+            outputExpression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
           expect(inputExp).to.equal(expression);

@@ -6,7 +6,6 @@ const DEFAULT_OPTIONS = {
   type: 'normalization',
   disabled: false,
   primaryDimension: 0,
-  relativeNumbers: 0,
   outputExpression: '',
 };
 
@@ -31,9 +30,18 @@ function getAggrDisregardSelect(expression, numberOfDims) {
   return `Aggr({1}${expression}, ${dimsComp})`;
 }
 
+function getAggrWithField(expression, numberOfDims, field, value) {
+  const dimsComp = getDimsComp(numberOfDims);
+  return `Aggr({$<${field}={'${value}'}>} ${expression}, ${dimsComp})`;
+}
+
 function getTotal(expression) {
   return `Total ${expression}`;
 }
+function getTotalDim(expression, dim) {
+  return `Total <${dim}> ${expression}`;
+}
+
 function getSum(expression) {
   return `Sum(${expression})`;
 }
@@ -44,6 +52,10 @@ function getDivide(measureExp, expression) {
 
 function getSumDisregardSelect(expression) {
   return `Sum({1} ${expression})`;
+}
+
+function getField(expression, field, value) {
+  return `{$<${field}={'${value}'}>} ${expression}`;
 }
 
 export default {
@@ -90,21 +102,61 @@ export default {
     });
 
     let generatedExpression = expWithExcludedComp;
-
-    switch (modifier.relativeNumbers) {
+    const { field, value } = modifier;
+    switch (modifier.selectionScope) {
       case 0:
-        generatedExpression = getSum(getTotal(getAggr(generatedExpression, numberOfDims)));
+        switch (modifier.dimensionalScope) {
+          case 0:
+            // Relative to the total within the group
+            generatedExpression = dimensions.length > 1 ? getSum(getTotalDim(getAggr(generatedExpression, numberOfDims), helper.getDimDefWithWrapper(modifier.primaryDimension))) : expWithExcludedComp;
+            break;
+          case 1:
+            generatedExpression = expWithExcludedComp;
+            break;
+          case 2:
+            // Relative to total selection
+            generatedExpression = getSum(getTotal(getAggr(generatedExpression, numberOfDims)));
+            break;
+          default:
+            generatedExpression = expWithExcludedComp;
+        }
         break;
       case 1:
-        generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, numberOfDims));
+        switch (modifier.dimensionalScope) {
+          case 0:
+            generatedExpression = dimensions.length > 1 ? getSum(getField(getTotalDim(getAggrWithField(generatedExpression, numberOfDims, field, value), helper.getDimDefWithWrapper(modifier.primaryDimension)), field, value)) : expWithExcludedComp;
+            break;
+          case 1:
+            generatedExpression = getSum(getField(getAggrWithField(generatedExpression, numberOfDims, field, value), field, value));
+            break;
+          case 2:
+            generatedExpression = getSum(getField(getTotal(getAggrWithField(generatedExpression, numberOfDims, field, value)), field, value));
+            break;
+          default:
+            generatedExpression = expWithExcludedComp;
+        }
         break;
       case 2:
-        generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, numberOfDims)));
+        switch (modifier.dimensionalScope) {
+          case 0:
+            generatedExpression = dimensions.length > 1 ? getSumDisregardSelect(getTotalDim(getAggrDisregardSelect(generatedExpression, numberOfDims), helper.getDimDefWithWrapper(modifier.primaryDimension))) : expWithExcludedComp;
+            break;
+          case 1:
+            // Relative to dimensional universe
+            generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, numberOfDims));
+            break;
+          case 2:
+            // Relative to total universe
+            generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, numberOfDims)));
+            break;
+          default:
+            generatedExpression = expWithExcludedComp;
+        }
         break;
       default:
         generatedExpression = expWithExcludedComp;
     }
-    generatedExpression = getDivide(expWithExcludedComp, generatedExpression);
+    generatedExpression = generatedExpression === expWithExcludedComp ? undefined : getDivide(expWithExcludedComp, generatedExpression);
     return generatedExpression;
   },
 
