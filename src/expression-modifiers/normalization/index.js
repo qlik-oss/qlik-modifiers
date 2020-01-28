@@ -20,43 +20,30 @@ function getDimsComp(numberOfDims) {
   return s;
 }
 
-function getAggr(expression, numberOfDims) {
-  const dimsComp = getDimsComp(numberOfDims);
-  return `Aggr(${expression}, ${dimsComp})`;
+function getDisregardSelectionComp(selectionScope) {
+  return selectionScope === 2 ? '{1}' : '';
 }
 
-function getAggrDisregardSelect(expression, numberOfDims) {
-  const dimsComp = getDimsComp(numberOfDims);
-  return `Aggr({1}${expression}, ${dimsComp})`;
+function getFieldSelectionComp(selectionScope, field, value) {
+  return selectionScope === 1 ? `{$<${field}={'${value}'}>}` : '';
 }
 
-function getAggrWithField(expression, numberOfDims, field, value) {
-  const dimsComp = getDimsComp(numberOfDims);
-  return `Aggr({$<${field}={'${value}'}>} ${expression}, ${dimsComp})`;
+function getTotalComp(dimScope, numberOfDims) {
+  return (dimScope === 0 && numberOfDims > 1) || dimScope === 2 ? 'Total' : '';
 }
 
-function getTotal(expression) {
-  return `Total ${expression}`;
+function getSelectedDimComp(dimScope, numberOfDims, dim) {
+  return dimScope === 0 && numberOfDims > 1 ? `<${helper.getDimDefWithWrapper(dim)}>` : '';
 }
 
-function getTotalDim(expression, dim) {
-  return `Total <${dim}> ${expression}`;
-}
-
-function getSum(expression) {
-  return `Sum(${expression})`;
-}
-
-function getDivide(measureExp, expression) {
-  return `${measureExp}/${expression}`;
-}
-
-function getSumDisregardSelect(expression) {
-  return `Sum({1} ${expression})`;
-}
-
-function getField(expression, field, value) {
-  return `{$<${field}={'${value}'}>} ${expression}`;
+function generateExp(exp, selectionScope, field, value, dimScope, numberOfDims, dim) {
+  const DISREGARD_SELECTION = getDisregardSelectionComp(selectionScope);
+  const FIELD_SELECTOON = getFieldSelectionComp(selectionScope, field, value);
+  const SELECTION = DISREGARD_SELECTION === '' && FIELD_SELECTOON === '' ? '' : DISREGARD_SELECTION || FIELD_SELECTOON;
+  const TOTAL = getTotalComp(dimScope, numberOfDims);
+  const SELECTED_DIM = getSelectedDimComp(dimScope, numberOfDims, dim);
+  const DIM = getDimsComp(numberOfDims);
+  return `${exp}/ Sum(${SELECTION} ${TOTAL}${SELECTED_DIM} Aggr(${SELECTION} ${exp}, ${DIM}))`;
 }
 
 export default {
@@ -103,61 +90,10 @@ export default {
     });
 
     let generatedExpression = expWithExcludedComp;
-    const { field, value } = modifier;
-    switch (modifier.selectionScope) {
-      case 0:
-        switch (modifier.dimensionalScope) {
-          case 0:
-            // Relative to the total within the group
-            generatedExpression = dimensions.length > 1 ? getSum(getTotalDim(getAggr(generatedExpression, numberOfDims), helper.getDimDefWithWrapper(modifier.primaryDimension))) : expWithExcludedComp;
-            break;
-          case 1:
-            generatedExpression = expWithExcludedComp;
-            break;
-          case 2:
-            // Relative to total selection
-            generatedExpression = getSum(getTotal(getAggr(generatedExpression, numberOfDims)));
-            break;
-          default:
-            generatedExpression = expWithExcludedComp;
-        }
-        break;
-      case 1:
-        switch (modifier.dimensionalScope) {
-          case 0:
-            generatedExpression = dimensions.length > 1 ? getSum(getField(getTotalDim(getAggrWithField(generatedExpression, numberOfDims, field, value), helper.getDimDefWithWrapper(modifier.primaryDimension)), field, value)) : expWithExcludedComp;
-            break;
-          case 1:
-            generatedExpression = getSum(getField(getAggrWithField(generatedExpression, numberOfDims, field, value), field, value));
-            break;
-          case 2:
-            generatedExpression = getSum(getField(getTotal(getAggrWithField(generatedExpression, numberOfDims, field, value)), field, value));
-            break;
-          default:
-            generatedExpression = expWithExcludedComp;
-        }
-        break;
-      case 2:
-        switch (modifier.dimensionalScope) {
-          case 0:
-            generatedExpression = dimensions.length > 1 ? getSumDisregardSelect(getTotalDim(getAggrDisregardSelect(generatedExpression, numberOfDims), helper.getDimDefWithWrapper(modifier.primaryDimension))) : expWithExcludedComp;
-            break;
-          case 1:
-            // Relative to dimensional universe
-            generatedExpression = getSumDisregardSelect(getAggrDisregardSelect(generatedExpression, numberOfDims));
-            break;
-          case 2:
-            // Relative to total universe
-            generatedExpression = getSumDisregardSelect(getTotal(getAggrDisregardSelect(generatedExpression, numberOfDims)));
-            break;
-          default:
-            generatedExpression = expWithExcludedComp;
-        }
-        break;
-      default:
-        generatedExpression = expWithExcludedComp;
-    }
-    generatedExpression = generatedExpression === expWithExcludedComp ? undefined : getDivide(expWithExcludedComp, generatedExpression);
+    const {
+      selectionScope, dimensionalScope, field, value, primaryDimension,
+    } = modifier;
+    generatedExpression = generateExp(expWithExcludedComp, selectionScope, field, value, dimensionalScope, numberOfDims, primaryDimension);
     return generatedExpression;
   },
 
