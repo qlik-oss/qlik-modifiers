@@ -507,6 +507,13 @@ function modifyExpression({
   properties,
   dimensionAndFieldList,
 }) {
+  if (typeof availableModifiers[
+    modifier.type
+  ].updateModifier === 'function') {
+    availableModifiers[
+      modifier.type
+    ].updateModifier(modifier, properties.qHyperCubeDef);
+  }
   const expression = measureBaseAdapter.getExpression(measure);
   const generatedExpression = availableModifiers[
     modifier.type

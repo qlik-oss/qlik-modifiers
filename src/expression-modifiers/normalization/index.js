@@ -105,5 +105,13 @@ export default {
     });
   },
 
+  updateModifier(modifier, qDef) {
+    const numberOfDimensions = qDef.qDimensions ? qDef.qDimensions.length : 0;
+    if (numberOfDimensions === 1 && modifier.dimensionalScope === 0) {
+      // eslint-disable-next-line no-param-reassign
+      modifier.dimensionalScope = 2;
+    }
+  },
+
   propertyPanelDef,
 };

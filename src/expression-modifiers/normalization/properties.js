@@ -44,6 +44,82 @@ function getRef(measure, modifiersRef) {
   return index > -1 ? `${modifiersRef}.${index}` : modifiersRef;
 }
 
+function findOptionIndex(options, value) {
+  for (let i = 0; i < options.length; i++) {
+    if (options[i].value === value) return i;
+  }
+  return -1;
+}
+
+function getDimOptionsByNumOfDim(numberOfDim, options, removeOption) {
+  if (numberOfDim < 2) {
+    const index = findOptionIndex(options, removeOption);
+    options.splice(index, 1);
+  }
+  return options;
+}
+
+function getDimOptionsBySelectionScope(selectionScope, options, removeOption) {
+  if (selectionScope === 0) {
+    const index = findOptionIndex(options, removeOption);
+    options.splice(index, 1);
+  }
+  return options;
+}
+
+function getSelectionOptionsByDimScope(dimensionalScope, options, removeOption) {
+  if (dimensionalScope === 1) {
+    const index = findOptionIndex(options, removeOption);
+    options.splice(index, 1);
+  }
+  return options;
+}
+
+function getDimensionalOptions(itemData, handler, translationKeys, rootPath) {
+  let options = [
+    {
+      value: DIMENSIONAL_SCOPE.ONE_DIMENSION,
+      translation: translationKeys.dimensionalScopeOneDimension || 'properties.modifier.dimensionalScope.oneDimension',
+    },
+    {
+      value: DIMENSIONAL_SCOPE.ALL_DIMENSIOANS,
+      translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.allDimensions',
+    },
+    {
+      value: DIMENSIONAL_SCOPE.DISREGARD_ALL_DIMENSIOANS,
+      translation: translationKeys.dimensionalScopeDisregardAllDimensions || 'properties.modifier.dimensionalScope.disregardAllDimensions',
+    },
+  ];
+  const numberOfDim = handler.layout.qHyperCube.qDimensionInfo.length;
+  options = getDimOptionsByNumOfDim(numberOfDim, options, 0);
+
+  const { selectionScope } = getModifier(itemData, rootPath);
+  options = getDimOptionsBySelectionScope(selectionScope, options, 1);
+
+  return options;
+}
+
+function getSelectionOptions(itemData, translationKeys, rootPath) {
+  let options = [
+    {
+      value: SELECTION_SCOPE.CURRENT_SELECTION,
+      translation: translationKeys.selectionScopeCurrentSelection || 'properties.modifier.selectionScope.currentSelection',
+    },
+    {
+      value: SELECTION_SCOPE.SELECT_FIELD,
+      translation: translationKeys.selectionScopeSpecificValue || 'properties.modifier.selectionScope.selectAField',
+    },
+    {
+      value: SELECTION_SCOPE.TOTAL,
+      translation: translationKeys.selectionScopeTotal || 'properties.modifier.selectionScope.total',
+    },
+  ];
+  const { dimensionalScope } = getModifier(itemData, rootPath);
+  options = getSelectionOptionsByDimScope(dimensionalScope, options, 0);
+
+  return options;
+}
+
 export default function (rootPath, translationKeys = {}) {
   const modifierProperties = {
     type: 'items',
@@ -58,54 +134,6 @@ export default function (rootPath, translationKeys = {}) {
       settings: {
         type: 'items',
         items: {
-          dimensionalScope: {
-            refFn: data => `${getRef(data, rootPath)}.dimensionalScope`,
-            type: 'string',
-            translation: translationKeys.modifierDimensionalScope || 'properties.modifier.dimensionalScope',
-            title: {
-              translation: translationKeys.modifierDimensionalScopeTooltip || 'properties.modifier.dimensionalScope.tooltip',
-            },
-            component: 'dropdown',
-            schemaIgnore: true,
-            defaultValue: DIMENSIONAL_SCOPE.ONE_DIMENSION,
-            options: [
-              {
-                value: DIMENSIONAL_SCOPE.ONE_DIMENSION,
-                translation: translationKeys.dimensionalScopeOneDimension || 'properties.modifier.dimensionalScope.oneDimension',
-              },
-              {
-                value: DIMENSIONAL_SCOPE.ALL_DIMENSIOANS,
-                translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.allDimensions',
-              },
-              {
-                value: DIMENSIONAL_SCOPE.DISREGARD_ALL_DIMENSIOANS,
-                translation: translationKeys.dimensionalScopeDisregardAllDimensions || 'properties.modifier.dimensionalScope.disregardAllDimensions',
-              },
-            ],
-          },
-          primaryDimension: {
-            refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
-            type: 'integer',
-            translation: translationKeys.primaryDimension || 'properties.modifier.primaryDimension',
-            title: {
-              translation:
-              translationKeys.primaryDimensionTooltip || 'properties.modifier.normalization.primaryDimension.tooltip',
-            },
-            component: 'dropdown',
-            schemaIgnore: true,
-            defaultValue: 1,
-            options(itemData, handler) {
-              const { qDimensionInfo } = handler.layout.qHyperCube;
-              return qDimensionInfo.map((dim, idx) => ({
-                value: idx,
-                label: dim.qGroupFallbackTitles[0],
-              })); // To avoid depending on the layout, we use the first dimension in the drill down dimension
-            },
-            show(itemData, handler) {
-              const modifier = getModifier(itemData, rootPath);
-              return (modifier.dimensionalScope || 0) === DIMENSIONAL_SCOPE.ONE_DIMENSION && handler.layout.qHyperCube.qDimensionInfo.length > 1;
-            },
-          },
           selectionScope: {
             refFn: data => `${getRef(data, rootPath)}.selectionScope`,
             type: 'string',
@@ -116,20 +144,9 @@ export default function (rootPath, translationKeys = {}) {
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: SELECTION_SCOPE.TOTAL,
-            options: [
-              {
-                value: SELECTION_SCOPE.CURRENT_SELECTION,
-                translation: translationKeys.selectionScopeCurrentSelection || 'properties.modifier.selectionScope.currentSelection',
-              },
-              {
-                value: SELECTION_SCOPE.SELECT_FIELD,
-                translation: translationKeys.selectionScopeSpecificValue || 'properties.modifier.selectionScope.selectAField',
-              },
-              {
-                value: SELECTION_SCOPE.TOTAL,
-                translation: translationKeys.selectionScopeTotal || 'properties.modifier.selectionScope.total',
-              },
-            ],
+            options(itemData) {
+              return getSelectionOptions(itemData, translationKeys, rootPath);
+            },
           },
           field: {
             refFn: data => `${getRef(data, rootPath)}.field`,
@@ -157,6 +174,43 @@ export default function (rootPath, translationKeys = {}) {
             show(itemData) {
               const modifier = getModifier(itemData, rootPath);
               return modifier.selectionScope === SELECTION_SCOPE.SELECT_FIELD;
+            },
+          },
+          dimensionalScope: {
+            refFn: data => `${getRef(data, rootPath)}.dimensionalScope`,
+            type: 'string',
+            translation: translationKeys.modifierDimensionalScope || 'properties.modifier.dimensionalScope',
+            title: {
+              translation: translationKeys.modifierDimensionalScopeTooltip || 'properties.modifier.dimensionalScope.tooltip',
+            },
+            component: 'dropdown',
+            schemaIgnore: true,
+            defaultValue: DIMENSIONAL_SCOPE.DISREGARD_ALL_DIMENSIOANS,
+            options(itemData, handler) {
+              return getDimensionalOptions(itemData, handler, translationKeys, rootPath);
+            },
+          },
+          primaryDimension: {
+            refFn: data => `${getRef(data, rootPath)}.primaryDimension`,
+            type: 'integer',
+            translation: translationKeys.primaryDimension || 'properties.modifier.primaryDimension',
+            title: {
+              translation:
+              translationKeys.primaryDimensionTooltip || 'properties.modifier.normalization.primaryDimension.tooltip',
+            },
+            component: 'dropdown',
+            schemaIgnore: true,
+            defaultValue: 1,
+            options(itemData, handler) {
+              const { qDimensionInfo } = handler.layout.qHyperCube;
+              return qDimensionInfo.map((dim, idx) => ({
+                value: idx,
+                label: dim.qGroupFallbackTitles[0],
+              })); // To avoid depending on the layout, we use the first dimension in the drill down dimension
+            },
+            show(itemData, handler) {
+              const modifier = getModifier(itemData, rootPath);
+              return (modifier.dimensionalScope || 0) === DIMENSIONAL_SCOPE.ONE_DIMENSION && handler.layout.qHyperCube.qDimensionInfo.length > 1;
             },
           },
         },
