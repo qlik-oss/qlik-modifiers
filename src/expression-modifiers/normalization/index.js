@@ -114,4 +114,12 @@ export default {
   },
 
   propertyPanelDef,
+
+  getDisregardSelectionComp,
+
+  getFieldSelectionComp,
+
+  getTotalComp,
+
+  getSelectedDimComp,
 };
