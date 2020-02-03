@@ -19,6 +19,8 @@ const availableModifiers = {
   normalization,
 };
 
+const defaultTypeValue = 'none';
+
 /**
  * @module Modifiers
  */
@@ -41,6 +43,8 @@ export default {
 
   hasActiveModifiers,
 
+  getActiveModifierOfMeasure,
+
   initBase: measureBase.initBase,
 
   isSupportedModifiers,
@@ -50,6 +54,8 @@ export default {
   measureBase: measureBaseAdapter,
 
   limitedSorting,
+
+  getIfUseInterRecordFunction,
 };
 
 const objects = {};
@@ -251,6 +257,28 @@ function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
 }
 
 /**
+ * Get selected modifier type
+ * @param {Object} measures - The measure properties object
+ */
+function getActiveModifierOfMeasure({ measures }) {
+  if (!measures) {
+    return defaultTypeValue;
+  }
+  const { modifiers } = measures.qDef;
+  if (!modifiers) {
+    return defaultTypeValue;
+  }
+  const modifierTypes = Object.getOwnPropertyNames(availableModifiers);
+  for (let i = 0; i < modifiers.length; i++) {
+    const { type } = modifiers[i];
+    if (!modifiers[i].disabled && isSupportedModifiers(modifierTypes)) {
+      return type;
+    }
+  }
+  return defaultTypeValue;
+}
+
+/**
  * Is sorting capabilities limited due to applied modifier?
  * Can operate either on layout or properties
  * @param {Object} options - An object with all input parameters
@@ -271,6 +299,31 @@ function limitedSorting({ measures, properties, layout }) {
     }
   });
   return hasActive && !needDims;
+}
+
+/**
+ * Check if one type of modifier use inter record function
+ * @param {String} modifierType
+ */
+function getIfUseInterRecordFunction(modifierType) {
+  let ifUseInterRecord = false;
+  switch (modifierType) {
+    case 'accumulation':
+      ifUseInterRecord = accumulation.useInterRecordFunction();
+      break;
+    case 'movingAverage':
+      ifUseInterRecord = movingAverage.useInterRecordFunction();
+      break;
+    case 'difference':
+      ifUseInterRecord = difference.useInterRecordFunction();
+      break;
+    case 'normalization':
+      ifUseInterRecord = normalization.useInterRecordFunction();
+      break;
+    default:
+      return ifUseInterRecord;
+  }
+  return ifUseInterRecord;
 }
 
 /* ----------------------- Private functions ------------------------ */
@@ -535,7 +588,8 @@ function modifyExpression({
 
 function updateTotalsFunction(measure) {
   const qAggrFunc = util.getValue(measure, 'qDef.qAggrFunc');
-  if (qAggrFunc === 'Expr') {
+  const modifierType = getActiveModifierOfMeasure({ measures: measure });
+  if (qAggrFunc === 'Expr' && getIfUseInterRecordFunction(modifierType)) {
     measure.qDef.qAggrFunc = 'None';
     measure.qDef.base.qAggrFunc = 'Expr';
   } else if (qAggrFunc !== 'None') {

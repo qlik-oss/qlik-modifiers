@@ -113,6 +113,8 @@ export default {
     }
   },
 
+  useInterRecordFunction: () => false,
+
   propertyPanelDef,
 
   getDisregardSelectionComp,

@@ -92,5 +92,7 @@ export default {
     });
   },
 
+  useInterRecordFunction: () => true,
+
   propertyPanelDef,
 };

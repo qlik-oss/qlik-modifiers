@@ -113,5 +113,7 @@ export default {
     helper.initModifier(modifier, DEFAULT_OPTIONS);
   },
 
+  useInterRecordFunction: () => true,
+
   propertyPanelDef,
 };
