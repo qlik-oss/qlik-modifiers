@@ -55,7 +55,7 @@ export default {
 
   limitedSorting,
 
-  getIfUseInterRecordFunction,
+  ifEnableTotalsFunction,
 };
 
 const objects = {};
@@ -260,14 +260,11 @@ function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
  * Get selected modifier type
  * @param {Object} measures - The measure properties object
  */
-function getActiveModifierOfMeasure({ measures }) {
-  if (!measures) {
+function getActiveModifierOfMeasure(measure) {
+  if (!measure || (measure && !measure.qDef.modifiers)) {
     return defaultTypeValue;
   }
-  const { modifiers } = measures.qDef;
-  if (!modifiers) {
-    return defaultTypeValue;
-  }
+  const { modifiers } = measure.qDef;
   const modifierTypes = Object.getOwnPropertyNames(availableModifiers);
   for (let i = 0; i < modifiers.length; i++) {
     const { type } = modifiers[i];
@@ -302,28 +299,12 @@ function limitedSorting({ measures, properties, layout }) {
 }
 
 /**
- * Check if one type of modifier use inter record function
- * @param {String} modifierType
+ * Check if one type of modifier should enable totals function in table
+ * @param {Object} measure - The measure properties object
  */
-function getIfUseInterRecordFunction(modifierType) {
-  let ifUseInterRecord = false;
-  switch (modifierType) {
-    case 'accumulation':
-      ifUseInterRecord = accumulation.useInterRecordFunction();
-      break;
-    case 'movingAverage':
-      ifUseInterRecord = movingAverage.useInterRecordFunction();
-      break;
-    case 'difference':
-      ifUseInterRecord = difference.useInterRecordFunction();
-      break;
-    case 'normalization':
-      ifUseInterRecord = normalization.useInterRecordFunction();
-      break;
-    default:
-      return ifUseInterRecord;
-  }
-  return ifUseInterRecord;
+function ifEnableTotalsFunction(measure) {
+  const modifierType = getActiveModifierOfMeasure(measure);
+  return availableModifiers[modifierType].enableTotalsFunction(measure);
 }
 
 /* ----------------------- Private functions ------------------------ */
@@ -588,11 +569,13 @@ function modifyExpression({
 
 function updateTotalsFunction(measure) {
   const qAggrFunc = util.getValue(measure, 'qDef.qAggrFunc');
-  const modifierType = getActiveModifierOfMeasure({ measures: measure });
-  if (qAggrFunc === 'Expr' && getIfUseInterRecordFunction(modifierType)) {
+  if (qAggrFunc === 'Expr' && !ifEnableTotalsFunction(measure)) {
     measure.qDef.qAggrFunc = 'None';
     measure.qDef.base.qAggrFunc = 'Expr';
   } else if (qAggrFunc !== 'None') {
+    delete measure.qDef.base.qAggrFunc;
+  } else if (qAggrFunc === 'None' && ifEnableTotalsFunction(measure) && measure.qDef.base.qAggrFunc === 'Expr') {
+    measure.qDef.qAggrFunc = 'Expr';
     delete measure.qDef.base.qAggrFunc;
   }
 }

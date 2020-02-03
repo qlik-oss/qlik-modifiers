@@ -92,7 +92,7 @@ export default {
     });
   },
 
-  useInterRecordFunction: () => true,
+  enableTotalsFunction: () => false,
 
   propertyPanelDef,
 };
