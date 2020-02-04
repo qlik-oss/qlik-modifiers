@@ -7,6 +7,7 @@ const DEFAULT_OPTIONS = {
   disabled: false,
   primaryDimension: 0,
   outputExpression: '',
+  dimensionalScope: 2,
 };
 
 const maxNumDimensionsSupported = 2;
@@ -111,6 +112,16 @@ export default {
       // eslint-disable-next-line no-param-reassign
       modifier.dimensionalScope = 2;
     }
+  },
+
+  enableTotalsFunction(measure) {
+    if (measure.qDef.modifiers) {
+      const { modifiers } = measure.qDef;
+      for (let i = 0; i < modifiers.length; i++) {
+        if (modifiers[i].type === DEFAULT_OPTIONS.type && modifiers[i].disabled === false && modifiers[i].dimensionalScope === 2) { return true; }
+      }
+    }
+    return false;
   },
 
   propertyPanelDef,

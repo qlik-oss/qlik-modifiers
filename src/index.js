@@ -19,6 +19,8 @@ const availableModifiers = {
   normalization,
 };
 
+const defaultTypeValue = 'none';
+
 /**
  * @module Modifiers
  */
@@ -41,6 +43,8 @@ export default {
 
   hasActiveModifiers,
 
+  getActiveModifierOfMeasure,
+
   initBase: measureBase.initBase,
 
   isSupportedModifiers,
@@ -50,6 +54,8 @@ export default {
   measureBase: measureBaseAdapter,
 
   limitedSorting,
+
+  ifEnableTotalsFunction,
 };
 
 const objects = {};
@@ -251,6 +257,25 @@ function isApplicableSupportedModifiers({ modifierTypes, properties, layout }) {
 }
 
 /**
+ * Get selected modifier type
+ * @param {Object} measures - The measure properties object
+ */
+function getActiveModifierOfMeasure(measure) {
+  if (!measure || (measure && !measure.qDef.modifiers)) {
+    return defaultTypeValue;
+  }
+  const { modifiers } = measure.qDef;
+  const modifierTypes = Object.getOwnPropertyNames(availableModifiers);
+  for (let i = 0; i < modifiers.length; i++) {
+    const { type } = modifiers[i];
+    if (!modifiers[i].disabled && isSupportedModifiers(modifierTypes)) {
+      return type;
+    }
+  }
+  return defaultTypeValue;
+}
+
+/**
  * Is sorting capabilities limited due to applied modifier?
  * Can operate either on layout or properties
  * @param {Object} options - An object with all input parameters
@@ -271,6 +296,15 @@ function limitedSorting({ measures, properties, layout }) {
     }
   });
   return hasActive && !needDims;
+}
+
+/**
+ * Check if one type of modifier should enable totals function in table
+ * @param {Object} measure - The measure properties object
+ */
+function ifEnableTotalsFunction(measure) {
+  const modifierType = getActiveModifierOfMeasure(measure);
+  return availableModifiers[modifierType].enableTotalsFunction(measure);
 }
 
 /* ----------------------- Private functions ------------------------ */
@@ -535,10 +569,13 @@ function modifyExpression({
 
 function updateTotalsFunction(measure) {
   const qAggrFunc = util.getValue(measure, 'qDef.qAggrFunc');
-  if (qAggrFunc === 'Expr') {
+  if (qAggrFunc === 'Expr' && !ifEnableTotalsFunction(measure)) {
     measure.qDef.qAggrFunc = 'None';
     measure.qDef.base.qAggrFunc = 'Expr';
   } else if (qAggrFunc !== 'None') {
+    delete measure.qDef.base.qAggrFunc;
+  } else if (qAggrFunc === 'None' && ifEnableTotalsFunction(measure) && measure.qDef.base.qAggrFunc === 'Expr') {
+    measure.qDef.qAggrFunc = 'Expr';
     delete measure.qDef.base.qAggrFunc;
   }
 }

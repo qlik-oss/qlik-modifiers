@@ -92,5 +92,7 @@ export default {
     });
   },
 
+  enableTotalsFunction: () => false,
+
   propertyPanelDef,
 };
