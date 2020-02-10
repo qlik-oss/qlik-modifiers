@@ -115,14 +115,14 @@ export default {
     }
   },
 
-  enableTotalsFunction(measure) {
-    if (measure.qDef.modifiers) {
-      const { modifiers } = measure.qDef;
-      for (let i = 0; i < modifiers.length; i++) {
-        if (modifiers[i].type === DEFAULT_OPTIONS.type && modifiers[i].disabled === false && modifiers[i].dimensionalScope === 2) { return true; }
-      }
-    }
-    return false;
+  enableTotalsFunction() {
+    // if (measure.qDef.modifiers) {
+    //   const { modifiers } = measure.qDef;
+    //   for (let i = 0; i < modifiers.length; i++) {
+    //     if (modifiers[i].type === DEFAULT_OPTIONS.type && modifiers[i].disabled === false && modifiers[i].dimensionalScope === 2) { return true; }
+    //   }
+    // }
+    return true;
   },
 
   propertyPanelDef,
