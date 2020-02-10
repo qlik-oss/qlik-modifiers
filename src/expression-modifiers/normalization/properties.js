@@ -1,17 +1,8 @@
 import util from '../../utils/util';
 import helper from '../helper';
+import SCOPE from './constants';
 
 const MODIFIER_TYPE = 'normalization';
-const SELECTION_SCOPE = {
-  CURRENT_SELECTION: 0,
-  SELECT_FIELD: 1,
-  TOTAL: 2,
-};
-const DIMENSIONAL_SCOPE = {
-  ONE_DIMENSION: 0,
-  ALL_DIMENSIOANS: 1,
-  DISREGARD_ALL_DIMENSIOANS: 2,
-};
 
 function getModifierIndex(measure, modifiersRef) {
   const modifiers = util.getValue(measure, modifiersRef);
@@ -78,15 +69,15 @@ function getSelectionOptionsByDimScope(dimensionalScope, options, removeOption) 
 function getDimensionalOptions(itemData, handler, translationKeys, rootPath) {
   let options = [
     {
-      value: DIMENSIONAL_SCOPE.ONE_DIMENSION,
+      value: SCOPE.DIMENSION.ONE_DIMENSION,
       translation: translationKeys.dimensionalScopeOneDimension || 'properties.modifier.dimensionalScope.oneDimension',
     },
     {
-      value: DIMENSIONAL_SCOPE.ALL_DIMENSIOANS,
+      value: SCOPE.DIMENSION.ALL_DIMENSIOANS,
       translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.allDimensions',
     },
     {
-      value: DIMENSIONAL_SCOPE.DISREGARD_ALL_DIMENSIOANS,
+      value: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
       translation: translationKeys.dimensionalScopeDisregardAllDimensions || 'properties.modifier.dimensionalScope.disregardAllDimensions',
     },
   ];
@@ -102,15 +93,15 @@ function getDimensionalOptions(itemData, handler, translationKeys, rootPath) {
 function getSelectionOptions(itemData, translationKeys, rootPath) {
   let options = [
     {
-      value: SELECTION_SCOPE.CURRENT_SELECTION,
+      value: SCOPE.SELECTION.CURRENT_SELECTION,
       translation: translationKeys.selectionScopeCurrentSelection || 'properties.modifier.selectionScope.currentSelection',
     },
     {
-      value: SELECTION_SCOPE.SELECT_FIELD,
+      value: SCOPE.SELECTION.SELECT_FIELD_VALUE,
       translation: translationKeys.selectionScopeSpecificValue || 'properties.modifier.selectionScope.selectAField',
     },
     {
-      value: SELECTION_SCOPE.TOTAL,
+      value: SCOPE.SELECTION.DISREGARD_SELECTION,
       translation: translationKeys.selectionScopeTotal || 'properties.modifier.selectionScope.total',
     },
   ];
@@ -143,7 +134,7 @@ export default function (rootPath, translationKeys = {}) {
             },
             component: 'dropdown',
             schemaIgnore: true,
-            defaultValue: SELECTION_SCOPE.TOTAL,
+            defaultValue: SCOPE.SELECTION.DISREGARD_SELECTION,
             options(itemData) {
               return getSelectionOptions(itemData, translationKeys, rootPath);
             },
@@ -161,7 +152,7 @@ export default function (rootPath, translationKeys = {}) {
             }))),
             show(itemData) {
               const modifier = getModifier(itemData, rootPath);
-              return modifier.selectionScope === SELECTION_SCOPE.SELECT_FIELD;
+              return modifier.selectionScope === SCOPE.SELECTION.SELECT_FIELD_VALUE;
             },
           },
           value: {
@@ -173,7 +164,7 @@ export default function (rootPath, translationKeys = {}) {
             expression: 'optional',
             show(itemData) {
               const modifier = getModifier(itemData, rootPath);
-              return modifier.selectionScope === SELECTION_SCOPE.SELECT_FIELD;
+              return modifier.selectionScope === SCOPE.SELECTION.SELECT_FIELD_VALUE;
             },
           },
           dimensionalScope: {
@@ -185,7 +176,7 @@ export default function (rootPath, translationKeys = {}) {
             },
             component: 'dropdown',
             schemaIgnore: true,
-            defaultValue: DIMENSIONAL_SCOPE.DISREGARD_ALL_DIMENSIOANS,
+            defaultValue: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
             options(itemData, handler) {
               return getDimensionalOptions(itemData, handler, translationKeys, rootPath);
             },
@@ -210,7 +201,7 @@ export default function (rootPath, translationKeys = {}) {
             },
             show(itemData, handler) {
               const modifier = getModifier(itemData, rootPath);
-              return (modifier.dimensionalScope || 0) === DIMENSIONAL_SCOPE.ONE_DIMENSION && handler.layout.qHyperCube.qDimensionInfo.length > 1;
+              return (modifier.dimensionalScope || 0) === SCOPE.DIMENSION.ONE_DIMENSION && handler.layout.qHyperCube.qDimensionInfo.length > 1;
             },
           },
         },

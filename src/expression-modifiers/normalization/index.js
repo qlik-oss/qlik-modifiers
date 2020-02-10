@@ -1,14 +1,15 @@
 import util from '../../utils/util';
 import helper from '../helper';
 import propertyPanelDef from './properties';
+import SCOPE from './constants';
 
 const DEFAULT_OPTIONS = {
   type: 'normalization',
   disabled: false,
   primaryDimension: 0,
   outputExpression: '',
-  dimensionalScope: 2,
-  selectionScope: 2,
+  dimensionalScope: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
+  selectionScope: SCOPE.SELECTION.DISREGARD_SELECTION,
 };
 
 const maxNumDimensionsSupported = 2;
@@ -115,15 +116,7 @@ export default {
     }
   },
 
-  enableTotalsFunction() {
-    // if (measure.qDef.modifiers) {
-    //   const { modifiers } = measure.qDef;
-    //   for (let i = 0; i < modifiers.length; i++) {
-    //     if (modifiers[i].type === DEFAULT_OPTIONS.type && modifiers[i].disabled === false && modifiers[i].dimensionalScope === 2) { return true; }
-    //   }
-    // }
-    return true;
-  },
+  enableTotalsFunction: () => true,
 
   propertyPanelDef,
 
