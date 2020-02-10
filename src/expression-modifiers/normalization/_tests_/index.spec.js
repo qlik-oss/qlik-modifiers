@@ -87,7 +87,7 @@ describe('normalization', () => {
       it('should generate correct expression when Selection scope is Select a field', () => {
         modifier.selectionScope = 1;
         outputExpression = normalization.getFieldSelectionComp(modifier.selectionScope, modifier.field, modifier.value);
-        expect(outputExpression).to.equal('{$<Product={\'Jeans\'}>}');
+        expect(outputExpression).to.equal('{$<[Product]={\'Jeans\'}>}');
       });
       it('should not generate expression when Selection scope is not Select a field', () => {
         modifier.selectionScope = 0;
@@ -201,7 +201,7 @@ describe('normalization', () => {
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<Product={\'Jeans\'}>} Total<[$(=Replace(GetObjectField(0),\']\',\']]\'))]> Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<[Product]={\'Jeans\'}>} Total<[$(=Replace(GetObjectField(0),\']\',\']]\'))]> Aggr({$<[Product]={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
       describe('Dimensional scope = Respect all dimensions', () => {
@@ -218,14 +218,14 @@ describe('normalization', () => {
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<Product={\'Jeans\'}>}  Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<[Product]={\'Jeans\'}>}  Aggr({$<[Product]={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
         });
         it('should generate correct expression for chart with two dimesions', () => {
           outputExpression = normalization.generateExpression({
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<Product={\'Jeans\'}>}  Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<[Product]={\'Jeans\'}>}  Aggr({$<[Product]={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
       describe('Dimensional scope = Disregard the dimensions', () => {
@@ -242,14 +242,14 @@ describe('normalization', () => {
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<Product={\'Jeans\'}>} Total Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<[Product]={\'Jeans\'}>} Total Aggr({$<[Product]={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))]))');
         });
         it('should generate correct expression for chart with two dimesions', () => {
           outputExpression = normalization.generateExpression({
             expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
           });
 
-          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<Product={\'Jeans\'}>} Total Aggr({$<Product={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
+          expect(outputExpression).to.equal(' (　Sum(Sales)　) / Sum({$<[Product]={\'Jeans\'}>} Total Aggr({$<[Product]={\'Jeans\'}>}  (　Sum(Sales)　) , [$(=Replace(GetObjectField(0),\']\',\']]\'))], [$(=Replace(GetObjectField(1),\']\',\']]\'))]))');
         });
       });
     });

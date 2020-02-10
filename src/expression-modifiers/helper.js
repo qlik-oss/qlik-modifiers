@@ -75,6 +75,11 @@ function findField(name, fieldList) {
   return null;
 }
 
+function getFieldWithWrapper(field) {
+  const fieldReplaced = field ? field.replace(/]/g, ']]') : field;
+  return `[${fieldReplaced}]`;
+}
+
 function isNumeric(dimension, dimensionAndFieldList = {}) {
   if (dimension.qLibraryId) {
     const libDim = findLibraryDimension(
@@ -373,4 +378,6 @@ export default {
   canExtract,
 
   getDimDefWithWrapper,
+
+  getFieldWithWrapper,
 };

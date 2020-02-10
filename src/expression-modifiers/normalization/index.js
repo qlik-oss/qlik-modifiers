@@ -8,6 +8,7 @@ const DEFAULT_OPTIONS = {
   primaryDimension: 0,
   outputExpression: '',
   dimensionalScope: 2,
+  selectionScope: 2,
 };
 
 const maxNumDimensionsSupported = 2;
@@ -26,7 +27,7 @@ function getDisregardSelectionComp(selectionScope) {
 }
 
 function getFieldSelectionComp(selectionScope, field, value) {
-  return selectionScope === 1 ? `{$<${field}={'${value}'}>}` : '';
+  return selectionScope === 1 ? `{$<${helper.getFieldWithWrapper(field)}={'${value}'}>}` : '';
 }
 
 function getTotalComp(dimScope, numberOfDims) {
