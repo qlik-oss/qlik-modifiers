@@ -31,4 +31,4 @@ Below is a high-level overview of how the concept works.
 | ------------------------------ | ------------------------------------------------------------------------------ |
 | Add Relative                   | [release/0.4.x](https://github.com/qlik-oss/qlik-modifiers/tree/release/0.4.x) |
 | Add Moving average, Difference | [release/0.3.x](https://github.com/qlik-oss/qlik-modifiers/tree/release/0.3.x) |
-| Add accumulation               | [release/0.2.x](https://github.com/qlik-oss/qlik-modifiers/tree/release/0.2.x) |
+| Add Accumulation               | [release/0.2.x](https://github.com/qlik-oss/qlik-modifiers/tree/release/0.2.x) |
