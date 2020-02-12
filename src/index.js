@@ -194,14 +194,33 @@ function applyModifiers({
   );
 }
 
+function updateDisabledModifiers(measure) {
+  // For forward compatibility
+  const modifiers = getModifiers(measure);
+  if (modifiers) {
+    modifiers.forEach((modifier) => {
+      if (modifier.disabled) {
+        delete modifier.base;
+        delete modifier.outputExpression;
+      }
+    });
+  }
+}
+
 /**
  * Restores the measure properties to how it was before modifiers were applied
  * @param {Object} measure - The measure properties object from the enigma model
  * @static
  */
 function cleanUpMeasure(measure) {
-  measureBase.restoreBase(measure);
-  measure.qDef.coloring && delete measure.qDef.coloring; // eslint-disable-line no-param-reassign
+  // For forward compatibility
+  if (!hasEnabledUnsupportedModifier(measure)) {
+    measureBase.restoreBase(measure);
+  } else {
+    delete measure.qDef.base;
+  }
+  measure.qDef.coloring && delete measure.qDef.coloring;
+  updateDisabledModifiers(measure);
 }
 
 /**
@@ -391,6 +410,11 @@ function updateFieldNames({ properties }) {
   measures.forEach(measure => updateMeasureFieldName({ measure, properties }));
 }
 
+function hasEnabledUnsupportedModifier(measure) {
+  const modifiers = getModifiers(measure);
+  return Array.isArray(modifiers) && modifiers.some(modifier => typeof modifier === 'object' && !modifier.disabled && !availableModifiers[modifier.type]);
+}
+
 function isActiveModifiers({ modifiers, properties, layout }) {
   const supportedTypes = {};
   return (
@@ -514,10 +538,11 @@ function modifyMeasure({
   dimensionAndFieldList,
 }) {
   const props = libraryItemsProps[libraryId];
+  const inputExpression = props.qMeasure.qDef;
   const generatedExpression = availableModifiers[
     modifier.type
   ].generateExpression({
-    expression: props.qMeasure.qDef,
+    expression: inputExpression,
     modifier,
     properties,
     dimensionAndFieldList,
@@ -532,7 +557,8 @@ function modifyMeasure({
   }
   delete measure.qLibraryId;
   measure.qDef.coloring = props.qMeasure.coloring;
-  measure.qDef.base.inputExpression = props.qMeasure.qDef;
+  measure.qDef.base.inputExpression = inputExpression;
+  modifier.base = extend(true, {}, measure.qDef.base);
 }
 
 function modifyExpression({
@@ -607,6 +633,17 @@ function updateIfChanged({ oldProperties, newProperties, model }) {
   );
 }
 
+function findActiveModifier(measure) {
+  const { modifiers } = measure.qDef;
+  for (let i = 0; i < modifiers.length; i++) {
+    const modifier = modifiers[i];
+    if (availableModifiers[modifier.type] && !modifier.disabled && modifier.base && modifier.outputExpression === measure.qDef.qDef) {
+      measure.qDef.base = extend(true, {}, modifier.base);
+      return;
+    }
+  }
+}
+
 function applyMeasureModifiers({
   measure,
   properties,
@@ -614,6 +651,8 @@ function applyMeasureModifiers({
   dimensionAndFieldList,
 }) {
   let activeModifiersPerMeasure = 0;
+  // For forward and backward compatibility
+  findActiveModifier(measure);
   if (!measureBase.isValid(measure)) {
     measureBase.initBase(measure, true);
   }
@@ -781,6 +820,7 @@ function updateMeasuresProperties({
             dimensionAndFieldList: list,
           });
         }
+        updateDisabledModifiers(measure);
       });
     },
   ));
