@@ -574,11 +574,11 @@ function modifyExpression({
       modifier.type
     ].updateModifier(modifier, properties.qHyperCubeDef);
   }
-  const expression = measureBaseAdapter.getExpression(measure);
+  const inputExpression = measureBaseAdapter.getExpression(measure);
   const generatedExpression = availableModifiers[
     modifier.type
   ].generateExpression({
-    expression,
+    expression: inputExpression,
     modifier,
     properties,
     dimensionAndFieldList,
@@ -588,9 +588,10 @@ function modifyExpression({
   if (measure.qDef.base.qLabelExpression) {
     measure.qDef.qLabelExpression = measure.qDef.base.qLabelExpression;
   } else {
-    measure.qDef.qLabel = measure.qDef.base.qLabel || expression;
+    measure.qDef.qLabel = measure.qDef.base.qLabel || inputExpression;
   }
-  measure.qDef.base.inputExpression = expression;
+  measure.qDef.base.inputExpression = inputExpression;
+  modifier.base = extend(true, {}, measure.qDef.base);
 }
 
 function updateTotalsFunction(measure) {
