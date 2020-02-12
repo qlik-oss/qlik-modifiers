@@ -5,18 +5,12 @@ import util from './utils/util';
 import helper from './expression-modifiers/helper';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
-import movingAverage from './expression-modifiers/moving-average';
-import difference from './expression-modifiers/difference';
-import normalization from './expression-modifiers/normalization';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
 
 const availableModifiers = {
   accumulation,
-  movingAverage,
-  difference,
-  normalization,
 };
 
 const defaultTypeValue = 'none';
