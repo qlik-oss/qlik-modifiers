@@ -328,6 +328,9 @@ function isApplicable({
   minDimensions = 1,
   maxDimensions = 2,
 }) {
+  if (!properties && !layout) {
+    return true;
+  }
   const numDimensions = getNumDimensions({ properties, layout });
   return numDimensions >= minDimensions && numDimensions <= maxDimensions;
 }
