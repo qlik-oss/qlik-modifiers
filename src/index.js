@@ -634,7 +634,7 @@ function updateIfChanged({ oldProperties, newProperties, model }) {
   );
 }
 
-function findActiveModifier(measure) {
+function getBaseFromActiveModifier(measure) {
   const { modifiers } = measure.qDef;
   for (let i = 0; i < modifiers.length; i++) {
     const modifier = modifiers[i];
@@ -653,7 +653,9 @@ function applyMeasureModifiers({
 }) {
   let activeModifiersPerMeasure = 0;
   // For forward and backward compatibility
-  findActiveModifier(measure);
+  if (!measureBase.isValid(measure)) {
+    getBaseFromActiveModifier(measure);
+  }
   if (!measureBase.isValid(measure)) {
     measureBase.initBase(measure, true);
   }
