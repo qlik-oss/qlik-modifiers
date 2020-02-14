@@ -192,14 +192,17 @@ function applyModifiers({
   );
 }
 
-function updateDisabledModifiers(measure) {
-  // For forward compatibility
+function updateModifiers(measure) {
+  // For forward and then backward compatibility
   const modifiers = getModifiers(measure);
-  if (modifiers) {
+  if (Array.isArray(modifiers)) {
     modifiers.forEach((modifier) => {
-      if (modifier.disabled) {
-        delete modifier.base;
-        delete modifier.outputExpression;
+      if (typeof modifier === 'object') {
+        if (modifier.disabled || (!availableModifiers[modifier.type] && modifier.base && modifier.base.qDef !== measure.qDef.qDef)) {
+          modifier.disabled = true;
+          delete modifier.base;
+          delete modifier.outputExpression;
+        }
       }
     });
   }
@@ -218,7 +221,7 @@ function cleanUpMeasure(measure) {
     delete measure.qDef.base;
   }
   measure.qDef.coloring && delete measure.qDef.coloring;
-  updateDisabledModifiers(measure);
+  updateModifiers(measure);
 }
 
 /**
@@ -331,7 +334,8 @@ function getModifiers(measure) {
 }
 
 function getBase(measure) {
-  return measure.base || (measure.qDef && measure.qDef.base);
+  const base = measure.base || (measure.qDef && measure.qDef.base);
+  return base || getBaseFromActiveModifier(measure);
 }
 
 function getLibraryId(measure) {
@@ -633,14 +637,14 @@ function updateIfChanged({ oldProperties, newProperties, model }) {
 }
 
 function getBaseFromActiveModifier(measure) {
-  const { modifiers } = measure.qDef;
+  const modifiers = getModifiers(measure);
   for (let i = 0; i < modifiers.length; i++) {
     const modifier = modifiers[i];
-    if (availableModifiers[modifier.type] && !modifier.disabled && modifier.base && modifier.outputExpression === measure.qDef.qDef) {
-      measure.qDef.base = extend(true, {}, modifier.base);
-      return;
+    if (availableModifiers[modifier.type] && !modifier.disabled && modifier.base && (!measure.qDef || modifier.outputExpression === measure.qDef.qDef)) {
+      return modifier.base;
     }
   }
+  return undefined;
 }
 
 function applyMeasureModifiers({
@@ -652,7 +656,10 @@ function applyMeasureModifiers({
   let activeModifiersPerMeasure = 0;
   // For forward and backward compatibility
   if (!measureBase.isValid(measure)) {
-    getBaseFromActiveModifier(measure);
+    const base = getBaseFromActiveModifier(measure);
+    if (base) {
+      measure.qDef.base = extend(true, {}, base);
+    }
   }
   if (!measureBase.isValid(measure)) {
     measureBase.initBase(measure, true);
@@ -821,7 +828,7 @@ function updateMeasuresProperties({
             dimensionAndFieldList: list,
           });
         }
-        updateDisabledModifiers(measure);
+        updateModifiers(measure);
       });
     },
   ));
