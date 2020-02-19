@@ -336,11 +336,15 @@ function getModifiers(measure) {
   return measure.modifiers || (measure.qDef && measure.qDef.modifiers);
 }
 
+function getOutputExpression(modifier) {
+  return util.getValue(modifier, 'outputExpression.qValueExpression.qExpr') || util.getValue(modifier, 'outputExpression');
+}
+
 function updateMeasureBase(measure) {
   // For forward and backward compatibility
   const activeModifier = getActiveModifier(measure);
   if (activeModifier) {
-    if (activeModifier.outputExpression !== undefined && activeModifier.outputExpression !== measure.qDef.qDef) {
+    if (activeModifier.outputExpression !== undefined && getOutputExpression(activeModifier) !== measure.qDef.qDef) {
       delete measure.qDef.base;
     } else if (!measureBase.isValid(measure) && activeModifier.base) {
       measure.qDef.base = extend(true, {}, activeModifier.base);
@@ -359,7 +363,7 @@ function updateMeasureModifiers(measure) {
   if (Array.isArray(modifiers)) {
     modifiers.forEach((modifier) => {
       if (typeof modifier === 'object') {
-        if (modifier.disabled || (!availableModifiers[modifier.type] && modifier.outputExpression !== measure.qDef.qDef)) {
+        if (modifier.disabled || (!availableModifiers[modifier.type] && getOutputExpression(modifier) !== measure.qDef.qDef)) {
           modifier.disabled = true;
           delete modifier.base;
         }
