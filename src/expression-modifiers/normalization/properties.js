@@ -180,6 +180,7 @@ export default function (rootPath, translationKeys = {}) {
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
+            supportTooltip: true,
             options(itemData, handler) {
               return getDimensionalOptions(itemData, handler, translationKeys, rootPath);
             },
