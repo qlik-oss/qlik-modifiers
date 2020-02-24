@@ -67,21 +67,24 @@ function getSelectionOptionsByDimScope(dimensionalScope, options, removeOption) 
 }
 
 function getDimensionalOptions(itemData, handler, translationKeys, rootPath) {
+  const numberOfDim = handler.layout.qHyperCube.qDimensionInfo.length;
   let options = [
     {
       value: SCOPE.DIMENSION.ONE_DIMENSION,
-      translation: translationKeys.dimensionalScopeOneDimension || 'properties.modifier.dimensionalScope.oneDimension',
+      translation: translationKeys.dimensionalScopeOneDimension || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectOneDimension' : 'respectDimension'}`,
+      tooltipTranslation: translationKeys.dimensionalScopeOneDimensionTooltip || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectOneDimension' : 'respectDimension'}.tooltip`,
     },
     {
       value: SCOPE.DIMENSION.ALL_DIMENSIOANS,
-      translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.allDimensions',
+      translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.respectAllDimensions',
+      tooltipTranslation: translationKeys.dimensionalScopeAllDimensionsTooltip || 'properties.modifier.dimensionalScope.respectAllDimensions.tooltip',
     },
     {
       value: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
-      translation: translationKeys.dimensionalScopeDisregardAllDimensions || 'properties.modifier.dimensionalScope.disregardAllDimensions',
+      translation: translationKeys.dimensionalScopeDisregardAllDimensions || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'disregardAllDimensions' : 'disregardDimension'}`,
+      tooltipTranslation: translationKeys.dimensionalScopeDisregardAllDimensionsTooltip || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'disregardAllDimensions' : 'disregardDimension'}.tooltip`,
     },
   ];
-  const numberOfDim = handler.layout.qHyperCube.qDimensionInfo.length;
   options = getDimOptionsByNumOfDim(numberOfDim, options, 0);
 
   const { selectionScope } = getModifier(itemData, rootPath);
