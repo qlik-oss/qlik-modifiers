@@ -71,13 +71,13 @@ function getDimensionalOptions(itemData, handler, translationKeys, rootPath) {
   let options = [
     {
       value: SCOPE.DIMENSION.ONE_DIMENSION,
-      translation: translationKeys.dimensionalScopeOneDimension || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectOneDimension' : 'respectDimension'}`,
-      tooltipTranslation: translationKeys.dimensionalScopeOneDimensionTooltip || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectOneDimension' : 'respectDimension'}.tooltip`,
+      translation: translationKeys.dimensionalScopeOneDimension || 'properties.modifier.dimensionalScope.respectOneDimension',
+      tooltipTranslation: translationKeys.dimensionalScopeOneDimensionTooltip || 'properties.modifier.dimensionalScope.respectOneDimension.tooltip',
     },
     {
       value: SCOPE.DIMENSION.ALL_DIMENSIOANS,
-      translation: translationKeys.dimensionalScopeAllDimensions || 'properties.modifier.dimensionalScope.respectAllDimensions',
-      tooltipTranslation: translationKeys.dimensionalScopeAllDimensionsTooltip || 'properties.modifier.dimensionalScope.respectAllDimensions.tooltip',
+      translation: translationKeys.dimensionalScopeAllDimensions || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectAllDimensions' : 'respectDimension'}`,
+      tooltipTranslation: translationKeys.dimensionalScopeAllDimensionsTooltip || `properties.modifier.dimensionalScope.${numberOfDim === 2 ? 'respectAllDimensions' : 'respectDimension'}.tooltip`,
     },
     {
       value: SCOPE.DIMENSION.DISREGARD_ALL_DIMENSIONS,
