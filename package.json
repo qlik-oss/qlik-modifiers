@@ -33,7 +33,7 @@
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "devDependencies": {
-    "@after-work.js/aw": "^6.0.11",
+    "@after-work.js/aw": "^6.0.13",
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.8.7",
     "@babel/preset-env": "^7.8.7",
