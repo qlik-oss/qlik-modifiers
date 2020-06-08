@@ -296,6 +296,7 @@ function limitedSorting({ measures, properties, layout }) {
 /**
  * Get active modifier
  * @param {Object} measure - The measure properties object
+ * @static
  */
 function getActiveModifier(measure) {
   const modifiers = getModifiers(measure);
@@ -313,6 +314,7 @@ function getActiveModifier(measure) {
 /**
  * Check if one type of modifier should enable totals function in table
  * @param {Object} measure - The measure properties object
+ * @static
  */
 function ifEnableTotalsFunction(measure) {
   const activeModifier = getActiveModifier(measure);

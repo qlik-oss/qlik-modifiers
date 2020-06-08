@@ -18,6 +18,8 @@
     * [.destroy(model)](#module_Modifiers.destroy)
     * [.hasActiveModifiers(options)](#module_Modifiers.hasActiveModifiers) ⇒ <code>Boolean</code>
     * [.limitedSorting(options)](#module_Modifiers.limitedSorting)
+    * [.getActiveModifier(measure)](#module_Modifiers.getActiveModifier)
+    * [.ifEnableTotalsFunction(measure)](#module_Modifiers.ifEnableTotalsFunction)
 
 <a name="module_Modifiers.modifiers"></a>
 
@@ -211,4 +213,26 @@ Can operate either on layout or properties
 | options.measures | <code>Array.&lt;Object&gt;</code> | Array with measure properties or layout |
 | [options.properties] | <code>Object</code> | object properties (needs either this or the layout) |
 | [options.layout] | <code>Object</code> | object layout (needs either this or the properties) |
+
+<a name="module_Modifiers.getActiveModifier"></a>
+
+### Modifiers.getActiveModifier(measure)
+Get active modifier
+
+**Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| measure | <code>Object</code> | The measure properties object |
+
+<a name="module_Modifiers.ifEnableTotalsFunction"></a>
+
+### Modifiers.ifEnableTotalsFunction(measure)
+Check if one type of modifier should enable totals function in table
+
+**Kind**: static method of [<code>Modifiers</code>](#module_Modifiers)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| measure | <code>Object</code> | The measure properties object |
 
