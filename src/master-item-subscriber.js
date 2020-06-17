@@ -6,7 +6,7 @@ export default function MasterItemSubscriber({ model, callback }) {
   let effectiveDimensionLibraryIds = {};
   const mainProperties = {
     dimension: ['qDim.qFieldDefs'],
-    measure: ['qMeasure.qDef', 'qMeasure.qLabel', 'qMeasure.qLabelExpression', 'qMeasure.coloring'],
+    measure: ['qMeasure.qDef', 'qMeasure.qLabel', 'qMeasure.qLabelExpression', 'qMeasure.coloring', 'qMeasure.qNumFormat', 'qMeasure.isCustomFormatted'],
   };
 
   function getPropertiesString(layout) {

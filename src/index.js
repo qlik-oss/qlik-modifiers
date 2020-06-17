@@ -599,6 +599,10 @@ function modifyMeasure({
   if (measure.qDef.qLabelExpression || props.qMeasure.qLabelExpression) {
     measure.qDef.qLabelExpression = props.qMeasure.qLabelExpression;
   }
+  if (measure.qDef.quarantine && measure.qDef.quarantine.qNumFormat && props.qMeasure.qNumFormat) {
+    measure.qDef.qNumFormat = props.qMeasure.qNumFormat;
+    measure.qDef.isCustomFormatted = props.qMeasure.isCustomFormatted;
+  }
   delete measure.qLibraryId;
   measure.qDef.coloring = props.qMeasure.coloring;
   modifier.base = extend(true, {}, measure.qDef.base);

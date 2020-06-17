@@ -348,6 +348,31 @@ describe('measure modifiers', () => {
         expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabelExpression).to.equal('qLabelExpression_Lib');
         expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qLabel).to.equal('qLabel_Lib');
       });
+
+      it('should copy qNumFormat and isCustomFormatted correctly for library item if quarantine.qNumFormat is set', async () => {
+        mockedLibItems.libId1.properties.qMeasure.qNumFormat = 'numFormat_lib';
+        mockedLibItems.libId1.properties.qMeasure.isCustomFormatted = 'isCustomFormatted_lib';
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.qNumFormat = 'numFormat_inline';
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.isCustomFormatted = 'isCustomFormatted_inline';
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.quarantine = { qNumFormat: {} };
+
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qNumFormat).to.equal('numFormat_lib');
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.isCustomFormatted).to.equal('isCustomFormatted_lib');
+      });
+
+      it('should not copy qNumFormat and isCustomFormatted for library item if quarantine.qNumFormat not is set', async () => {
+        mockedLibItems.libId1.properties.qMeasure.qNumFormat = 'numFormat_lib';
+        mockedLibItems.libId1.properties.qMeasure.isCustomFormatted = 'isCustomFormatted_lib';
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.qNumFormat = 'numFormat_inline';
+        model.properties.qHyperCubeDef.qMeasures[0].qDef.isCustomFormatted = 'isCustomFormatted_inline';
+
+        await Modifiers.apply({ model });
+
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qNumFormat).to.equal('numFormat_inline');
+        expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.isCustomFormatted).to.equal('isCustomFormatted_inline');
+      });
     });
   });
 
