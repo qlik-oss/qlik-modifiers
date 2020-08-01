@@ -35,13 +35,13 @@
   "devDependencies": {
     "@after-work.js/aw": "^6.0.13",
     "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.10.5",
-    "@babel/preset-env": "^7.10.4",
+    "@babel/core": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "babel-loader": "8.1.0",
     "babel-plugin-istanbul": "^6.0.0",
-    "eslint": "^7.5.0",
+    "eslint": "^7.6.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-mocha": "^7.0.1",
@@ -49,7 +49,7 @@
     "jsdoc-to-markdown": "^5.0.3",
     "mocha-junit-reporter": "^1.23.3",
     "uglifyjs-webpack-plugin": "2.2.0",
-    "webpack": "4.44.0",
+    "webpack": "4.44.1",
     "webpack-cli": "3.3.12"
   }
 }
