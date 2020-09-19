@@ -2,28 +2,28 @@
 # yarn lockfile v1
 
 
-"@after-work.js/aw@^6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/aw/-/aw-6.0.13.tgz#3476d1217df7cdba16be3cd6ed9069c07a895229"
-  integrity sha512-uVkVm0GrmWiiWwaeVV91FyjL9e5zY1i7wDvlBl3dVOSoBcWYXRcwPDzUlis6Q9ECdvLemK7J04A/AJ/TMmvISg==
+"@after-work.js/aw@^6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/aw/-/aw-6.0.14.tgz#5bc86ab8189d08ab7752542a2ae3b137827b96c0"
+  integrity sha512-se+k7Wh+2qfC1aAkrtOQZcE5XpN/Y7bqvSuTePaNh1QPIehHZRipCpKKVDcFQkpFJBSKZsrCv0RGxb2ub7Gi5g==
   dependencies:
-    "@after-work.js/cdp" "6.0.13"
-    "@after-work.js/cli" "6.0.13"
-    "@after-work.js/node" "6.0.13"
-    "@after-work.js/protractor" "6.0.13"
-    "@after-work.js/puppeteer" "6.0.13"
-    "@after-work.js/serve" "6.0.13"
+    "@after-work.js/cdp" "6.0.14"
+    "@after-work.js/cli" "6.0.14"
+    "@after-work.js/node" "6.0.14"
+    "@after-work.js/protractor" "6.0.14"
+    "@after-work.js/puppeteer" "6.0.14"
+    "@after-work.js/serve" "6.0.14"
 
-"@after-work.js/cdp@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/cdp/-/cdp-6.0.13.tgz#fb0eef9e5ade8d3bef721f6b8b6acc6b2967a70e"
-  integrity sha512-J2jrYcnqOuks1+KD5XC2L1Pp0nvWNupGwePzIOf5RFhJo1rJ7OfiiVPlzonsrHad4I3zI+9t3eSohabTk0AzDQ==
+"@after-work.js/cdp@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/cdp/-/cdp-6.0.14.tgz#76901a9f94aba9305fc9521d758edf3de1b58d50"
+  integrity sha512-GMoH4apI0443WS8qbXeoDmGpFGc/jm7gMviYys/XBIWF68kUi3dyMmSJ52LyiFJOMws48VOQSTpjkhrjcApMPw==
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.13"
-    "@after-work.js/server" "6.0.13"
-    "@after-work.js/transform" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
-    "@after-work.js/watch-plugin" "6.0.13"
+    "@after-work.js/interactive-plugin" "6.0.14"
+    "@after-work.js/server" "6.0.14"
+    "@after-work.js/transform" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
+    "@after-work.js/watch-plugin" "6.0.14"
     chokidar "3.3.1"
     chrome-launcher "0.13.0"
     chrome-remote-interface "0.28.1"
@@ -35,33 +35,33 @@
     source-map-support "0.5.16"
     test-exclude "5.2.3"
 
-"@after-work.js/chai-plugin-screenshot@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-screenshot/-/chai-plugin-screenshot-6.0.13.tgz#437b1462be3add7fbaabb06afeda5c6b9c859678"
-  integrity sha512-RXkwazORA2nEdi77i/0g77k3Ibr3hPWIGU7SnR7UQjBy/PzUd6Dd89ElEgA16HDme24+ddDhFW6x6hETxP+05g==
+"@after-work.js/chai-plugin-screenshot@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-screenshot/-/chai-plugin-screenshot-6.0.14.tgz#badf74e671a483c8fcb823249c89ff1a873e7bfa"
+  integrity sha512-pxH2UyVbmVEolyiVTI562k7auotIwy3jPKkjzHjNeqTtJyrtKGPgLMW4BSroaruXrNYU204A6oYvVxOKIejgJA==
   dependencies:
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/utils" "6.0.14"
     jimp "0.9.5"
     mkdirp "0.5.1"
 
-"@after-work.js/chai-plugin-snapshot@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-snapshot/-/chai-plugin-snapshot-6.0.13.tgz#6b7d44a3b21d2da346ccefe3084669aaf72d92ee"
-  integrity sha512-FSr4mafC+fsNrqQlKtbip8uIPj9BAvTW+9vvGHyReB+Io7QU40mgfXUdvQjIAO4yMhW7C2rKhpex+o1HZzSYBw==
+"@after-work.js/chai-plugin-snapshot@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/chai-plugin-snapshot/-/chai-plugin-snapshot-6.0.14.tgz#5aca30e273b7b69ab086e1cbd6724ff15777ce05"
+  integrity sha512-OamYBZQbgZRf19dsZNCnzzTGi/CfW91cUAqCReN9uUsZNG3kMCkFgzD0zsMMY0RSStwN+n5Fj6mKfiF3xiQ1vw==
   dependencies:
-    "@after-work.js/transform" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/transform" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     jest-snapshot "25.1.0"
 
-"@after-work.js/cli@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/cli/-/cli-6.0.13.tgz#a3bcdf775e430ab2ccc7f7663ba10bd9cbea90ec"
-  integrity sha512-/NbLi5SzJCfczNLwnbxZXnaH4muMoXh9UcydQewVdfTYAVDAPxivfmmiSM1cCaGlm5sNwXTs19E0qEyH8R+81g==
+"@after-work.js/cli@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/cli/-/cli-6.0.14.tgz#d8954936b3c515d0acb3a3c468f56b163de61d50"
+  integrity sha512-1rCZieX8jf0ht9QyTi5v2yo0YfY7NidrDE05SUgTDrT6RReujwOKv1ZFCiMZ/8Kh+S0sSx3wKe3LL3kUysvALw==
   dependencies:
-    "@after-work.js/chai-plugin-screenshot" "6.0.13"
-    "@after-work.js/chai-plugin-snapshot" "6.0.13"
-    "@after-work.js/interactive-plugin" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/chai-plugin-screenshot" "6.0.14"
+    "@after-work.js/chai-plugin-snapshot" "6.0.14"
+    "@after-work.js/interactive-plugin" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     chai "4.2.0"
     chai-as-promised "7.1.1"
     chai-subset "1.6.0"
@@ -71,44 +71,44 @@
     source-map-support "0.5.16"
     yargs "14.2.2"
 
-"@after-work.js/interactive-plugin@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/interactive-plugin/-/interactive-plugin-6.0.13.tgz#25c8688787ade00048c79aa4c48efa581cb36fe4"
-  integrity sha512-XWtLcgZwuFhdVH55//3UKVK/ssyl/60/L7E3On9Qvw0d6vUrlAmESopYbhrkYLIfVYuFnveBxBblATonYM1L7A==
+"@after-work.js/interactive-plugin@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/interactive-plugin/-/interactive-plugin-6.0.14.tgz#5915a2ab9cf4f1b1e9c5e81095c8abcf11bb23ce"
+  integrity sha512-8FNzuc5PJTBnNQiHSGJyaeTuPYnYVFZCZDVi3ggj8KpYQMDkePAre1McosobZ9yvv00/bQZOPKzh7T1f6fbKXQ==
   dependencies:
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/utils" "6.0.14"
     fuzzy "0.1.3"
     globby "10.0.2"
     import-cwd "3.0.0"
     inquirer "7.0.6"
     inquirer-checkbox-plus-prompt "1.0.1"
 
-"@after-work.js/node@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/node/-/node-6.0.13.tgz#00aa63648c321baa83904d2997db87f7d7f56566"
-  integrity sha512-PF0vfQrNk6lyZ7BDAJKqGlCRkhbvc9Fs9q69+AA6Fyu0iLtPJ4v81zExofHpD1f+lY23qa7lfx4+eGoSgtpkfQ==
+"@after-work.js/node@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/node/-/node-6.0.14.tgz#a4fd74f58a34aa971a5bcd8ed0704da1cc8e6691"
+  integrity sha512-0CPLBggJVXmcRc9s9yrQv35Kkowk1/bSrNa41UcRR2vk3DXdpIk/dIbDD8+jdJ6TZm+BzZbzMKFjtlRhN1W5ZA==
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.13"
-    "@after-work.js/preset-plugin" "6.0.13"
-    "@after-work.js/register" "6.0.13"
-    "@after-work.js/transform" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
-    "@after-work.js/watch-plugin" "6.0.13"
+    "@after-work.js/interactive-plugin" "6.0.14"
+    "@after-work.js/preset-plugin" "6.0.14"
+    "@after-work.js/register" "6.0.14"
+    "@after-work.js/transform" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
+    "@after-work.js/watch-plugin" "6.0.14"
     chokidar "3.3.1"
     globby "10.0.2"
     import-cwd "3.0.0"
     mocha "6.2.2"
     nyc "14.1.1"
 
-"@after-work.js/preset-plugin@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/preset-plugin/-/preset-plugin-6.0.13.tgz#3fead7d142e785cc063d1b9a29a6ba5b61d48133"
-  integrity sha512-5l1tn5DUTGASWBl1WZXCYDWeCny3xzaYiLOBaR/aXSO+iuQrQszqoiXGvfq1BCh1UWBUorPgR8j8n1Jc/saMUg==
+"@after-work.js/preset-plugin@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/preset-plugin/-/preset-plugin-6.0.14.tgz#95eb7f6abac6a9372b71807689b9d323722875c9"
+  integrity sha512-TnEs2MFdy+/j0R3Q4eKWjk+JVx/S0k0BgqM7G1njeI2KqB7mGyJAZmrQpNLduyDVMoH02TzeOiRizKRXpcZlew==
   dependencies:
-    "@after-work.js/chai-plugin-screenshot" "6.0.13"
-    "@after-work.js/chai-plugin-snapshot" "6.0.13"
-    "@after-work.js/interactive-plugin" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/chai-plugin-screenshot" "6.0.14"
+    "@after-work.js/chai-plugin-snapshot" "6.0.14"
+    "@after-work.js/interactive-plugin" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     chai "4.2.0"
     chai-as-promised "7.1.1"
     chai-subset "1.6.0"
@@ -116,15 +116,15 @@
     sinon "6.3.5"
     sinon-chai "3.5.0"
 
-"@after-work.js/protractor@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/protractor/-/protractor-6.0.13.tgz#2bf5496afc056ecd4d45f3522dd0bb490714acc6"
-  integrity sha512-IGsfHG8LYWR3HSTf86nOdeE3bRglGqj4ep28vK++dr1Xdb+3InKHmSVeJ/ntQ0wm1MCh03hhU5oiIhF4G9YTZw==
+"@after-work.js/protractor@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/protractor/-/protractor-6.0.14.tgz#19fd290fd7852203e9213bb89e3316be5a4c8baa"
+  integrity sha512-Sjhrtk5Xb+BiZLru1T5/VBuy551I8ANL00G2R/grXpSabfwSzDMwY64pxyJbqOq5gIg29/mpFBNAJ4NXaD3aCQ==
   dependencies:
-    "@after-work.js/preset-plugin" "6.0.13"
-    "@after-work.js/register" "6.0.13"
-    "@after-work.js/server" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/preset-plugin" "6.0.14"
+    "@after-work.js/register" "6.0.14"
+    "@after-work.js/server" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     extend "3.0.2"
     globby "10.0.2"
     handlebars "4.7.3"
@@ -136,29 +136,29 @@
     moment "2.24.0"
     yargs "14.2.2"
 
-"@after-work.js/puppeteer@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/puppeteer/-/puppeteer-6.0.13.tgz#6722dfbed871e24a4cf7f06d0f59e7e66c4e9bd2"
-  integrity sha512-DVHgudqJGSnEeZlY7weaqW8CEoqZYKcVIwylfWVOCY3iLtzRO6u03NvNVY8x1YnW/TyCZtStO4Lhamg9bdRMlw==
+"@after-work.js/puppeteer@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/puppeteer/-/puppeteer-6.0.14.tgz#f48182f8b3595e4256b13abb463d218ac5d722e2"
+  integrity sha512-WfHoneOTlfcya2S+sfzgl3faBxTadxdFh2U2o8Xstx0m/R9dBcd29Ro9nfvGGdQ8ZmF6LWh4oKfAd5A4JK6tiw==
   dependencies:
-    "@after-work.js/interactive-plugin" "6.0.13"
-    "@after-work.js/node" "6.0.13"
-    "@after-work.js/preset-plugin" "6.0.13"
-    "@after-work.js/register" "6.0.13"
-    "@after-work.js/server" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
-    "@after-work.js/watch-plugin" "6.0.13"
+    "@after-work.js/interactive-plugin" "6.0.14"
+    "@after-work.js/node" "6.0.14"
+    "@after-work.js/preset-plugin" "6.0.14"
+    "@after-work.js/register" "6.0.14"
+    "@after-work.js/server" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
+    "@after-work.js/watch-plugin" "6.0.14"
     chrome-launcher "0.13.0"
     import-cwd "3.0.0"
     puppeteer-core "1.20.0"
 
-"@after-work.js/register@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/register/-/register-6.0.13.tgz#a30cbb230f81e25ad15da258c899a9f3e3d460e7"
-  integrity sha512-LMeMzSeWsjHyXBBLUoMbdK9m/cssxjPrOe9Fz5aGhBC9SevKVlwGisIoR98EtP9TyeNddehuehRZG4KInedooQ==
+"@after-work.js/register@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/register/-/register-6.0.14.tgz#40130547c6f323482b9c677ba5c5c05841d01d66"
+  integrity sha512-hyuAqJ1X1AuA/KICGHY2CO3GqVh9vxm5QhZdxhYjUtvtHWl6KEILpamA0rXNlTpd1IB4Cb/R2p+J8AYTl2WLZA==
   dependencies:
-    "@after-work.js/transform" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/transform" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     find-cache-dir "3.3.0"
     import-cwd "3.0.0"
     minimatch "3.0.4"
@@ -166,51 +166,51 @@
     require-from-string "2.0.2"
     source-map-support "0.5.16"
 
-"@after-work.js/serve@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/serve/-/serve-6.0.13.tgz#f2aa185d0365050bc5eef8f952cd4a42db2ed704"
-  integrity sha512-f9g/R8C9fF6IZOTorRVXjQyEwkaKeWiYtuuCM9+hgwkZQ8t5tmdao74b0Q/9DnmtSxwDlTF4F8maXbhStm5VZQ==
+"@after-work.js/serve@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/serve/-/serve-6.0.14.tgz#e7a5775df548159f02f3d8d30d9eea6e2dbc48c0"
+  integrity sha512-tEJ9gtVKnd9Mv2LtbRHW1uJESuMdkEznFgdWHmp26p4iMdjJaDiencfNJGSy5F+uourIriSatVWIrpI65XUivA==
   dependencies:
-    "@after-work.js/server" "6.0.13"
+    "@after-work.js/server" "6.0.14"
 
-"@after-work.js/server@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/server/-/server-6.0.13.tgz#900250f2c3f84d8cb52226daa218cb188c649270"
-  integrity sha512-/lLS8ZlBoR/nvLlZrOYP6Z2HLK1unyh4ib441NPahCJ2r4bSbUNo6TMajsTjaqaWWIwBmfvfFLUgVIXY1Kxv0Q==
+"@after-work.js/server@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/server/-/server-6.0.14.tgz#383c1c8540857c09b92f1932a728e4ed286a9e18"
+  integrity sha512-AByx3uXP/896GCWy+NBGgCWa4ScKdxAdH0hfPdS3ZhM1uv6SzpcQD7sYWGGaalbTaM9PqSsf/DyErAfusn2M5g==
   dependencies:
-    "@after-work.js/transform-middleware" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/transform-middleware" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     express "4.17.1"
     http-proxy-middleware "0.21.0"
     import-cwd "3.0.0"
     serve-favicon "2.5.0"
     test-exclude "5.2.3"
 
-"@after-work.js/transform-middleware@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/transform-middleware/-/transform-middleware-6.0.13.tgz#dcc1dd7e9b481e263f839ffded599344af0eecaa"
-  integrity sha512-Mk9VGFRvmfV5oE2kA8yoB7oRcG+SvVTlJvd5X8QDohEJD4uZa74f2AYJ+5GN9x+Cn2/nIKzdfb5VN8mPRR9Ogg==
+"@after-work.js/transform-middleware@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/transform-middleware/-/transform-middleware-6.0.14.tgz#4a32fdd6e3532b98ab90d96c53faaececb9db6e4"
+  integrity sha512-plgyz9RrI3+I44ZUbfupexYiSqTrf33PvnNjecuycCZLiekvPBFt6lfhVsgYueapquTIUHtQ4NRHwgJV8iTTVA==
   dependencies:
-    "@after-work.js/transform" "6.0.13"
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/transform" "6.0.14"
+    "@after-work.js/utils" "6.0.14"
     import-cwd "3.0.0"
     nyc "14.1.1"
     test-exclude "5.2.3"
     yargs "14.2.2"
 
-"@after-work.js/transform@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/transform/-/transform-6.0.13.tgz#9e713acdf6a380754c68a86bc266d32fd659c9f5"
-  integrity sha512-aZf/dGEweIRo6LDioa669/Fp2Y5uJRpyVoecEhmvrEKkTDgVGPJTWA7tpdhClGvLoTbMcTO6n3G+aAISp8nTZw==
+"@after-work.js/transform@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/transform/-/transform-6.0.14.tgz#143993b56e71f77ef8a339f3c347e799488c1189"
+  integrity sha512-JAbXmnrWvPVDDGm8uZOoXtXoOmog1QvEcpGuLO3T8HX9wDeBVY0pTaf2xJay3/SLLGkmX0BE3IzXzVhcbvqZrg==
   dependencies:
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/utils" "6.0.14"
     find-cache-dir "3.3.0"
     import-cwd "3.0.0"
 
-"@after-work.js/utils@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/utils/-/utils-6.0.13.tgz#7dc842ecbc842afbfbf36a91413901ebdd464c35"
-  integrity sha512-9GoJaVTlfCVjBWSbx8i/5xLd4l4mdnMkgsbFgB4hdpiX3zQL//VvaAVEw701pkPW8/l/ZR+Q4mB1cDWz4SUN0g==
+"@after-work.js/utils@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/utils/-/utils-6.0.14.tgz#f20881cec1ebdc20130674f254d97cb34f52fe21"
+  integrity sha512-zhwBgCV0HMXOD8+Y0dDYmdQYb9ymKijA0TmCHfDpR6ROc/54+I/Fc1YEqvU5iIJb7q4EGznVFUiWJlLar7zbrA==
   dependencies:
     debug "4.1.1"
     globby "10.0.2"
@@ -218,12 +218,12 @@
     minimatch "3.0.4"
     npmlog "4.1.2"
 
-"@after-work.js/watch-plugin@6.0.13":
-  version "6.0.13"
-  resolved "https://registry.yarnpkg.com/@after-work.js/watch-plugin/-/watch-plugin-6.0.13.tgz#eac8ea8043796b209dc015abd04e576cd1a54b6d"
-  integrity sha512-3VdqHumrR5K0vz7h58FwhFZZ4b4UppEPdxJEftJGQShyee5y6xxOOYNDcKxnqyIze9EddChYp4ECBaANuSKhuw==
+"@after-work.js/watch-plugin@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@after-work.js/watch-plugin/-/watch-plugin-6.0.14.tgz#2e58b8cb41c5b4bd9ab79daeacf8b0940899dd7a"
+  integrity sha512-AaU/rNV2AGGk+SIASORvCIrNKbSCBWdBvashpPh37qDNboC9ypoe0wfW1wVi5LOJLb5gy4qrSEJ5j+6M4vqnLw==
   dependencies:
-    "@after-work.js/utils" "6.0.13"
+    "@after-work.js/utils" "6.0.14"
     chokidar "3.3.1"
     globby "10.0.2"
 
@@ -8945,10 +8945,10 @@ webpack-sources@^1.4.0, webpack-sources@^1.4.1:
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@4.44.1:
-  version "4.44.1"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.1.tgz#17e69fff9f321b8f117d1fda714edfc0b939cc21"
-  integrity sha512-4UOGAohv/VGUNQJstzEywwNxqX417FnjZgZJpJQegddzPmTvph37eBIRbRTfdySXzVtJXLJfbMN3mMYhM6GdmQ==
+webpack@4.44.2:
+  version "4.44.2"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.2.tgz#6bfe2b0af055c8b2d1e90ed2cd9363f841266b72"
+  integrity sha512-6KJVGlCxYdISyurpQ0IPTklv+DULv05rs2hseIXer6D7KrUicRDLFb4IUM1S6LUAKypPM/nSiVSuv8jHu1m3/Q==
   dependencies:
     "@webassemblyjs/ast" "1.9.0"
     "@webassemblyjs/helper-module-context" "1.9.0"
