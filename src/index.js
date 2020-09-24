@@ -653,24 +653,34 @@ function updateTotalsFunction(measure) {
   }
 }
 
+function ingnoreEmptyNumFormatProps(key, value) {
+  const props = ['qFmt', 'qDec', 'qThou'];
+  if (value === '' && props.indexOf(key) !== -1) {
+    return undefined;
+  }
+  return value;
+}
+
 /**
  * @returns {Promise} Promise resolving with a boolean - modified: true/false
  * @private
  */
 function updateIfChanged({ oldProperties, newProperties, model }) {
-  const modified = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'))
-      !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'))
+  const modified = JSON.stringify(util.getValue(oldProperties, 'qHyperCubeDef.qMeasures'), ingnoreEmptyNumFormatProps)
+      !== JSON.stringify(util.getValue(newProperties, 'qHyperCubeDef.qMeasures'), ingnoreEmptyNumFormatProps)
     || JSON.stringify(
       util.getValue(
         oldProperties,
         'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
       ),
+      ingnoreEmptyNumFormatProps,
     )
       !== JSON.stringify(
         util.getValue(
           newProperties,
           'qHyperCubeDef.qLayoutExclude.qHyperCubeDef.qMeasures',
         ),
+        ingnoreEmptyNumFormatProps,
       );
   if (!modified) {
     return Promise.resolve(modified);
