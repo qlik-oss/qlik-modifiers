@@ -185,6 +185,25 @@ describe('measure modifiers', () => {
       expect(model.properties.qHyperCubeDef.qMeasures[1].qDef.qDef).to.equal('accumulation(Avg(Expression1))');
     });
 
+    it('should do not apply modifiers on measure with empty qDef', async () => {
+      model.properties.qHyperCubeDef.qMeasures.push({
+        qDef: {
+          qDef: '',
+          modifiers: [
+            {
+              type: 'accumulation',
+            },
+          ],
+        },
+      });
+
+      await Modifiers.apply({ model });
+
+      expect(Modifiers.modifiers.accumulation.generateExpression).to.have.been.calledOnce;
+      expect(model.properties.qHyperCubeDef.qMeasures[0].qDef.qDef).to.equal('accumulation(Sum(Sales))');
+      expect(model.properties.qHyperCubeDef.qMeasures[1].qDef.qDef).to.equal('');
+    });
+
     it('should apply modifiers on alternative measures as well', async () => {
       model.properties.qHyperCubeDef.qLayoutExclude = {
         qHyperCubeDef: {
