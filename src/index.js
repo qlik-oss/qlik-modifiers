@@ -583,7 +583,7 @@ function modifyMeasure({
 }) {
   const props = libraryItemsProps[libraryId];
   const inputExpression = props.qMeasure.qDef;
-  const generatedExpression = availableModifiers[
+  const generatedExpression = inputExpression === '' ? inputExpression : availableModifiers[
     modifier.type
   ].generateExpression({
     expression: inputExpression,
@@ -622,7 +622,7 @@ function modifyExpression({
     ].updateModifier(modifier, properties.qHyperCubeDef);
   }
   const inputExpression = measureBaseAdapter.getExpression(measure);
-  const generatedExpression = availableModifiers[
+  const generatedExpression = inputExpression === '' ? inputExpression : availableModifiers[
     modifier.type
   ].generateExpression({
     expression: inputExpression,

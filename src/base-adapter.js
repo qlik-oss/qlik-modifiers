@@ -21,7 +21,8 @@ const measureBase = {
    * @returns {string} The original/input expression
    */
   getExpression(measure) {
-    return util.getValue(measure, EXPRESSION_BASE_REF) || util.getValue(measure, EXPRESSION_REF);
+    const exp = util.getValue(measure, EXPRESSION_BASE_REF);
+    return typeof exp !== 'undefined' ? exp : util.getValue(measure, EXPRESSION_REF);
   },
 
   /**
@@ -30,7 +31,7 @@ const measureBase = {
    * @returns {string} Reference to the the original/input expression property (qDef)
    */
   getExpressionRef(measure) {
-    return util.getValue(measure, EXPRESSION_BASE_REF) ? EXPRESSION_BASE_REF : EXPRESSION_REF;
+    return typeof util.getValue(measure, EXPRESSION_BASE_REF) !== 'undefined' ? EXPRESSION_BASE_REF : EXPRESSION_REF;
   },
 
   /**
