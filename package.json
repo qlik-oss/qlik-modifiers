@@ -42,7 +42,7 @@
     "babel-plugin-istanbul": "^6.0.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^13.2.0",
-    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-mocha": "^7.0.1",
     "extend": "^3.0.2",
     "jsdoc-to-markdown": "^5.0.3",
