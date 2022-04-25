@@ -14,8 +14,9 @@ const createConfig = function createConfig(isDebug) {
     output: {
       path: distDir,
       filename: '[name].js',
-      library: 'qlikmodifiers',
-      libraryTarget: 'umd',
+      library: {
+        type: 'commonjs-static',
+      },
       publicPath: '/qlik-modifiers/',
     },
     module: {
