@@ -21,7 +21,7 @@ aliases:
 jobs:
   build:
     docker:
-      - image: cimg/node:16.15.1
+      - image: cimg/node:16.16.0
 
     working_directory: ~/project
 
