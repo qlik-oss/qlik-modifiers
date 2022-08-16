@@ -198,10 +198,14 @@ function getAboveComp(modifier, numDimensions, expComp, numStepComp) {
   return aboveCompPrefix + expComp + aboveCompSuffix;
 }
 
+function addEscaping(expr) {
+  return `Replace(Replace(${expr},'''',''''''),'$','$''&''')`;
+}
+
 function getRangeLimit(isDimNumeric, dim) {
   return isDimNumeric
     ? `${dim}={">=$(=Min(${dim}))<=$(=Max(${dim}))"}`
-    : `${dim}={"=Only({1}${dim})>='$(=MinString(${dim}))' and Only({1}${dim})<='$(=MaxString(${dim}))'"}`;
+    : `${dim}={"=Only({1}${dim})>='$(=${addEscaping(`MinString(${dim})`)})' and Only({1}${dim})<='$(=${addEscaping(`MaxString(${dim})`)})'"}`;
 }
 
 function getExcludedComp({
