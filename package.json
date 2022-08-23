@@ -30,7 +30,8 @@
     "test": "aw -c aw.config.js",
     "generateDocs": "jsdoc2md ./src/**.js > ./docs/api.md",
     "generateDocs:watch": "npx nodemon --exec 'jsdoc2md ./src/**.js > ./docs/api.md' --watch src",
-    "prepublishOnly": "rm -rf dist && npm run build"
+    "prepublishOnly": "rm -rf dist && npm run build",
+    "release": "release-it"
   },
   "devDependencies": {
     "@after-work.js/aw": "^6.0.14",
