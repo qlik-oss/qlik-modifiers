@@ -1,4 +1,4 @@
-name: Test Coveralls
+name: Build, test, code coverage
 
 on:
   push:
