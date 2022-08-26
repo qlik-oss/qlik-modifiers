@@ -21,9 +21,16 @@ jobs:
       with:
         node-version: 16.x
 
-    - name: yarn, make test-coverage
+    - name: yarn build
       run: |
         yarn
+        yarn build
+
+    - name: yarn lint
+      run: yarn lint
+
+    - name: make test-coverage
+      run: |
         npm run test-coverage
 
     - name: Coveralls
