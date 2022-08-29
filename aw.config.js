@@ -3,6 +3,6 @@ module.exports = {
   mocks: [],
   glob: 'src/**/*.spec.js',
   nyc: {
-    reportDir: 'coverage/unit',
+    reportDir: 'coverage',
   },
 };
