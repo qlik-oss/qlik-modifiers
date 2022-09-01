@@ -24,6 +24,6 @@ jobs:
       - run: yarn build
       # - run: npm run generateDocs
       - run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} # Add npm publish token to .npmrc
-      - run: yarn release
+      - run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
