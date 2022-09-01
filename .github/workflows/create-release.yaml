@@ -17,13 +17,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
-          cache: npm
+          cache: yarn
       - run: yarn
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn build
       # - run: npm run generateDocs
       - run: npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }} # Add npm publish token to .npmrc
-      - run: npm run release
+      - run: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
