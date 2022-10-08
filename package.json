@@ -41,7 +41,7 @@
     "@babel/preset-env": "^7.19.3",
     "@commitlint/cli": "^8.3.6",
     "@commitlint/config-conventional": "^8.3.6",
-    "@release-it/conventional-changelog": "5.1.0",
+    "@release-it/conventional-changelog": "5.1.1",
     "babel-loader": "8.2.5",
     "babel-plugin-istanbul": "^6.1.1",
     "eslint": "^7.32.0",
