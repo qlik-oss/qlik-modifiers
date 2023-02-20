@@ -5,6 +5,13 @@ const IDEOGRAPHIC_SPACE = '　';
 const MARKER1 = `${NO_BREAK_SPACE}(${IDEOGRAPHIC_SPACE}`;
 const MARKER2 = `${IDEOGRAPHIC_SPACE})${NO_BREAK_SPACE}`;
 
+const TSD_EXPRESSIONS = {
+  'cao.trendDecomposition.parameters.decomposition.trend': 'STL_Trend',
+  'cao.trendDecomposition.parameters.decomposition.seasonal': 'STL_Seasonal',
+  'cao.trendDecomposition.parameters.decomposition.residual': 'STL_Residual',
+  'cao.trendDecomposition.parameters.decomposition.observed': '',
+};
+
 function getExpressionWithMarkers(expression) {
   return MARKER1 + expression + MARKER2;
 }
@@ -325,6 +332,28 @@ function initModifier(modifier, defaultOptions) {
     }
   });
 }
+function getTDSExpressionName(modifier, options) {
+  const { msgId } = options.find(option => option.localizedMsg === modifier.decomposition);
+  return TSD_EXPRESSIONS[msgId];
+}
+
+function generateTSDExpression(modifier, expression, properties) {
+  let updatedOutputExpression = modifier.outputExpression || expression;
+
+  if (modifier.base) {
+    const currentTSDExpression = Object.values(TSD_EXPRESSIONS).find(item => expression.includes(item));
+    const currentSteps = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vCycle').value;
+    const { options } = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vDecompositions');
+    const TDSExpressionName = getTDSExpressionName(modifier, options);
+    if (!currentTSDExpression) {
+      const actualExpression = modifier.base.qDef.substring(modifier.base.qDef.lastIndexOf('}') + 1).trim();
+      updatedOutputExpression = TDSExpressionName ? modifier.base.qDef.replace(actualExpression, `${TDSExpressionName}(${actualExpression}, ${modifier.steps})`) : modifier.base.qDef;
+    } else {
+      updatedOutputExpression = modifier.base.qDef.replace(currentTSDExpression, TDSExpressionName).replace(currentSteps, modifier.steps);
+    }
+  }
+  return updatedOutputExpression;
+}
 
 function isApplicable({
   properties,
@@ -387,4 +416,7 @@ export default {
   getDimDefWithWrapper,
 
   getFieldWithWrapper,
+
+  generateTSDExpression,
+
 };

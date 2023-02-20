@@ -6,6 +6,7 @@ import helper from './expression-modifiers/helper';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
+import timeSeriesDecomposition from './expression-modifiers/time-series-decomposition';
 import difference from './expression-modifiers/difference';
 import normalization from './expression-modifiers/normalization';
 import MasterItemSubscriber from './master-item-subscriber';
@@ -17,6 +18,7 @@ const availableModifiers = {
   movingAverage,
   difference,
   normalization,
+  timeSeriesDecomposition,
 };
 
 /**
@@ -716,6 +718,11 @@ function applyMeasureModifiers({
           );
         }
         availableModifiers[modifier.type].initModifier(modifier);
+
+        if (modifier.type === 'timeSeriesDecomposition' && modifier.decomposition === '') {
+          const { options } = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vDecompositions');
+          modifier.decomposition = options.find(item => measure.qDef.qLabel.toLowerCase().includes(item.localizedMsg.toLocaleLowerCase())).localizedMsg;
+        }
 
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);
         if (libraryId) {
