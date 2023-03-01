@@ -1,5 +1,6 @@
 import util from '../../utils/util';
 import helper from '../helper';
+import TSD from './constants';
 
 const MODIFIER_TYPE = 'timeSeriesDecomposition';
 
@@ -55,7 +56,7 @@ export default function (rootPath, translationKeys = {}) {
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: translationKeys.trendDecompositionParametersDecompositionObserved || 'cao.trendDecomposition.parameters.decomposition.observed',
-            options: helper.TSD_OPTIONS,
+            options: TSD.OPTIONS,
           },
           steps: {
             refFn: data => `${getRef(data, rootPath)}.steps`,

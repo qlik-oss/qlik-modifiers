@@ -1,35 +1,10 @@
 import util from '../utils/util';
+import TSD from './time-series-decomposition/constants';
 
 const NO_BREAK_SPACE = ' ';
 const IDEOGRAPHIC_SPACE = '　';
 const MARKER1 = `${NO_BREAK_SPACE}(${IDEOGRAPHIC_SPACE}`;
 const MARKER2 = `${IDEOGRAPHIC_SPACE})${NO_BREAK_SPACE}`;
-
-const TSD_EXPRESSIONS = {
-  observed: '',
-  trend: 'STL_Trend',
-  seasonal: 'STL_Seasonal',
-  residual: 'STL_Residual',
-};
-
-const TSD_OPTIONS = [
-  {
-    value: 'observed',
-    translation: 'cao.trendDecomposition.parameters.decomposition.observed',
-  },
-  {
-    value: 'trend',
-    translation: 'cao.trendDecomposition.parameters.decomposition.trend',
-  },
-  {
-    value: 'seasonal',
-    translation: 'cao.trendDecomposition.parameters.decomposition.seasonal',
-  },
-  {
-    value: 'residual',
-    translation: 'cao.trendDecomposition.parameters.decomposition.residual',
-  },
-];
 
 function getExpressionWithMarkers(expression) {
   return MARKER1 + expression + MARKER2;
@@ -353,15 +328,15 @@ function initModifier(modifier, defaultOptions) {
 }
 
 function getTDSExpressionName(modifier) {
-  const filteredOption = TSD_OPTIONS.find(option => option.value === modifier.decomposition);
-  return filteredOption ? TSD_EXPRESSIONS[filteredOption.value] : '';
+  const filteredOption = TSD.OPTIONS.find(option => option.value === modifier.decomposition);
+  return filteredOption ? TSD.EXPRESSIONS[filteredOption.value] : '';
 }
 
 function getDecomposition(measure) {
   let decomposition = 'observed';
-  Object.values(TSD_EXPRESSIONS).find((item) => {
+  Object.values(TSD.EXPRESSIONS).find((item) => {
     const expression = measure.qDef.base.qDef.toLowerCase() || measure.qDef.qDef.toLowerCase();
-    if (TSD_EXPRESSIONS[item] && expression.includes(TSD_EXPRESSIONS[item].toLowerCase())) {
+    if (TSD.EXPRESSIONS[item] && expression.includes(TSD.EXPRESSIONS[item].toLowerCase())) {
       decomposition = item;
     }
     return item;
@@ -454,8 +429,6 @@ export default {
   getFieldWithWrapper,
 
   generateTSDExpression,
-
-  TSD_OPTIONS,
 
   getDecomposition,
 
