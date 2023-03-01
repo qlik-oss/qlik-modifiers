@@ -81,6 +81,9 @@ describe('measure modifiers', () => {
     sandbox
       .stub(Modifiers.modifiers.accumulation, 'generateExpression')
       .callsFake(({ expression }) => `accumulation(${expression})`);
+    sandbox
+      .stub(Modifiers.modifiers.timeSeriesDecomposition, 'generateExpression')
+      .callsFake(({ expression }) => `${expression}`);
   });
 
   afterEach(() => {
@@ -258,6 +261,17 @@ describe('measure modifiers', () => {
       } catch (error) {
         expect(error.message).to.contain('More than 1 modifier on a measure');
       }
+    });
+
+    it('should only apply enabled modifiers', async () => {
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers[0].disabled = true;
+      model.properties.qHyperCubeDef.qMeasures[0].qDef.modifiers.push({
+        type: 'timeSeriesDecomposition',
+      });
+
+      await Modifiers.apply({ model });
+
+      expect(Modifiers.modifiers.timeSeriesDecomposition.generateExpression).to.have.been.calledOnce;
     });
 
     describe('expression', () => {

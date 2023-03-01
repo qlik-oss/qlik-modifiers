@@ -7,7 +7,7 @@ const DEFAULT_OPTIONS = {
   disabled: false,
 
   decomposition: '',
-  steps: 0,
+  steps: 1,
   outputExpression: '',
 };
 

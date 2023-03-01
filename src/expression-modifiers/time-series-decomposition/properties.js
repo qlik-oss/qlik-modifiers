@@ -62,7 +62,7 @@ export default function (rootPath, translationKeys = {}) {
             type: 'integer',
             translation: translationKeys.rangeSteps || 'properties.modifier.range.steps',
             schemaIgnore: true,
-            defaultValue: 0,
+            defaultValue: 1,
             change(itemData) {
               const modifier = getModifier(itemData, rootPath);
               if (modifier) {

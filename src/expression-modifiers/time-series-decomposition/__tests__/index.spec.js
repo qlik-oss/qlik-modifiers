@@ -13,7 +13,7 @@ describe('timeSeriesDecomposition', () => {
       type: 'timeSeriesDecomposition',
       disabled: false,
       decomposition: '',
-      steps: 0,
+      steps: 1,
       outputExpression: '',
     };
     expression = 'Sum(Sales)';
@@ -218,7 +218,7 @@ describe('timeSeriesDecomposition', () => {
           expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
         });
 
-        expect(outputExpression).to.equal('STL_Trend(Sum(Sales), 0)');
+        expect(outputExpression).to.equal('STL_Trend(Sum(Sales), 1)');
       });
     });
 
@@ -260,10 +260,11 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
       });
-      expect(`STL_Residual(${expression}, 0)`).to.equal(outputExpression);
+      expect(`STL_Residual(${expression}, 1)`).to.equal(outputExpression);
     });
 
-    it('should master item when decomposition is residual', () => {
+    it('should master item when decomposition is observed', () => {
+      modifier.decomposition = 'observed';
       modifier.base = {
         qDef: '',
         qLibraryId: 'upBQchN',
@@ -273,7 +274,49 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps,
       });
-      expect('STL_Residual([Tobacco Sale], 0)').to.equal('STL_Residual([Tobacco Sale], 0)');
+      expect(outputExpression).to.equal(expression);
+    });
+
+    it('should master item when decomposition is residual', () => {
+      modifier.decomposition = 'residual';
+      modifier.base = {
+        qDef: '',
+        qLibraryId: 'upBQchN',
+        qLabel: '',
+        qLabelExpression: '',
+      };
+      outputExpression = timeSeriesDecomposition.generateExpression({
+        expression, modifier, properties, libraryItemsProps,
+      });
+      expect(outputExpression).to.equal('STL_Residual([Tobacco Sales], 1)');
+    });
+
+    it('should master item when decomposition is seasonal', () => {
+      modifier.decomposition = 'seasonal';
+      modifier.base = {
+        qDef: '',
+        qLibraryId: 'upBQchN',
+        qLabel: '',
+        qLabelExpression: '',
+      };
+      outputExpression = timeSeriesDecomposition.generateExpression({
+        expression, modifier, properties, libraryItemsProps,
+      });
+      expect(outputExpression).to.equal('STL_Seasonal([Tobacco Sales], 1)');
+    });
+
+    it('should master item when decomposition is trend', () => {
+      modifier.decomposition = 'trend';
+      modifier.base = {
+        qDef: '',
+        qLibraryId: 'upBQchN',
+        qLabel: '',
+        qLabelExpression: '',
+      };
+      outputExpression = timeSeriesDecomposition.generateExpression({
+        expression, modifier, properties, libraryItemsProps,
+      });
+      expect(outputExpression).to.equal('STL_Trend([Tobacco Sales], 1)');
     });
 
     it('should use expression instead of master item when expression is changed', () => {
@@ -289,7 +332,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
       });
-      expect(`STL_Residual(${expression}, 0)`).to.equal(outputExpression);
+      expect(`STL_Residual(${expression}, 1)`).to.equal(outputExpression);
     });
   });
 });
