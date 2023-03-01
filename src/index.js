@@ -720,8 +720,7 @@ function applyMeasureModifiers({
         availableModifiers[modifier.type].initModifier(modifier);
 
         if (modifier.type === 'timeSeriesDecomposition' && modifier.decomposition === '') {
-          const { options } = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vDecompositions');
-          modifier.decomposition = options.find(item => measure.qDef.qLabel.toLowerCase().includes(item.localizedMsg.toLocaleLowerCase())).localizedMsg;
+          modifier.decomposition = helper.getDecomposition(measure);
         }
 
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);

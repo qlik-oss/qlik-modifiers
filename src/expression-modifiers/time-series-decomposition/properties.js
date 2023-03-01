@@ -55,17 +55,14 @@ export default function (rootPath, translationKeys = {}) {
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: translationKeys.trendDecompositionParametersDecompositionObserved || 'cao.trendDecomposition.parameters.decomposition.observed',
-            options(itemdata, handler) {
-              const { options } = handler.layout.recommendation.matchRecord.parameters.find(item => item.name === 'vDecompositions');
-              return options.map(option => ({ value: option.localizedMsg, translation: option.msgId }));
-            },
+            options: helper.TSD_OPTIONS,
           },
           steps: {
             refFn: data => `${getRef(data, rootPath)}.steps`,
             type: 'integer',
             translation: translationKeys.rangeSteps || 'properties.modifier.range.steps',
             schemaIgnore: true,
-            defaultValue: 12,
+            defaultValue: 0,
             change(itemData) {
               const modifier = getModifier(itemData, rootPath);
               if (modifier) {

@@ -6,11 +6,30 @@ const MARKER1 = `${NO_BREAK_SPACE}(${IDEOGRAPHIC_SPACE}`;
 const MARKER2 = `${IDEOGRAPHIC_SPACE})${NO_BREAK_SPACE}`;
 
 const TSD_EXPRESSIONS = {
-  'cao.trendDecomposition.parameters.decomposition.trend': 'STL_Trend',
-  'cao.trendDecomposition.parameters.decomposition.seasonal': 'STL_Seasonal',
-  'cao.trendDecomposition.parameters.decomposition.residual': 'STL_Residual',
-  'cao.trendDecomposition.parameters.decomposition.observed': '',
+  observed: '',
+  trend: 'STL_Trend',
+  seasonal: 'STL_Seasonal',
+  residual: 'STL_Residual',
 };
+
+const TSD_OPTIONS = [
+  {
+    value: 'observed',
+    translation: 'cao.trendDecomposition.parameters.decomposition.observed',
+  },
+  {
+    value: 'trend',
+    translation: 'cao.trendDecomposition.parameters.decomposition.trend',
+  },
+  {
+    value: 'seasonal',
+    translation: 'cao.trendDecomposition.parameters.decomposition.seasonal',
+  },
+  {
+    value: 'residual',
+    translation: 'cao.trendDecomposition.parameters.decomposition.residual',
+  },
+];
 
 function getExpressionWithMarkers(expression) {
   return MARKER1 + expression + MARKER2;
@@ -332,25 +351,42 @@ function initModifier(modifier, defaultOptions) {
     }
   });
 }
-function getTDSExpressionName(modifier, options) {
-  const { msgId } = options.find(option => option.localizedMsg === modifier.decomposition);
-  return TSD_EXPRESSIONS[msgId];
+
+function getTDSExpressionName(modifier) {
+  const filteredOption = TSD_OPTIONS.find(option => option.value === modifier.decomposition);
+  return filteredOption ? TSD_EXPRESSIONS[filteredOption.value] : '';
+}
+
+function getDecomposition(measure) {
+  let decomposition = 'observed';
+  Object.values(TSD_EXPRESSIONS).find((item) => {
+    const expression = measure.qDef.base.qDef.toLowerCase() || measure.qDef.qDef.toLowerCase();
+    if (TSD_EXPRESSIONS[item] && expression.includes(TSD_EXPRESSIONS[item].toLowerCase())) {
+      decomposition = item;
+    }
+    return item;
+  });
+  return decomposition;
 }
 
 function generateTSDExpression(modifier, expression, properties) {
-  let updatedOutputExpression = modifier.outputExpression || expression;
-
-  if (modifier.base) {
-    const currentTSDExpression = Object.values(TSD_EXPRESSIONS).find(item => expression.includes(item));
-    const currentSteps = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vCycle').value;
-    const { options } = properties.recommendation.matchRecord.parameters.find(item => item.name === 'vDecompositions');
-    const TDSExpressionName = getTDSExpressionName(modifier, options);
-    if (!currentTSDExpression) {
-      const actualExpression = modifier.base.qDef.substring(modifier.base.qDef.lastIndexOf('}') + 1).trim();
-      updatedOutputExpression = TDSExpressionName ? modifier.base.qDef.replace(actualExpression, `${TDSExpressionName}(${actualExpression}, ${modifier.steps})`) : modifier.base.qDef;
-    } else {
-      updatedOutputExpression = modifier.base.qDef.replace(currentTSDExpression, TDSExpressionName).replace(currentSteps, modifier.steps);
+  let updatedOutputExpression = expression || modifier.outputExpression;
+  if (modifier.base && modifier.base.qDef) {
+    updatedOutputExpression = expression !== modifier.base.qDef ? expression : modifier.base.qDef;
+  }
+  if (modifier.decomposition !== 'observed') {
+    const measure = properties.qHyperCubeDef.qMeasures.find((item) => {
+      if (item.qDef.base && item.qDef.base.qLibraryId && modifier.base && modifier.base.qLibraryId) {
+        return item.qDef.base.qLibraryId === modifier.base.qLibraryId;
+      }
+      return null;
+    });
+    if (measure && expression !== measure.qDef.qLabel) {
+      updatedOutputExpression = measure.qLibraryId || measure.qDef.base.qLibraryId ? `[${measure.qDef.qLabel}]` : measure.qDef.base.qDef;
     }
+    const TDSExpressionName = getTDSExpressionName(modifier);
+    updatedOutputExpression = updatedOutputExpression.startsWith('=') ? updatedOutputExpression.substr(1) : updatedOutputExpression;
+    updatedOutputExpression = `${TDSExpressionName}(${updatedOutputExpression}, ${modifier.steps})`;
   }
   return updatedOutputExpression;
 }
@@ -418,5 +454,9 @@ export default {
   getFieldWithWrapper,
 
   generateTSDExpression,
+
+  TSD_OPTIONS,
+
+  getDecomposition,
 
 };
