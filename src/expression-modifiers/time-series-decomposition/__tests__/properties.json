@@ -1,0 +1,148 @@
+{
+  "qInfo": {
+    "qId": "xUTvxD",
+    "qType": "linechart"
+  },
+  "qMetaDef": {},
+  "qHyperCubeDef": {
+    "qDimensions": [
+      {
+        "qLibraryId": "BuSE",
+        "qDef": {
+          "qGrouping": "N",
+          "qFieldDefs": [],
+          "qFieldLabels": [],
+          "qSortCriterias": [
+            {
+              "qSortByNumeric": 1,
+              "qSortByAscii": 1,
+              "qSortByLoadOrder": 1,
+              "qExpression": {}
+            }
+          ],
+          "qNumberPresentations": [],
+          "qActiveField": 0,
+          "autoSort": true,
+          "cId": "XzcJEj",
+          "othersLabel": "Others",
+          "forecast": {
+            "stepSize": "days"
+          }
+        },
+        "qOtherTotalSpec": {
+          "qOtherMode": "OTHER_OFF",
+          "qOtherCounted": {
+            "qv": "10"
+          },
+          "qOtherLimit": {
+            "qv": "0"
+          },
+          "qOtherLimitMode": "OTHER_GE_LIMIT",
+          "qForceBadValueKeeping": true,
+          "qApplyEvenWhenPossiblyWrongResult": true,
+          "qOtherSortMode": "OTHER_SORT_DESCENDING",
+          "qTotalMode": "TOTAL_OFF",
+          "qReferencedExpression": {}
+        },
+        "qOtherLabel": {
+          "qv": "Others"
+        },
+        "qTotalLabel": {},
+        "qCalcCond": {},
+        "qAttributeExpressions": [],
+        "qAttributeDimensions": [],
+        "qCalcCondition": {
+          "qCond": {},
+          "qMsg": {}
+        }
+      }
+    ],
+    "qMeasures": [
+      {
+        "qDef": {
+          "qLabel": "Tobacco Sales",
+          "qDef": "STL_Trend(Sum({<Year={$(=Max(Year))},Category={'tobacco'}>} TotalSales), 12)",
+          "modifiers": [
+            {
+              "type": "timeSeriesDecomposition",
+              "disabled": false,
+              "primaryDimension": 0,
+              "crossAllDimensions": false,
+              "showExcludedValues": true,
+              "decomposition": "cao.trendDecomposition.parameters.decomposition.trend",
+              "steps": 12,
+              "outputExpression": "STL_Trend(Sum({<Year={$(=Max(Year))},Category={'tobacco'}>} TotalSales), 12)",
+              "nullSuppression": false,
+              "base": {
+                "qDef": "",
+                "qLibraryId": "upBQchN",
+                "qLabel": "",
+                "qLabelExpression": ""
+              }
+            }
+          ],
+          "base": {
+            "qDef": "",
+            "qLibraryId": "upBQchN",
+            "qLabel": "",
+            "qLabelExpression": ""
+          },
+          "coloring": {}
+        }
+      },
+      {
+        "qDef": {
+          "qLabel": "Sum({<Year={$(=Max(Year))},Category={`tobacco`}>} TotalSales*2)",
+          "qDef": "Sum({<Year={$(=Max(Year))},Category={`tobacco`}>} TotalSales*2)",
+          "modifiers": [
+            {
+              "type": "timeSeriesDecomposition",
+              "disabled": false,
+              "primaryDimension": 0,
+              "crossAllDimensions": false,
+              "showExcludedValues": true,
+              "decomposition": "cao.trendDecomposition.parameters.decomposition.seasonal",
+              "steps": 15,
+              "outputExpression": "STL_Seasonal(Sum({<Year={$(=Max(Year))},Category={'tobacco'}>} TotalSales), 15)",
+              "nullSuppression": false,
+              "base": {
+                "qDef": "",
+                "qLibraryId": "upBQchN",
+                "qLabel": "",
+                "qLabelExpression": ""
+              }
+            }
+          ],
+          "base": {
+            "qDef": "",
+            "qLibraryId": "upBQch1",
+            "qLabel": "a",
+            "qLabelExpression": ""
+          }
+        }
+      }
+    ],
+    "qSuppressMissing": true,
+    "qInitialDataFetch": [
+      {
+        "qLeft": 0,
+        "qTop": 0,
+        "qWidth": 17,
+        "qHeight": 500
+      }
+    ],
+    "qReductionMode": "N",
+    "qMode": "S",
+    "qPseudoDimPos": -1,
+    "qNoOfLeftDims": -1,
+    "qAlwaysFullyExpanded": true,
+    "qMaxStackedCells": 5000,
+    "qCalcCond": {},
+    "qTitle": {},
+    "qCalcCondition": {
+      "qCond": {},
+      "qMsg": {}
+    }
+  }
+}
+

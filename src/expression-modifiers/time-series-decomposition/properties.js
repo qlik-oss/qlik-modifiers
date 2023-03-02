@@ -61,7 +61,7 @@ export default function (rootPath, translationKeys = {}) {
           steps: {
             refFn: data => `${getRef(data, rootPath)}.steps`,
             type: 'integer',
-            translation: translationKeys.rangeSteps || 'properties.modifier.range.steps',
+            translation: translationKeys.modifierTimeSeriesDecompositionPeriods || 'properties.modifier.timeSeriesDecomposition.periods',
             schemaIgnore: true,
             defaultValue: 1,
             change(itemData) {
