@@ -5,7 +5,6 @@ import propertyPanelDef from './properties';
 const DEFAULT_OPTIONS = {
   type: 'timeSeriesDecomposition',
   disabled: false,
-
   decomposition: '',
   steps: 1,
   outputExpression: '',
@@ -36,6 +35,5 @@ export default {
   initModifier(modifier) {
     helper.initModifier(modifier, DEFAULT_OPTIONS);
   },
-  enableTotalsFunction: () => false,
   propertyPanelDef,
 };

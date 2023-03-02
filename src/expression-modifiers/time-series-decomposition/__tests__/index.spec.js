@@ -196,7 +196,7 @@ describe('timeSeriesDecomposition', () => {
     };
   });
 
-  describe.skip('generateExpression', () => {
+  describe('generateExpression', () => {
     describe('Observed', () => {
       beforeEach(() => {
         modifier.decomposition = 'observed';
