@@ -6,6 +6,7 @@ import helper from './expression-modifiers/helper';
 import SoftPropertyHandler from './soft-property-handler';
 import accumulation from './expression-modifiers/accumulation';
 import movingAverage from './expression-modifiers/moving-average';
+import timeSeriesDecomposition from './expression-modifiers/time-series-decomposition';
 import difference from './expression-modifiers/difference';
 import normalization from './expression-modifiers/normalization';
 import MasterItemSubscriber from './master-item-subscriber';
@@ -17,6 +18,7 @@ const availableModifiers = {
   movingAverage,
   difference,
   normalization,
+  timeSeriesDecomposition,
 };
 
 /**
@@ -715,7 +717,7 @@ function applyMeasureModifiers({
             'More than 1 modifier on a measure! (not yet supported)',
           );
         }
-        availableModifiers[modifier.type].initModifier(modifier);
+        availableModifiers[modifier.type].initModifier(modifier, measure);
 
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);
         if (libraryId) {

@@ -1,4 +1,5 @@
 import util from '../utils/util';
+import TSD from './time-series-decomposition/constants';
 
 const NO_BREAK_SPACE = ' ';
 const IDEOGRAPHIC_SPACE = '　';
@@ -326,6 +327,45 @@ function initModifier(modifier, defaultOptions) {
   });
 }
 
+function getTDSExpressionName(modifier) {
+  const filteredOption = TSD.OPTIONS.find(option => option.value === modifier.decomposition);
+  return filteredOption ? TSD.EXPRESSIONS[filteredOption.value] : '';
+}
+
+function getDecomposition(measure) {
+  let decomposition = 'observed';
+  Object.values(TSD.EXPRESSIONS).find((item) => {
+    const expression = measure.qDef.base.qDef.toLowerCase() || measure.qDef.qDef.toLowerCase();
+    if (TSD.EXPRESSIONS[item] && expression.includes(TSD.EXPRESSIONS[item].toLowerCase())) {
+      decomposition = item;
+    }
+    return item;
+  });
+  return decomposition;
+}
+
+function generateTSDExpression(modifier, expression, properties) {
+  let updatedOutputExpression = expression || modifier.outputExpression;
+  if (modifier.base && modifier.base.qDef) {
+    updatedOutputExpression = expression !== modifier.base.qDef ? expression : modifier.base.qDef;
+  }
+  if (modifier.decomposition !== 'observed') {
+    const measure = properties.qHyperCubeDef.qMeasures.find((item) => {
+      if (item.qDef.base && item.qDef.base.qLibraryId && modifier.base && modifier.base.qLibraryId) {
+        return item.qDef.base.qLibraryId === modifier.base.qLibraryId;
+      }
+      return null;
+    });
+    if (measure && expression !== measure.qDef.qLabel) {
+      updatedOutputExpression = measure.qLibraryId || measure.qDef.base.qLibraryId ? `[${measure.qDef.qLabel}]` : measure.qDef.base.qDef;
+    }
+    const TDSExpressionName = getTDSExpressionName(modifier);
+    updatedOutputExpression = updatedOutputExpression.startsWith('=') ? updatedOutputExpression.substr(1) : updatedOutputExpression;
+    updatedOutputExpression = `${TDSExpressionName}(${updatedOutputExpression}, ${modifier.steps})`;
+  }
+  return updatedOutputExpression;
+}
+
 function isApplicable({
   properties,
   layout,
@@ -387,4 +427,9 @@ export default {
   getDimDefWithWrapper,
 
   getFieldWithWrapper,
+
+  generateTSDExpression,
+
+  getDecomposition,
+
 };
