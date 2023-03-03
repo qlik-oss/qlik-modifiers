@@ -717,11 +717,7 @@ function applyMeasureModifiers({
             'More than 1 modifier on a measure! (not yet supported)',
           );
         }
-        availableModifiers[modifier.type].initModifier(modifier);
-
-        if (modifier.type === 'timeSeriesDecomposition' && modifier.decomposition === '') {
-          modifier.decomposition = helper.getDecomposition(measure);
-        }
+        availableModifiers[modifier.type].initModifier(modifier, measure);
 
         const libraryId = measure.qLibraryId || (base && base.qLibraryId);
         if (libraryId) {
