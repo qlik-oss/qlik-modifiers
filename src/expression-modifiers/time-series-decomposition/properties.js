@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import util from '../../utils/util';
 import helper from '../helper';
 import TSD from './constants';
@@ -64,11 +65,18 @@ export default function (rootPath, translationKeys = {}) {
             translation: translationKeys.modifierTimeSeriesDecompositionPeriods || 'properties.modifier.timeSeriesDecomposition.periods',
             schemaIgnore: true,
             defaultValue: 1,
-            change(itemData) {
+            change(itemData, handler) {
               const modifier = getModifier(itemData, rootPath);
               if (modifier) {
                 const { steps } = modifier;
                 modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 12;
+                handler.properties.qHyperCubeDef.qMeasures = handler.properties.qHyperCubeDef.qMeasures.map((item) => {
+                  item.qDef.modifiers.map((Modifier) => {
+                    (Modifier.type === 'timeSeriesDecomposition' ? Modifier.steps = steps : Modifier.steps = Modifier.steps);
+                    return Modifier;
+                  });
+                  return item;
+                });
               }
             },
             show(itemData) {
