@@ -1,5 +1,13 @@
 
 
+### [0.9.1](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.0...v0.9.1) (2023-03-16)
+
+
+### Bug Fixes
+
+* change string and default value for timeSeriesDecomposition modifiers steps ([d5a607f](https://github.com/qlik-oss/qlik-modifiers/commit/d5a607f8911797d1061681af797267a0281aa7ad))
+* periods should be same for all measures modifiers ([bb718b7](https://github.com/qlik-oss/qlik-modifiers/commit/bb718b76355bd35d31f44c3b201d3c741f39af1c))
+
 ## [0.9.0](https://github.com/qlik-oss/qlik-modifiers/compare/v0.8.2...v0.9.0) (2023-03-03)
 
 
