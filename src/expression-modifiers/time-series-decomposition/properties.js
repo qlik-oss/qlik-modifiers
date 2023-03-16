@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import util from '../../utils/util';
 import helper from '../helper';
 import TSD from './constants';
@@ -52,7 +53,7 @@ export default function (rootPath, translationKeys = {}) {
           decomposition: {
             refFn: data => `${getRef(data, rootPath)}.decomposition`,
             type: 'string',
-            translation: translationKeys.trendDecompositionParametersDecomposition || 'cao.trendDecomposition.parameters.decomposition',
+            translation: translationKeys.modifierTrendDecompositionDecomposition || 'properties.modifier.trendDecomposition.decomposition',
             component: 'dropdown',
             schemaIgnore: true,
             defaultValue: translationKeys.trendDecompositionParametersDecompositionObserved || 'cao.trendDecomposition.parameters.decomposition.observed',
@@ -63,12 +64,19 @@ export default function (rootPath, translationKeys = {}) {
             type: 'integer',
             translation: translationKeys.modifierTimeSeriesDecompositionPeriods || 'properties.modifier.timeSeriesDecomposition.periods',
             schemaIgnore: true,
-            defaultValue: 1,
-            change(itemData) {
+            defaultValue: 2,
+            change(itemData, handler) {
               const modifier = getModifier(itemData, rootPath);
               if (modifier) {
                 const { steps } = modifier;
-                modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 12;
+                modifier.steps = typeof steps === 'number' && !Number.isNaN(steps) ? Math.abs(steps) : 2;
+                handler.properties.qHyperCubeDef.qMeasures = handler.properties.qHyperCubeDef.qMeasures.map((item) => {
+                  item.qDef.modifiers.map((Modifier) => {
+                    (Modifier.type === 'timeSeriesDecomposition' ? Modifier.steps = steps : Modifier.steps = Modifier.steps);
+                    return Modifier;
+                  });
+                  return item;
+                });
               }
             },
             show(itemData) {
