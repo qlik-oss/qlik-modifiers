@@ -6,7 +6,7 @@ const DEFAULT_OPTIONS = {
   type: 'timeSeriesDecomposition',
   disabled: false,
   decomposition: '',
-  steps: 1,
+  steps: 2,
   outputExpression: '',
 };
 

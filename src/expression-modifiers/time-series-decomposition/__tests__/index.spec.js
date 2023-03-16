@@ -14,7 +14,7 @@ describe('timeSeriesDecomposition', () => {
       type: 'timeSeriesDecomposition',
       disabled: false,
       decomposition: '',
-      steps: 1,
+      steps: 2,
       outputExpression: '',
     };
     expression = 'Sum(Sales)';
@@ -42,7 +42,7 @@ describe('timeSeriesDecomposition', () => {
           expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
         });
 
-        expect(outputExpression).to.equal('STL_Trend(Sum(Sales), 1)');
+        expect(outputExpression).to.equal('STL_Trend(Sum(Sales), 2)');
       });
     });
 
@@ -84,7 +84,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
       });
-      expect(`STL_Residual(${expression}, 1)`).to.equal(outputExpression);
+      expect(`STL_Residual(${expression}, 2)`).to.equal(outputExpression);
     });
 
     it('should master item when decomposition is observed', () => {
@@ -112,7 +112,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps,
       });
-      expect(outputExpression).to.equal('STL_Residual([Tobacco Sales], 1)');
+      expect(outputExpression).to.equal('STL_Residual([Tobacco Sales], 2)');
     });
 
     it('should master item when decomposition is seasonal', () => {
@@ -126,7 +126,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps,
       });
-      expect(outputExpression).to.equal('STL_Seasonal([Tobacco Sales], 1)');
+      expect(outputExpression).to.equal('STL_Seasonal([Tobacco Sales], 2)');
     });
 
     it('should master item when decomposition is trend', () => {
@@ -140,7 +140,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps,
       });
-      expect(outputExpression).to.equal('STL_Trend([Tobacco Sales], 1)');
+      expect(outputExpression).to.equal('STL_Trend([Tobacco Sales], 2)');
     });
 
     it('should use expression instead of master item when expression is changed', () => {
@@ -156,7 +156,7 @@ describe('timeSeriesDecomposition', () => {
       outputExpression = timeSeriesDecomposition.generateExpression({
         expression, modifier, properties, libraryItemsProps, dimensionAndFieldList,
       });
-      expect(`STL_Residual(${expression}, 1)`).to.equal(outputExpression);
+      expect(`STL_Residual(${expression}, 2)`).to.equal(outputExpression);
     });
   });
 });
