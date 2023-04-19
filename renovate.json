@@ -2,15 +2,19 @@
   "extends": [
     "qlik-oss"
   ],
-  "circleci": {
-    "ignoreDeps": ["circleci/node"]
-  },
   "semanticCommits": true,
   "rangeStrategy": "bump",
-  "packageRules": [{
-    "depTypeList": [
-      "engines"
-    ],
-    "enabled": false
-  }]
+  "packageRules": [
+    {
+      "description": "Automatically merge minor and patch-level updates",
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "description": "Automatically merge major, minor and patch-level updates for dev dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
+      "automerge": true
+    }
+  ]
 }
