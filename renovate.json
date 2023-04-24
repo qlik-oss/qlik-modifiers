@@ -2,13 +2,5 @@
   "extends": ["qlik-oss", "qlik-oss:groupMinorPatch"],
   "semanticCommits": true,
   "rangeStrategy": "bump",
-  "dependencyDashboard": true,
-  "packageRules": [
-    {
-      "description": "Automatically merge major, minor and patch-level updates for dev dependencies",
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["major", "minor", "patch"],
-      "automerge": true
-    }
-  ]
+  "dependencyDashboard": true
 }
