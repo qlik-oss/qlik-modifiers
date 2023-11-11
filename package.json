@@ -20,7 +20,7 @@
     "/dist"
   ],
   "engines": {
-    "npm": ">=9.9.0",
+    "npm": ">=9.9.1",
     "node": ">=v16.20.2"
   },
   "main": "dist/qlik-modifiers.js",
@@ -37,8 +37,8 @@
   "devDependencies": {
     "@after-work.js/aw": "^6.0.14",
     "@babel/cli": "^7.23.0",
-    "@babel/core": "^7.23.2",
-    "@babel/preset-env": "^7.23.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
     "@release-it/conventional-changelog": "5.1.1",
