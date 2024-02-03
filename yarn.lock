@@ -7558,29 +7558,28 @@ jsdoc-api@^8.0.0:
     temp-path "^1.0.0"
     walk-back "^5.1.0"
 
-jsdoc-parse@^6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/jsdoc-parse/-/jsdoc-parse-6.2.0.tgz#2b71d3925acfc4badc72526f2470766e0561f6b5"
-  integrity sha512-Afu1fQBEb7QHt6QWX/6eUWvYHJofB90Fjx7FuJYF7mnG9z5BkAIpms1wsnvYLytfmqpEENHs/fax9p8gvMj7dw==
+jsdoc-parse@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/jsdoc-parse/-/jsdoc-parse-6.2.1.tgz#d67bb57816f741de8d0ec8ec197cc5fd8146165f"
+  integrity sha512-9viGRUUtWOk/G4V0+nQ6rfLucz5plxh5I74WbNSNm9h9NWugCDVX4jbG8hZP9QqKGpdTPDE+qJXzaYNos3wqTA==
   dependencies:
     array-back "^6.2.2"
     lodash.omit "^4.5.0"
-    lodash.pick "^4.4.0"
     reduce-extract "^1.0.0"
     sort-array "^4.1.5"
     test-value "^3.0.0"
 
-jsdoc-to-markdown@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/jsdoc-to-markdown/-/jsdoc-to-markdown-8.0.0.tgz#27f32ed200d3b84dbf22a49beed485790f93b3ce"
-  integrity sha512-2FQvYkg491+FP6s15eFlgSSWs69CvQrpbABGYBtvAvGWy/lWo8IKKToarT283w59rQFrpcjHl3YdhHCa3l7gXg==
+jsdoc-to-markdown@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/jsdoc-to-markdown/-/jsdoc-to-markdown-8.0.1.tgz#e21aeb2a8d844ec7c31ee4fd8dc5dcf7ea5625fa"
+  integrity sha512-qJfNJhkq2C26UYoOdj8L1yheTJlk1veCsxwRejRmj07XZKCn7oSkuPErx6+JoNi8afCaUKdIM5oUu0uF2/T8iw==
   dependencies:
     array-back "^6.2.2"
     command-line-tool "^0.8.0"
     config-master "^3.1.0"
     dmd "^6.2.0"
     jsdoc-api "^8.0.0"
-    jsdoc-parse "^6.2.0"
+    jsdoc-parse "^6.2.1"
     walk-back "^5.1.0"
 
 jsdoc@^4.0.0:
@@ -7897,11 +7896,6 @@ lodash.padend@^4.6.1:
   version "4.6.1"
   resolved "https://registry.yarnpkg.com/lodash.padend/-/lodash.padend-4.6.1.tgz#53ccba047d06e158d311f45da625f4e49e6f166e"
   integrity sha1-U8y6BH0G4VjTEfRdpiX05J5vFm4=
-
-lodash.pick@^4.4.0:
-  version "4.4.0"
-  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
-  integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
 
 lodash.snakecase@^4.1.1:
   version "4.1.1"
@@ -11404,10 +11398,10 @@ webpack-sources@^3.2.3:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.3.tgz#2d4daab8451fd4b240cc27055ff6a0c2ccea0cde"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-webpack@5.90.0:
-  version "5.90.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.90.0.tgz#313bfe16080d8b2fee6e29b6c986c0714ad4290e"
-  integrity sha512-bdmyXRCXeeNIePv6R6tGPyy20aUobw4Zy8r0LUS2EWO+U+Ke/gYDgsCh7bl5rB6jPpr4r0SZa6dPxBxLooDT3w==
+webpack@5.90.1:
+  version "5.90.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.90.1.tgz#62ab0c097d7cbe83d32523dbfbb645cdb7c3c01c"
+  integrity sha512-SstPdlAC5IvgFnhiRok8hqJo/+ArAbNv7rhU4fnWGHNVfN59HSQFaxZDSAL3IFG2YmqxuRs+IU33milSxbPlog==
   dependencies:
     "@types/eslint-scope" "^3.7.3"
     "@types/estree" "^1.0.5"
