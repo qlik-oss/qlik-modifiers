@@ -47,13 +47,13 @@
     "eslint": "^8.56.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-mocha": "^10.2.0",
+    "eslint-plugin-mocha": "^10.3.0",
     "extend": "^3.0.2",
     "jsdoc-to-markdown": "^8.0.1",
     "mocha-junit-reporter": "^2.2.1",
     "release-it": "15.11.0",
     "uglifyjs-webpack-plugin": "2.2.0",
-    "webpack": "5.90.1",
+    "webpack": "5.90.2",
     "webpack-cli": "5.1.4"
   }
 }
