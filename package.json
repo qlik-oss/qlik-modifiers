@@ -36,9 +36,9 @@
   },
   "devDependencies": {
     "@after-work.js/aw": "^6.0.14",
-    "@babel/cli": "^7.23.9",
-    "@babel/core": "^7.24.0",
-    "@babel/preset-env": "^7.24.0",
+    "@babel/cli": "^7.24.1",
+    "@babel/core": "^7.24.3",
+    "@babel/preset-env": "^7.24.3",
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
     "@release-it/conventional-changelog": "5.1.1",
@@ -53,7 +53,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "release-it": "15.11.0",
     "uglifyjs-webpack-plugin": "2.2.0",
-    "webpack": "5.90.3",
+    "webpack": "5.91.0",
     "webpack-cli": "5.1.4"
   }
 }
