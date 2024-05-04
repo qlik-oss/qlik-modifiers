@@ -36,9 +36,9 @@
   },
   "devDependencies": {
     "@after-work.js/aw": "^6.0.14",
-    "@babel/cli": "^7.24.1",
-    "@babel/core": "^7.24.4",
-    "@babel/preset-env": "^7.24.4",
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
     "@release-it/conventional-changelog": "5.1.1",
