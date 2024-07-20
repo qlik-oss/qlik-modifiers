@@ -37,7 +37,7 @@
   "devDependencies": {
     "@after-work.js/aw": "^6.0.14",
     "@babel/cli": "^7.24.8",
-    "@babel/core": "^7.24.8",
+    "@babel/core": "^7.24.9",
     "@babel/preset-env": "^7.24.8",
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
@@ -49,7 +49,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-mocha": "^10.4.3",
     "extend": "^3.0.2",
-    "jsdoc-to-markdown": "^8.0.1",
+    "jsdoc-to-markdown": "^8.0.2",
     "mocha-junit-reporter": "^2.2.1",
     "release-it": "15.11.0",
     "uglifyjs-webpack-plugin": "2.2.0",
