@@ -61,7 +61,7 @@ export default function MasterItemSubscriber({ model, callback }) {
         enabled: false,
         properties: getPropertiesString(itemModel.layout),
       };
-    });
+    }).catch(() => { /* ignore missing library items */ });
   }
 
   return {
