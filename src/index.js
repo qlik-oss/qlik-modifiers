@@ -136,7 +136,7 @@ function apply({
               dimensionAndFieldList,
             });
           },
-        ));
+        )).catch(() => Promise.resolve(modified));
       });
     }
     return Promise.resolve(modified);
@@ -201,7 +201,7 @@ function applyModifiers({
       }
       return Promise.resolve(false);
     }),
-  );
+  ).catch(() => Promise.resolve(false));
 }
 
 /**
@@ -572,7 +572,7 @@ function getLibraryItemsProperties({ libraryIds, model, libraryItemsProps }) {
     }));
     promises.push(p);
   });
-  return Promise.all(promises).then(() => masterItems);
+  return Promise.all(promises).then(() => masterItems).catch(() => null);
 }
 
 function modifyMeasure({
@@ -832,7 +832,7 @@ function updateMeasuresProperties({
     return Promise.resolve();
   }
 
-  if (!hasActiveModifiers({ measures, properties })) {
+  if (!libraryItemsProps && !hasActiveModifiers({ measures, properties })) {
     measures.forEach(measure => cleanUpMeasure(measure));
     return Promise.resolve();
   }
@@ -842,7 +842,7 @@ function updateMeasuresProperties({
     (libraryItems) => {
       measures.forEach((measure) => {
         const { modifiers } = measure.qDef;
-        if (isActiveModifiers({ modifiers, properties })) {
+        if (libraryItems && isActiveModifiers({ modifiers, properties })) {
           applyMeasureModifiers({
             measure,
             properties,
