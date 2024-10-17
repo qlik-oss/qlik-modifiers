@@ -103,6 +103,7 @@ export default function MasterItemSubscriber({ model, callback }) {
     unsubscribe() {
       Object.keys(subscriptions).forEach((libraryId) => {
         subscriptions[libraryId].listener.dispose();
+        subscriptions[libraryId].unbindCloseListnener();
       });
       subscriptions = {};
     },
