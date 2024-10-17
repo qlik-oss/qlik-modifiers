@@ -1,14 +1,15 @@
 import util from './utils/util';
-
-const BASE_REF = 'qDef.base';
-const EXPRESSION_REF = 'qDef.qDef';
-const EXPRESSION_BASE_REF = 'qDef.base.qDef';
-const LIB_REF = 'qLibraryId';
-const LIB_BASE_REF = 'qDef.base.qLibraryId';
-const LABEL_REF = 'qDef.qLabel';
-const LABEL_EXPRESSION_REF = 'qDef.qLabelExpression';
-const LABEL_BASE_REF = 'qDef.base.qLabel';
-const LABEL_EXPRESSION_BASE_REF = 'qDef.base.qLabelExpression';
+import {
+  BASE_REF,
+  EXPRESSION_REF,
+  EXPRESSION_BASE_REF,
+  LIB_REF,
+  LIB_BASE_REF,
+  LABEL_REF,
+  LABEL_EXPRESSION_REF,
+  LABEL_BASE_REF,
+  LABEL_EXPRESSION_BASE_REF,
+} from './constants';
 
 /**
  * Utility functions for accessing input/base properties of a measure
