@@ -55,16 +55,16 @@ export default function MasterItemSubscriber({ model, callback }) {
       }
     });
   }
-    const onDeletingLibraryId = (id) => {
-      callback(LIBRARY_ID_DELETED);
-      delete subscriptions[id];
-      unsubscribeUnusedIds();
-    }
-    
-    const subscribeClose = (itemModel, onClose) => {
-      itemModel.once('closed', onClose);
-      return () => itemModel.removeListener('closed', onClose)
-    }
+  const onDeletingLibraryId = (id) => {
+    callback(LIBRARY_ID_DELETED);
+    delete subscriptions[id];
+    unsubscribeUnusedIds();
+  };
+
+  const subscribeClose = (itemModel, onClose) => {
+    itemModel.once('closed', onClose);
+    return () => itemModel.removeListener('closed', onClose);
+  };
 
   function subscribeLibraryId(libraryId, methodName) {
     return model.app[methodName](libraryId).then((itemModel) => {
