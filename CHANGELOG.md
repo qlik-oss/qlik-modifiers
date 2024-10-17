@@ -1,5 +1,12 @@
 
 
+## [0.9.8](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.7...v0.9.8) (2024-10-17)
+
+
+### Bug Fixes
+
+* unbind close listener ([#382](https://github.com/qlik-oss/qlik-modifiers/issues/382)) ([028c53a](https://github.com/qlik-oss/qlik-modifiers/commit/028c53a222592d01a3536a13ffee45fc6ff57930))
+
 ## [0.9.7](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.1...v0.9.7) (2024-10-17)
 
 
