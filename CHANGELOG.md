@@ -1,5 +1,16 @@
 
 
+## [0.9.7](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.1...v0.9.7) (2024-10-17)
+
+
+### Bug Fixes
+
+* bump version ([#381](https://github.com/qlik-oss/qlik-modifiers/issues/381)) ([bc50a90](https://github.com/qlik-oss/qlik-modifiers/commit/bc50a905dfccdb16028324962112ef80e9621c0b))
+* fix mismatch of version ([#377](https://github.com/qlik-oss/qlik-modifiers/issues/377)) ([cb0149f](https://github.com/qlik-oss/qlik-modifiers/commit/cb0149f61d35a8e9c399dfd0b84427f801d70540))
+* handling library id deleted ([#378](https://github.com/qlik-oss/qlik-modifiers/issues/378)) ([1de38cb](https://github.com/qlik-oss/qlik-modifiers/commit/1de38cbc83e1f5521cc129f3a2ca05488578498d))
+* ignore missing master items ([#370](https://github.com/qlik-oss/qlik-modifiers/issues/370)) ([42e9ab8](https://github.com/qlik-oss/qlik-modifiers/commit/42e9ab8a8b20ff2eba47f29169af30749291d5ee))
+* improve handling of missing library items ([#376](https://github.com/qlik-oss/qlik-modifiers/issues/376)) ([6e9d750](https://github.com/qlik-oss/qlik-modifiers/commit/6e9d7501116f8bd008e17d22738c7231c8fbf203))
+
 ### [0.9.1](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.0...v0.9.1) (2023-03-16)
 
 
