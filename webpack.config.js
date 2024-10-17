@@ -39,7 +39,7 @@ const createConfig = function createConfig(isDebug) {
   return config;
 };
 
-module.exports = [
-  createConfig(true),
-  createConfig(false),
-];
+module.exports = ({}, { mode = "production" }) => {
+  return createConfig(mode !== "production");
+};
+
