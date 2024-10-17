@@ -12,6 +12,7 @@ import normalization from './expression-modifiers/normalization';
 import MasterItemSubscriber from './master-item-subscriber';
 import measureBaseAdapter from './base-adapter';
 import measureBase from './base';
+import { LIBRARY_ID_DELETED } from './constants';
 
 const availableModifiers = {
   accumulation,
@@ -784,7 +785,7 @@ function getLibraryIds(properties) {
 }
 
 function updateMasterItemsSubscription({ model, libraryIds, masterItem }) {
-  if (!masterItem) {
+  if (!masterItem && masterItem !== LIBRARY_ID_DELETED) {
     if (
       libraryIds
       && (libraryIds.measureLibraryIds.length

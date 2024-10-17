@@ -1,3 +1,4 @@
+import { LIBRARY_ID_DELETED } from './constants';
 import util from './utils/util';
 
 export default function MasterItemSubscriber({ model, callback }) {
@@ -49,15 +50,27 @@ export default function MasterItemSubscriber({ model, callback }) {
     Object.keys(subscriptions).forEach((libraryId) => {
       if (!effectiveMeasureLibraryIds[libraryId] && !effectiveDimensionLibraryIds[libraryId]) {
         subscriptions[libraryId].listener.dispose();
+        subscriptions[libraryId].unbindCloseListnener();
         delete subscriptions[libraryId];
       }
     });
   }
+    const onDeletingLibraryId = (id) => {
+      callback(LIBRARY_ID_DELETED);
+      delete subscriptions[id];
+      unsubscribeUnusedIds();
+    }
+    
+    const subscribeClose = (itemModel, onClose) => {
+      itemModel.once('closed', onClose);
+      return () => itemModel.removeListener('closed', onClose)
+    }
 
   function subscribeLibraryId(libraryId, methodName) {
     return model.app[methodName](libraryId).then((itemModel) => {
       subscriptions[libraryId] = {
         listener: itemModel.layoutSubscribe(onMasterItemChange),
+        unbindCloseListnener: subscribeClose(itemModel, () => onDeletingLibraryId(itemModel.id)),
         enabled: false,
         properties: getPropertiesString(itemModel.layout),
       };
