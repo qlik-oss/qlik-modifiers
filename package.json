@@ -1,6 +1,6 @@
 {
   "name": "qlik-modifiers",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "A javascript library for applying modifiers to Qlik expressions",
   "license": "MIT",
   "author": "QlikTech International AB",
