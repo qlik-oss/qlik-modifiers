@@ -1,5 +1,13 @@
 
 
+## [0.9.3](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.1...v0.9.3) (2024-10-17)
+
+
+### Bug Fixes
+
+* ignore missing master items ([#370](https://github.com/qlik-oss/qlik-modifiers/issues/370)) ([42e9ab8](https://github.com/qlik-oss/qlik-modifiers/commit/42e9ab8a8b20ff2eba47f29169af30749291d5ee))
+* improve handling of missing library items ([#376](https://github.com/qlik-oss/qlik-modifiers/issues/376)) ([6e9d750](https://github.com/qlik-oss/qlik-modifiers/commit/6e9d7501116f8bd008e17d22738c7231c8fbf203))
+
 ### [0.9.1](https://github.com/qlik-oss/qlik-modifiers/compare/v0.9.0...v0.9.1) (2023-03-16)
 
 
